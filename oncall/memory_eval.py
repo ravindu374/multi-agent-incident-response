@@ -25,7 +25,7 @@ from controller.memory import ExperienceStore
 
 from .evaluate import load_dataset
 from .feedback import is_right, simulated_feedback
-from .team_eval import build_controller
+from .team_eval import build_controller, plan_loss
 
 
 def _in_time_order(pairs):
@@ -35,17 +35,25 @@ def _in_time_order(pairs):
 def build_memory(data_dir: Path, split: str = "train", model: Path | None = None, calibration: Path | None = None,
                  reasoner: str = "rules", ollama_model: str | None = None, mode: str = "bandit", noise: float = 0.0,
                  limit: int | None = None, seed: int = 0, approval: bool = True,
-                 store: ExperienceStore | None = None) -> tuple[ExperienceStore, dict]:
+                 careless: list[str] | None = None, shy: list[str] | None = None, trust: str = "off",
+                 windows: int = 4, store: ExperienceStore | None = None) -> tuple[ExperienceStore, dict]:
+    """trust "off": only remember (Block 6a). "local" / "global": learn as you go (Block 6b): every incident
+    is decided with the memory of the incidents before it, then remembered; `curve` shows loss and agent cost
+    over `windows` equal parts of the run, so a falling curve is learning."""
     store = store if store is not None else ExperienceStore()
     pairs = _in_time_order([(r, t) for r, t in load_dataset(data_dir) if t.get("split") == split])[:limit]
     controller, evidence, classifier, _ = build_controller(data_dir, model, calibration, reasoner, ollama_model,
-                                                           approval=approval, memory=store)
+                                                           careless, shy, approval, memory=store, trust=trust)
     rng = random.Random(seed)
     labels = {lab: Counter() for lab in ("right", "wrong", "unknown")}  # label -> {truly right: n, ...}
     owners, sources, plans = Counter(), Counter(), Counter()
+    per_incident: list[tuple[float, float]] = []  # (realized loss, agent cost units)
     for report, truth in pairs:
         resolution = asyncio.run(controller.handle(report))
         seen = evidence_text(evidence.bundles.get(report.incident_id), report)
+        per_incident.append((plan_loss(resolution.plan, truth, seen, controller.optimizer,
+                                       resolution.deliberation.routing.priority),
+                             resolution.deliberation.cost_units))
         feedback = simulated_feedback(resolution.deliberation, resolution.plan, truth, seen, mode=mode, noise=noise,
                                       rng=rng, approval=approval)
         experience = controller.learn(report, resolution, feedback)
@@ -56,10 +64,17 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
                ("right" if experience.owner == truth["owner"] else "wrong")] += 1
         sources[feedback.source] += 1
         plans[resolution.plan.kind] += 1
-    return store, {"incidents": len(pairs), "split": split, "mode": mode, "noise": noise,
+    curve = []
+    size = max(1, -(-len(per_incident) // max(1, windows)))  # ceiling division
+    for start in range(0, len(per_incident), size):
+        part = per_incident[start:start + size]
+        curve.append({"from": start + 1, "to": start + len(part), "loss": sum(x for x, _ in part) / len(part),
+                      "cost": sum(c for _, c in part) / len(part)})
+    return store, {"incidents": len(pairs), "split": split, "mode": mode, "noise": noise, "trust": trust,
+                   "careless": careless or [], "shy": shy or [],
                    "reasoner": reasoner, "classifier": classifier.name, "sources": dict(sources),
                    "plans": dict(plans), "labels": {k: dict(v) for k, v in labels.items()}, "owners": dict(owners),
-                   "summary": store.summary()}
+                   "curve": curve, "summary": store.summary()}
 
 
 def evaluate_retrieval(store: ExperienceStore, data_dir: Path, split: str = "val", k: int = 5,

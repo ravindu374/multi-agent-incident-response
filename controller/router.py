@@ -10,8 +10,9 @@
      left unassigned and a human is notified.
 
 Priority changes how much spending is worth (the value of fixing), not which agent "looks" best.
-P(agent succeeds) is a prior per tier, lowered on hard (ambiguous) incidents; Block 6 replaces it
-with estimates learned from verified outcomes.
+P(agent succeeds) is a prior per tier, lowered on hard (ambiguous) incidents. With an experience memory
+(Block 6b, a `trust_model`), it becomes the agent's verified record, on the whole memory and on incidents
+like this one (controller/trust.py); the table travels in the RoutingDecision for the later rounds.
 """
 from __future__ import annotations
 
@@ -25,6 +26,7 @@ from .conformal import ConformalCalibrator
 from .contracts import IncidentReport
 from .intake import extract
 from .registry import AgentRegistry, Candidate
+from .trust import TrustTable
 
 ALERT_PRIORITY = {
     "DashboardDown": "P1", "LoginFailureSpike": "P1", "UnexpectedWarehouseClient": "P1",
@@ -91,6 +93,7 @@ class RoutingDecision(BaseModel):
     expected_cost: float = 0.0
     notify_human: bool = False
     reasons: list[str] = Field(default_factory=list)
+    trust: TrustTable | None = None  # Block 6b: agents' verified record (None = planning numbers)
 
     @property
     def agents(self) -> list[str]:
@@ -100,12 +103,13 @@ class RoutingDecision(BaseModel):
 class Router:
     def __init__(self, classifier: DomainClassifier, registry: AgentRegistry,
                  calibrator: ConformalCalibrator | None = None, policy: RoutingPolicy | None = None,
-                 success: SuccessModel | None = None):
+                 success: SuccessModel | None = None, trust_model=None):
         self.classifier = classifier
         self.registry = registry
         self.calibrator = calibrator
         self.policy = policy or RoutingPolicy()
         self.success = success or SuccessModel()
+        self.trust_model = trust_model  # Block 6b: .table(features) -> TrustTable (controller/reliability.py)
 
     def _team(self, scores) -> tuple[list[str], bool, str]:
         rule = self.policy.team_rule
@@ -121,8 +125,11 @@ class Router:
         t = choose_team(scores, self.policy.confident_at, self.policy.coverage, self.policy.max_team)
         return t.team, t.confident, t.reason
 
-    def _score(self, c: Candidate, domain: str, p_owner: float, value: float, difficulty: float) -> AgentChoice:
+    def _score(self, c: Candidate, domain: str, p_owner: float, value: float, difficulty: float,
+               trust: TrustTable | None = None) -> AgentChoice:
         p_success = self.success.expected_success(c.profile, domain, difficulty)
+        if trust is not None:  # the planning guess, moved towards the agent's verified record
+            p_success = min(0.99, max(0.01, trust.success(c.agent_id, p_success)))
         utility = (value * p_owner * p_success - c.profile.cost_units
                    - self.policy.latency_weight * c.profile.expected_latency_s)
         return AgentChoice(domain=domain, agent_id=c.agent_id,
@@ -145,7 +152,7 @@ class Router:
         value = self.policy.priority_value[decision.priority]
         difficulty = 1.0 - max(decision.owner_probs.values())
         p = decision.owner_probs.get(domain, 0.0) if p_owner is None else p_owner
-        scored = [self._score(c, domain, p, value, difficulty) for c in candidates]
+        scored = [self._score(c, domain, p, value, difficulty, decision.trust) for c in candidates]
         key = (lambda a: (-a.expected_success, a.cost_units)) if by == "success" else (lambda a: -a.utility)
         ranked = sorted(scored, key=key)
         best = ranked[0]
@@ -153,12 +160,17 @@ class Router:
         return best
 
     def route(self, report: IncidentReport, now: float | None = None) -> RoutingDecision:
-        scores = self.classifier.predict(extract(report))
+        features = extract(report)
+        scores = self.classifier.predict(features)
         team, confident, team_reason = self._team(scores)
         priority = priority_of(report)
         value = self.policy.priority_value[priority]
         difficulty = 1.0 - max(scores.owner_probs.values())
         reasons = [f"team {team}: {team_reason}", f"priority {priority} (value {value:g})"]
+        trust = self.trust_model.table(features) if self.trust_model is not None else None
+        if trust is not None:
+            reasons.append(f"agents' verified record: {trust.mode}, {trust.neighbours} past incidents at least "
+                           f"{trust.min_similarity:.2f} alike")
 
         choices: list[AgentChoice] = []
         unassigned: list[str] = []
@@ -171,12 +183,16 @@ class Router:
                 unassigned.append(domain)
                 reasons.append(f"{domain}: no eligible agent")
                 continue
-            ranked = sorted((self._score(c, domain, scores.owner_probs[domain], value, difficulty)
+            ranked = sorted((self._score(c, domain, scores.owner_probs[domain], value, difficulty, trust)
                              for c in candidates), key=lambda a: -a.utility)
             best = next((a for a in ranked if a.agent_id not in used), ranked[0])  # prefer distinct agents
             best.fallbacks = [a.agent_id for a in ranked if a.agent_id != best.agent_id]
             used.add(best.agent_id)
             choices.append(best)
+            if trust is not None:
+                reasons.append(f"{domain}: " + ", ".join(
+                    f"{a.agent_id} P(success)={a.expected_success:.2f} ({'/'.join(map(str, trust.cases(a.agent_id)))}"
+                    " cases all/near)" for a in ranked))
 
         primary = choices[0] if choices else None
         if primary and primary.domain != team[0]:
@@ -191,5 +207,5 @@ class Router:
             calibrated=self.calibrator is not None, alpha=self.calibrator.alpha if self.calibrator else None,
             priority=priority, owner_probs=scores.owner_probs, team=team, confident=confident,
             primary=primary, consults=consults, unassigned=unassigned,
-            expected_cost=round(sum(distinct_cost.values()), 2), notify_human=notify, reasons=reasons,
+            expected_cost=round(sum(distinct_cost.values()), 2), notify_human=notify, reasons=reasons, trust=trust,
         )

@@ -186,7 +186,10 @@ class Orchestrator:
         asked = {c.domain for c in choices}
         if self.policy.follow_pointers:
             await self._follow_pointers(report, decision, d, asked, now)
-        if self.policy.escalate and not d.claims():
+        # "Nobody said 'owner'" stands in for "no fix we trust" while agents are trusted by planning numbers.
+        # With a verified record (Block 6b) the plan's own confidence decides instead (the second look in
+        # controller/pipeline.py): agents whose "not mine" fixes are known to be right are not doubted.
+        if self.policy.escalate and not d.claims() and decision.trust is None:
             await self._escalate(report, decision, d, now)
         await self._cross_check(report, d, now)
         return d

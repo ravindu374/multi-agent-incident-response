@@ -79,8 +79,10 @@ def oracle_loss(good: list[PlannedAction], truth: dict, seen: str, optimizer, pr
 
 def build_controller(data_dir: Path, model: Path | None = None, calibration: Path | None = None,
                      reasoner: str = "rules", ollama_model: str | None = None, careless: list[str] | None = None,
-                     shy: list[str] | None = None, approval: bool = True, memory=None, **orchestration):
+                     shy: list[str] | None = None, approval: bool = True, memory=None, trust: str = "local",
+                     **orchestration):
     """The whole controller with in-process agents reading this dataset's evidence bundles.
+    memory + trust: Block 6b (trust "off" = the memory is only written).
     orchestration: OrchestratorPolicy fields (cross_check, follow_pointers, escalate, ...)."""
     if model:
         from controller.learned import LogRegClassifier
@@ -103,7 +105,8 @@ def build_controller(data_dir: Path, model: Path | None = None, calibration: Pat
 
         agents[agent_id].reasoner = ShyReasoner()
     controller = Controller(Router(classifier, registry, calibrator), LocalLink(agents),
-                            OrchestratorPolicy(**orchestration), OptimizerPolicy(approval=approval), memory=memory)
+                            OrchestratorPolicy(**orchestration), OptimizerPolicy(approval=approval), memory=memory,
+                            trust=trust)
     return controller, evidence, classifier, calibrator
 
 
@@ -112,10 +115,21 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
                   limit: int | None = None, cross_check: str = "always", follow_pointers: bool = True,
                   escalate: bool = True, careless: list[str] | None = None, second_look_below: float = 0.7,
                   must_propose: bool = True, shy: list[str] | None = None, approval: bool = True,
-                  show: bool = False) -> dict:
+                  memory: Path | None = None, trust: str = "local", show: bool = False) -> dict:
+    """memory: a saved experience memory (Block 6a) to trust agents by (Block 6b); it is only read here,
+    never written, so the incidents scored cannot leak into it."""
     pairs = [(r, t) for r, t in load_dataset(data_dir) if split is None or t.get("split") == split][:limit]
+    store = None
+    if memory is not None:
+        from controller.memory import ExperienceStore
+
+        store = ExperienceStore.load(memory)
+        overlap = {e.incident_id for e in store.experiences} & {r.incident_id for r, _ in pairs}
+        if overlap:
+            raise ValueError(f"{len(overlap)} scored incidents are in the memory (e.g. {min(overlap)}): "
+                             "build it from another split")
     controller, evidence, classifier, calibrator = build_controller(
-        data_dir, model, calibration, reasoner, ollama_model, careless, shy, approval,
+        data_dir, model, calibration, reasoner, ollama_model, careless, shy, approval, memory=store, trust=trust,
         cross_check=cross_check, follow_pointers=follow_pointers, escalate=escalate,
         second_look_below=second_look_below, must_propose=must_propose)
     optimizer = controller.optimizer
@@ -202,6 +216,7 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
         "calibrated": calibrator is not None, "cross_check": cross_check, "follow_pointers": follow_pointers,
         "escalate": escalate, "careless": careless or [], "shy": shy or [], "must_propose": must_propose,
         "approval": approval, "plan_approve": n["approve"] / total, "approve_wasted": n["approve_wasted"],
+        "memory": None if store is None else {"path": str(memory), "experiences": len(store), "trust": trust},
         "owner_on_team": n["owner_on_team"] / total, "owner_asked": n["owner_asked"] / total,
         "correct_fix": n["correct_fix"] / total, "no_fix": n["no_fix"] / total,
         "fixes_per_incident": n["fixes"] / total,

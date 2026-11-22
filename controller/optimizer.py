@@ -18,8 +18,10 @@
    So a weak guess in the domain the classifier is sure of can still beat nothing, while a strong claim
    elsewhere beats it: the classifier and the agents correct each other.
    Agents' self-reported confidence is NOT used: LLMs are confidently wrong (llama3 said 0.9 on wrong
-   answers), and an over-eager agent would win by shouting. Block 6 learns from verified outcomes whether
-   (and for which agent) confidence carries information, and replaces the tier precisions.
+   answers), and an over-eager agent would win by shouting. With an experience memory (Block 6b), every
+   one of these planning numbers (tier precision x verdict factor, the claim / not-mine / review
+   log-likelihood ratios) is replaced per agent by its verified record, d.routing.trust
+   (controller/trust.py); without one, the planning numbers are used exactly as before.
 3. Plans. A plan runs hypotheses' fixes in stages: stage 1, check health, stage 2 only if still broken.
        expected loss = sum over stages of P(still broken before the stage) x (risk + stage cost)
                      + P(still broken at the end) x cost of then calling a human
@@ -127,24 +129,42 @@ class Optimizer:
     def tier(self, agent_id: str) -> str:
         return self.tiers.get(agent_id, "fast")
 
-    def domain_posterior(self, d: Deliberation) -> tuple[dict[str, float], dict[str, list[str]]]:
+    # -- the planning numbers, or (Block 6b) the agents' verified record in d.routing.trust ------------
+    def verdict_llr(self, d: Deliberation, p: Proposal) -> float:
+        pol, t = self.policy, self.tier(p.agent_id)
+        prior = {"owner": pol.claim_llr[t], "not_mine": pol.not_mine_llr[t]}.get(p.verdict, 0.0)
+        trust = d.routing.trust
+        return prior if trust is None else trust.verdict_llr(p.agent_id, p.verdict, prior)
+
+    def review_llr(self, d: Deliberation, r, same_domain: bool) -> float:
+        table = self.policy.fix_review_llr if same_domain else self.policy.domain_review_llr
+        prior = table[r.stance] * r.confidence
+        trust = d.routing.trust
+        return prior if trust is None else trust.review_llr(r.reviewer, same_domain, r.stance, prior)
+
+    def fix_precision(self, d: Deliberation, c: Proposal) -> float:
         pol = self.policy
+        prior = pol.precision.get(self.tier(c.agent_id), 0.7) * pol.verdict_factor.get(c.verdict, 0.3)
+        trust = d.routing.trust
+        return prior if trust is None else trust.fix(c.agent_id, c.verdict, prior)
+
+    def domain_posterior(self, d: Deliberation) -> tuple[dict[str, float], dict[str, list[str]]]:
         score = {x: math.log(max(1e-4, d.routing.owner_probs.get(x, 0.0))) for x in DOMAINS}
         why = {x: [f"classifier {d.routing.owner_probs.get(x, 0.0):.2f}"] for x in DOMAINS}
+        learned = d.routing.trust is not None
         for p in d.proposals:
             if p.domain not in score:
                 continue
-            t = self.tier(p.agent_id)
-            if p.verdict == "owner" and p.actions:
-                score[p.domain] += pol.claim_llr[t]
-                why[p.domain].append(f"{p.agent_id} claims it")
-            elif p.verdict == "not_mine":
-                score[p.domain] += pol.not_mine_llr[t]
-                why[p.domain].append(f"{p.agent_id} found nothing" + (" (best guess only)" if p.actions else ""))
+            if (p.verdict == "owner" and p.actions) or p.verdict == "not_mine" or (learned and p.verdict == "unsure"):
+                llr = self.verdict_llr(d, p)
+                score[p.domain] += llr
+                said = {"owner": "claims it", "unsure": "is unsure",
+                        "not_mine": "found nothing" + (" (best guess only)" if p.actions else "")}[p.verdict]
+                why[p.domain].append(f"{p.agent_id} {said}" + (f" (llr {llr:+.1f})" if learned else ""))
             if p.actions:  # other domains' reviews of any proposed fix
                 for r in d.reviews_of(p):
                     if r.domain != p.domain and r.stance != "cannot_tell":
-                        score[p.domain] += pol.domain_review_llr[r.stance] * r.confidence
+                        score[p.domain] += self.review_llr(d, r, same_domain=False)
                         why[p.domain].append(f"{r.reviewer} ({r.domain}) {r.stance}")
         top = max(score.values())
         weights = {x: math.exp(v - top) for x, v in score.items()}
@@ -162,22 +182,29 @@ class Optimizer:
                 groups.append(Hypothesis(domain=claim.domain, claims=[claim], actions=list(claim.actions)))
         if not groups:
             return []
-        pol = self.policy
         p_domain, why_domain = self.domain_posterior(d)
         raw: dict[int, float] = {}
+        trust = d.routing.trust
         for i, h in enumerate(groups):
             wrong = 1.0  # noisy-or: the fix is wrong only if every agreeing agent is wrong
             for c in h.claims:
-                q = _logit(pol.precision.get(self.tier(c.agent_id), 0.7) * pol.verdict_factor.get(c.verdict, 0.3))
+                q = _logit(self.fix_precision(d, c))
                 for r in d.reviews_of(c):
                     if r.domain == c.domain and r.reviewer not in h.agents and r.stance != "cannot_tell":
-                        q += pol.fix_review_llr[r.stance] * r.confidence
+                        q += self.review_llr(d, r, same_domain=True)
                         h.why.append(f"{r.reviewer} {r.stance} the fix")
                 wrong *= 1.0 - _sigmoid(q)
             raw[i] = 1.0 - wrong
-            h.why.insert(0, ", ".join(f"{c.agent_id} ({self.tier(c.agent_id)}, "
-                                      f"{'claim' if c.verdict == 'owner' else 'guess: ' + c.verdict})"
-                                      for c in h.claims) + " propose it")
+
+            def who(c: Proposal) -> str:
+                said = "claim" if c.verdict == "owner" else "guess: " + c.verdict
+                if trust is None:
+                    return f"{c.agent_id} ({self.tier(c.agent_id)}, {said})"
+                cases, near = trust.cases(c.agent_id)
+                return (f"{c.agent_id} ({self.tier(c.agent_id)}, {said}; right {self.fix_precision(d, c):.0%} of the "
+                        f"time, {cases} verified cases, {near} on incidents like this)")
+
+            h.why.insert(0, ", ".join(who(c) for c in h.claims) + " propose it")
         for domain in {h.domain for h in groups}:  # fixes of one domain share that domain's probability
             members = [i for i, h in enumerate(groups) if h.domain == domain]
             mass = max(1.0, sum(raw[i] for i in members))

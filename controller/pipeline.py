@@ -8,7 +8,9 @@ If no policy agent answers, the plan is never approved: a human has to look at i
 approves an automatic plan but wants an operator's yes first, the plan becomes kind "approve".
 
 After the executor (and, if a person was involved, the operator) reports back, `learn` stores the verified
-outcome in the experience memory (Block 6a, controller/memory.py).
+outcome in the experience memory (Block 6a, controller/memory.py). With trust "local" or "global" the
+memory is also READ (Block 6b, controller/reliability.py): the router and the optimizer use every agent's
+verified record instead of the planning numbers. trust "off" = remember only (Block 6a behaviour).
 """
 from __future__ import annotations
 
@@ -20,6 +22,7 @@ from .optimizer import Optimizer, OptimizerPolicy, tiers_from
 from .orchestrator import AgentLink, Deliberation, Orchestrator, OrchestratorPolicy
 from .plan import PolicyDecision, RemediationPlan
 from .policy import PolicyRequest
+from .reliability import ReliabilityModel
 from .router import Router
 
 
@@ -30,11 +33,16 @@ class Resolution(BaseModel):
 
 class Controller:
     def __init__(self, router: Router, link: AgentLink, orchestrator_policy: OrchestratorPolicy | None = None,
-                 optimizer_policy: OptimizerPolicy | None = None, memory: ExperienceStore | None = None):
+                 optimizer_policy: OptimizerPolicy | None = None, memory: ExperienceStore | None = None,
+                 trust: str = "local"):
+        if trust not in ("off", "local", "global"):
+            raise ValueError("trust must be 'off', 'local' or 'global'")
         self.registry = router.registry
         self.orchestrator = Orchestrator(router, link, orchestrator_policy)
         self.optimizer = Optimizer(tiers_from(router.registry), optimizer_policy)
-        self.memory = memory  # Block 6a: written by learn(); nothing reads it to decide yet (6b)
+        self.memory = memory  # Block 6a: written by learn()
+        if memory is not None and trust != "off":  # Block 6b: and read, to trust each agent by its record
+            router.trust_model = ReliabilityModel(memory, mode=trust)
 
     def learn(self, report: IncidentReport, resolution: Resolution, feedback: Feedback) -> Experience:
         """Remember a closed incident: what was decided, and what the verified feedback says about it."""

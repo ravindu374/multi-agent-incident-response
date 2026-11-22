@@ -9,7 +9,7 @@ and how to learn from verified outcomes. The research questions are about that r
 of the system exists so those decisions can be measured honestly.
 
 > **Status:** the controller (routing, A2A expert agents, cross-checking, the expected-loss optimizer,
-> the policy agent, human approval) and the experience memory are built and tested (239 unit tests) on
+> the policy agent, human approval) and the experience memory with learned agent trust are built and tested (255 unit tests) on
 > synthetic incidents, with rule-based and local-LLM agents (Ollama). The Docker sandbox is built and its
 > compose file validates, but it has not yet been run end to end (see [Calibration](#calibration)).
 
@@ -165,7 +165,7 @@ did), to compare `--may-abstain` with the default.
 wire format and converts every card to the SDK's protobuf `AgentCard` strictly, so the cards stay
 spec-compliant (`tests/test_a2a_server.py`).
 
-## Experience memory (Block 6a)
+## Experience memory and learned trust (Blocks 6a-6b)
 
 After an incident is closed, `Controller.learn` stores one experience (`controller/memory.py`): the
 incident's masked text and an embedding, what every agent proposed and every review said, the plan, and
@@ -185,8 +185,29 @@ python -m controller memory models/memory --incidents data/synthetic/dev100/inci
 `remember` simulates the feedback from ground truth (`oncall/feedback.py`; `--feedback full` = an operator
 reviews every incident, `--noise 0.2` = 20% of operator answers wrong) and checks every label against
 ground truth. `eval-memory` also hides every past case of the query's own fault (leave-one-fault-out), to
-show what the memory finds for a kind of incident it has never seen. Block 6a only remembers; Block 6b
-will learn each agent's reliability from these records.
+show what the memory finds for a kind of incident it has never seen.
+
+**Learning from it (Block 6b).** With a memory, the controller trusts each agent by its verified record
+instead of fixed planning numbers (`controller/trust.py`, `controller/reliability.py`): how often its fix
+was right when its domain owned the incident (on the whole memory and, more strongly, on past incidents at
+least 0.85 alike), and how much its verdicts and reviews actually say. An agent with no record keeps the
+planning numbers. The router uses this to choose agents, the optimizer to weigh their fixes, and "nobody
+said *owner*" no longer forces an escalation: the plan's own confidence decides.
+
+```bash
+python -m oncall eval-team --data data/synthetic/dev100 --model models/logreg100.json \
+    --calibration models/conformal.json --memory models/memory          # read only; memory from train
+python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.json \
+    --calibration models/conformal.json --trust local --out models/memory-online   # learn as it goes
+python -m controller deliberate data/synthetic/dev/incidents.jsonl --model models/logreg100.json \
+    --calibration models/conformal.json --incident syn-7-00046 --memory models/memory   # over A2A
+```
+
+Rule agents, dev100 val (280), memory from train (840): agent cost per incident 9.89 -> 3.51 with the
+same loss (3.28) for honest agents; a careless data-fast 3.44 -> 3.29 loss, 9.89 -> 3.51 cost; agents that
+find the fix but say "not mine" 4.85 -> 3.39 loss, 13.32 -> 4.31 cost (best possible 3.04). With 20% of
+operator answers wrong the loss holds and cost rises (more second looks); at 40% on every incident it
+breaks down (cost above the no-memory level). Details in docs/PLAN.md.
 
 ## Layout
 

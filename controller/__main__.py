@@ -136,9 +136,17 @@ def deliberate(args) -> int:
     else:
         reports = reports[: args.limit]
 
+    store = None
+    if args.memory:
+        from .memory import ExperienceStore
+
+        store = ExperienceStore.load(args.memory)
+        print(f"trusting agents by their verified record ({args.trust}): {len(store)} past incidents in {args.memory}\n")
+
     async def run() -> int:
         async with httpx.AsyncClient(timeout=args.timeout) as http:
-            controller = Controller(router, A2ALink(http), policy, OptimizerPolicy(approval=not args.no_approval))
+            controller = Controller(router, A2ALink(http), policy, OptimizerPolicy(approval=not args.no_approval),
+                                    memory=store, trust=args.trust)
             for report in reports:
                 alive = await probe_agents(registry, http)  # discovery doubles as the heartbeat
                 for agent_id in args.down:
@@ -247,6 +255,9 @@ def main() -> int:
                    help="no 'a human approves the fix' option (earlier design)")
     p.add_argument("--timeout", type=float, default=180.0, help="seconds to wait for one agent answer")
     p.add_argument("--json", action="store_true", help="also print the RemediationPlan JSON (what MCP receives)")
+    p.add_argument("--memory", type=Path, default=None,
+                   help="Block 6b: trust agents by their verified record in this experience memory (read only)")
+    p.add_argument("--trust", choices=["local", "global"], default="local")
     p = sub.add_parser("memory", help="Block 6a: show the experience memory and the past cases it finds")
     p.add_argument("store", type=Path, nargs="?", default=Path("models/memory"))
     p.add_argument("--incidents", type=Path, default=None, help="incidents file holding --incident")

@@ -107,6 +107,38 @@ far fewer agent calls, and adapt faster than static or LLM-only routers when age
   (high similarity); Block 6b needs a similarity threshold, not a blind kNN. Caveats: the memory comes from
   the split the classifier was trained on (sharper routing than on new incidents), and the synthetic
   splits are not ordered in time (prequential runs in 6c order by `opened_at`).
+- **Agents are trusted by their verified record, not by tier guesses (Block 6b).** `controller/reliability.py`
+  counts, per agent, what the memory verified; `controller/trust.py` turns counts into numbers by
+  shrinkage: each planning number counts as 4 imaginary cases, the whole memory moves it, and past incidents
+  at least 0.85 alike (cosine) move it again (2 imaginary cases), so an agent good at one kind of incident
+  and bad at another is trusted only where it is good, and a new agent keeps the planning numbers. Measured
+  per agent: success (right fix when its domain owned it) for the router; fix precision per verdict for the
+  optimizer; and log-likelihood ratios of its verdicts (owned vs not owned) and reviews (reviewed fix right
+  vs wrong), over the whole memory only, +1 smoothing, capped at 4. Self-reported confidence stays unused.
+  With a record, "nobody claimed it" no longer triggers an escalation (that rule stood in for "no fix we
+  trust"); the plan's confidence decides (second look). Rule agents, dev100 val (280), memory from train
+  (840, bandit feedback), loss / agent cost per incident:
+
+  | agents | planning numbers | memory, global | memory, local |
+  |---|---|---|---|
+  | honest | 3.28 / 9.89 | 3.28 / 3.93 | 3.28 / 3.51 |
+  | careless data-fast | 3.44 / 9.89 | 3.29 / 4.69 | 3.29 / 3.51 |
+  | shy (all 8 specialists) | 4.85 / 13.32 | 3.30 / 6.60 | 3.39 / 4.31 |
+
+  (oracle 3.04). Shy: correct fixes escalated anyway 138 -> 0 (global) / 3 (local). Local loses those 3
+  (I1 incidents, the I1/D5 look-alikes) because a shy agent's "not mine" carries no ownership evidence (the
+  memory measures llr ~0), and local trust sends the second look to a second infra specialist, who agrees on
+  the fix but cannot settle the domain, where global trust happens to ask the generalist, who still claims.
+  Choosing the second-look agent by value of information (what its answer could change) is the fix; open.
+  Learning as it goes (train, oldest first, each incident decided with the memory of the ones before it):
+  honest agent cost per quarter 4.34, 4.59, 4.26, 3.70 vs 10.18, 10.16, 9.52, 9.97 without the memory (same
+  loss); shy loss 3.42, 3.27, 3.70, 3.40 vs 4.69, 4.91, 4.87, 4.97, cost 6.30 -> 4.00 vs ~13.3. Wrong
+  feedback (C3), local trust on val: 20% of operator answers wrong: loss 3.28 / 3.30 / 3.29 (honest /
+  careless / shy), cost up to 4.29 / 4.18 / 6.93 (noisier records = less trust = more checking); an
+  operator on every incident with 40% wrong: loss 3.35 / 3.37 / 3.74, cost 12.4-14.1, above the no-memory
+  cost: past ~20% wrong, the memory stops paying for itself. Over real A2A (syn-7-00046, D1): data-strong
+  asked first (100% right in 298 verified cases, 30 on incidents like this), 2 calls / 4.2 units instead of
+  5 / 10.2, plan 97% sure instead of 87%.
 - **Consults go through the controller.** A specialist asks for a *capability*, never a named agent, so
   every delegation is visible to the router, budgeted and logged.
 - **Information barrier.** Agents never see `lab/`, Toxiproxy, orders-api `/admin`, or warehouse

@@ -138,6 +138,8 @@ class ReviewRecord(BaseModel):
     claim_domain: str
     stance: str
     right: bool | None = None  # supported a right fix / contradicted a wrong one; None = cannot tell or unknown
+    claim_label: Label | None = None  # what the verified feedback says about the fix it reviewed
+    claim_owned: bool | None = None  # ...and whether that fix's domain owned the incident
 
 
 class Experience(BaseModel):
@@ -199,10 +201,11 @@ def experience_from(report: IncidentReport, d: Deliberation, plan: RemediationPl
         raise ValueError(f"feedback for {feedback.incident_id} given for incident {report.incident_id}")
     f = extract(report)
     owner = verified_owner(d, feedback)
-    proposals, labels = [], {}
+    proposals, labels, owned = [], {}, {}
     for p in d.proposals:
         label, why = label_proposal(p, feedback, owner)
         labels[(p.agent_id, p.domain)] = label
+        owned[(p.agent_id, p.domain)] = None if owner is None else p.domain == owner
         proposals.append(ProposalRecord(
             agent_id=p.agent_id, domain=p.domain, tier=tiers.get(p.agent_id, "fast"), reasoner=p.reasoner,
             verdict=p.verdict, confidence=p.confidence, points_to=p.points_to, root_cause=p.root_cause,
@@ -214,7 +217,8 @@ def experience_from(report: IncidentReport, d: Deliberation, plan: RemediationPl
         if r.stance != "cannot_tell" and label in ("right", "wrong"):
             right = (r.stance == "supports") == (label == "right")
         reviews.append(ReviewRecord(reviewer=r.reviewer, domain=r.domain, claim_agent=r.claim_agent,
-                                    claim_domain=r.claim_domain, stance=r.stance, right=right))
+                                    claim_domain=r.claim_domain, stance=r.stance, right=right, claim_label=label,
+                                    claim_owned=owned.get((r.claim_agent, r.claim_domain))))
     return Experience(
         incident_id=report.incident_id, opened_at=report.opened_at, text=f.text, alerts=f.alerts,
         signals=f.signals, components=f.components, priority=d.routing.priority,
@@ -266,6 +270,7 @@ class ExperienceStore:
         self.experiences: list[Experience] = []
         self._vectors: list[np.ndarray] = []
         self._matrix: np.ndarray | None = None
+        self.version = 0  # goes up on every change, so readers know when to count again
 
     def __len__(self) -> int:
         return len(self.experiences)
@@ -281,6 +286,7 @@ class ExperienceStore:
             self.experiences.append(experience)
             self._vectors.append(vector)
         self._matrix = None
+        self.version += 1
 
     @property
     def matrix(self) -> np.ndarray:
