@@ -1,0 +1,140 @@
+# Sandbox: a small food-delivery analytics platform that the on-call agents look after.
+#   orders-api ──(toxiproxy)──► ingest ──(toxiproxy)──► warehouse (Postgres) ──► transform (dbt) ──► metrics-api
+# Everything here is the "system under test". The lab tooling (python -m oncall) runs on the host.
+name: oncall
+
+x-python-env: &python-env
+  PYTHONUNBUFFERED: "1"
+
+services:
+  warehouse:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: ${WAREHOUSE_ADMIN_PASSWORD:-admin_pw}
+      POSTGRES_DB: warehouse
+    command:
+      - postgres
+      - -c
+      - max_connections=40
+      - -c
+      - log_connections=on
+      - -c
+      - log_disconnections=on
+      - -c
+      - log_lock_waits=on
+      - -c
+      - deadlock_timeout=1s
+      - -c
+      - log_min_duration_statement=2000
+      - -c
+      - "log_line_prefix=%m [%p] user=%u db=%d app=%a client=%h "
+    volumes:
+      - warehouse-data:/var/lib/postgresql/data
+      - ./sandbox/warehouse/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./sandbox/warehouse/backup-compress.sh:/usr/local/lib/maint/backup-compress.sh:ro
+    ports:
+      - "127.0.0.1:${WAREHOUSE_PORT:-55432}:5432"
+    cpus: 1.0
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d warehouse"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  orders-api:
+    build: ./sandbox/orders_api
+    environment:
+      <<: *python-env
+      ORDERS_PER_SEC: ${ORDERS_PER_SEC:-5}
+    volumes:
+      - orders-data:/data
+    ports:
+      - "127.0.0.1:${ORDERS_API_PORT:-18000}:8000"
+    restart: unless-stopped
+
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.9.0
+    command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
+    volumes:
+      - ./sandbox/toxiproxy/toxiproxy.json:/config/toxiproxy.json:ro
+    ports:
+      - "127.0.0.1:${TOXIPROXY_PORT:-8474}:8474"
+    restart: unless-stopped
+
+  ingest:
+    build: ./sandbox/ingest
+    environment:
+      <<: *python-env
+      INGEST_INTERVAL_S: ${INGEST_INTERVAL_S:-15}
+    volumes:
+      - ./runtime:/config:ro
+    tmpfs:
+      - /spool:size=8m
+    depends_on:
+      warehouse:
+        condition: service_healthy
+      toxiproxy:
+        condition: service_started
+      orders-api:
+        condition: service_started
+    restart: unless-stopped
+
+  transform:
+    build: ./sandbox/transform
+    environment:
+      <<: *python-env
+      TRANSFORM_INTERVAL_S: ${TRANSFORM_INTERVAL_S:-30}
+      TRANSFORMER_PASSWORD: transformer_pw
+    mem_limit: 512m
+    memswap_limit: 512m
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  metrics-api:
+    build: ./sandbox/metrics_api
+    environment:
+      <<: *python-env
+    volumes:
+      - ./runtime:/config:ro
+    ports:
+      - "127.0.0.1:${METRICS_API_PORT:-18001}:8000"
+    cpus: 0.5
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.15.0
+    environment:
+      DATA_SOURCE_NAME: postgresql://postgres:${WAREHOUSE_ADMIN_PASSWORD:-admin_pw}@warehouse:5432/warehouse?sslmode=disable
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    volumes:
+      - ./sandbox/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "127.0.0.1:${PROMETHEUS_PORT:-9090}:9090"
+    restart: unless-stopped
+
+  # Lab-only image for the client-side faults (leaky reporting job, heavy notebook query,
+  # credential misuse, login spam). Never started by `up`; the fault injector runs it by name.
+  toolbox:
+    build: ./sandbox/toolbox
+    image: oncall/worker:latest
+    profiles: ["lab"]
+    environment:
+      <<: *python-env
+    command: ["sleep", "infinity"]
+
+volumes:
+  warehouse-data:
+  orders-data:

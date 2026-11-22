@@ -1,0 +1,85 @@
+{
+  "name": "generalist",
+  "description": "Generalist on-call agent with every domain's tools. Fallback when no specialist is available, and the single-agent baseline (D) in experiments.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9341/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "generalist",
+          "domains": [
+            "network",
+            "data",
+            "infra",
+            "security"
+          ],
+          "tier": "strong",
+          "model": "ollama/llama3",
+          "costUnits": 6.0,
+          "expectedLatencyS": 30.0,
+          "maxConcurrency": 1,
+          "tools": [
+            "incident_logs",
+            "job_runs",
+            "probe_paths",
+            "active_queries",
+            "locks",
+            "dbt_failures",
+            "connections_by_app",
+            "source_sample",
+            "container_stats",
+            "top_processes",
+            "disk_usage",
+            "recent_changes",
+            "db_client_origins",
+            "failed_logins"
+          ],
+          "allowedIntents": [
+            "block_client",
+            "free_storage",
+            "map_schema_fields",
+            "quarantine_records",
+            "reroute_connection",
+            "resize_compute",
+            "restart_component",
+            "restore_config",
+            "rotate_credential",
+            "stop_process",
+            "stop_session"
+          ]
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "general-incident-triage",
+      "name": "General incident triage",
+      "description": "Investigate any platform incident end to end with all read-only tools.",
+      "tags": [
+        "generalist",
+        "triage"
+      ],
+      "examples": []
+    }
+  ]
+}

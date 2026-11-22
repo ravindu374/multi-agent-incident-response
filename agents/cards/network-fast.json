@@ -1,0 +1,81 @@
+{
+  "name": "network-fast",
+  "description": "Network specialist. Quick first look with a small model; cheap, good on clear-cut incidents.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9301/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "specialist",
+          "domains": [
+            "network"
+          ],
+          "tier": "fast",
+          "model": "ollama/qwen2.5:3b",
+          "costUnits": 1.0,
+          "expectedLatencyS": 6.0,
+          "maxConcurrency": 4,
+          "tools": [
+            "incident_logs",
+            "job_runs",
+            "probe_paths"
+          ],
+          "allowedIntents": [
+            "reroute_connection",
+            "restore_config"
+          ]
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "diagnose-connectivity",
+      "name": "Diagnose connectivity",
+      "description": "Find why jobs cannot reach the source system or the warehouse: timeouts, connection resets, DNS failures and slow network paths or gateways.",
+      "tags": [
+        "network",
+        "latency",
+        "timeout",
+        "dns",
+        "gateway",
+        "connection-reset"
+      ],
+      "examples": [
+        "ingest failed: ReadTimeout: timed out",
+        "server closed the connection unexpectedly",
+        "Name or service not known"
+      ]
+    },
+    {
+      "id": "reroute-traffic",
+      "name": "Reroute traffic",
+      "description": "Move a job's traffic to a healthy alternative path or gateway.",
+      "tags": [
+        "network",
+        "failover",
+        "routing"
+      ],
+      "examples": []
+    }
+  ]
+}

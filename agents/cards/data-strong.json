@@ -1,0 +1,90 @@
+{
+  "name": "data-strong",
+  "description": "Data specialist. Deep investigation with a larger model; slower and costlier, for ambiguous or high-impact incidents.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9312/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "specialist",
+          "domains": [
+            "data"
+          ],
+          "tier": "strong",
+          "model": "ollama/llama3",
+          "costUnits": 4.0,
+          "expectedLatencyS": 20.0,
+          "maxConcurrency": 2,
+          "tools": [
+            "incident_logs",
+            "job_runs",
+            "active_queries",
+            "locks",
+            "dbt_failures",
+            "connections_by_app",
+            "source_sample"
+          ],
+          "allowedIntents": [
+            "map_schema_fields",
+            "quarantine_records",
+            "stop_session",
+            "restore_config"
+          ]
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "diagnose-pipeline-failure",
+      "name": "Diagnose pipeline failures",
+      "description": "Explain failed ingest and transform runs caused by the data itself: schema drift, failed data-quality tests, bad or duplicated batches.",
+      "tags": [
+        "data",
+        "etl",
+        "dbt",
+        "schema",
+        "data-quality"
+      ],
+      "examples": [
+        "SchemaMismatch: source payload missing required field(s)",
+        "not_null_stg_orders_amount fail: Got 3 results"
+      ]
+    },
+    {
+      "id": "diagnose-warehouse-contention",
+      "name": "Diagnose warehouse contention",
+      "description": "Find sessions that block, leak connections or run away with warehouse resources: locks, idle connection leaks, expensive queries.",
+      "tags": [
+        "data",
+        "database",
+        "locks",
+        "connections",
+        "queries"
+      ],
+      "examples": [
+        "canceling statement due to lock timeout",
+        "remaining connection slots are reserved"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "name": "security-strong",
+  "description": "Security specialist. Deep investigation with a larger model; slower and costlier, for ambiguous or high-impact incidents.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9332/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "specialist",
+          "domains": [
+            "security"
+          ],
+          "tier": "strong",
+          "model": "ollama/llama3",
+          "costUnits": 4.0,
+          "expectedLatencyS": 20.0,
+          "maxConcurrency": 2,
+          "tools": [
+            "incident_logs",
+            "job_runs",
+            "db_client_origins",
+            "failed_logins"
+          ],
+          "allowedIntents": [
+            "rotate_credential",
+            "block_client",
+            "stop_session"
+          ]
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "investigate-credential-misuse",
+      "name": "Investigate credential misuse",
+      "description": "Investigate service credentials used by unexpected clients or for bulk data export.",
+      "tags": [
+        "security",
+        "credentials",
+        "exfiltration",
+        "access"
+      ],
+      "examples": [
+        "service role etl used by unexpected application(s)"
+      ]
+    },
+    {
+      "id": "investigate-login-attacks",
+      "name": "Investigate login attacks",
+      "description": "Investigate spikes of failed logins and block abusive clients.",
+      "tags": [
+        "security",
+        "brute-force",
+        "authentication"
+      ],
+      "examples": [
+        "212 failed dashboard logins in the last 60s"
+      ]
+    }
+  ]
+}

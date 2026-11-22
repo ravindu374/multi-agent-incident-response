@@ -1,0 +1,320 @@
+{
+  "sample-01": {
+    "imitates": "N1",
+    "owner": "network",
+    "note": "latency on the source path: ingest read timeouts, data goes stale",
+    "alerts": [
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts"
+    ],
+    "must_have_signals": [
+      "network_timeout",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "lock_timeout",
+      "statement_timeout",
+      "connection_reset",
+      "name_resolution",
+      "disk_full"
+    ]
+  },
+  "sample-02": {
+    "imitates": "N2",
+    "owner": "network",
+    "note": "resets on the warehouse path: ingest cannot even record its failures",
+    "alerts": [
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts"
+    ],
+    "must_have_signals": [
+      "connection_reset",
+      "connect_failed",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "network_timeout",
+      "name_resolution",
+      "too_many_clients"
+    ]
+  },
+  "sample-03": {
+    "imitates": "N3",
+    "owner": "network",
+    "note": "source hostname does not resolve",
+    "alerts": [
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts"
+    ],
+    "must_have_signals": [
+      "name_resolution",
+      "connect_failed",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "network_timeout",
+      "connection_reset"
+    ]
+  },
+  "sample-04": {
+    "imitates": "D1",
+    "owner": "data",
+    "note": "schema drift in the source payload",
+    "alerts": [
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts"
+    ],
+    "must_have_signals": [
+      "schema_mismatch",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "network_timeout",
+      "data_test_failed",
+      "connect_failed"
+    ]
+  },
+  "sample-05": {
+    "imitates": "D2",
+    "owner": "data",
+    "note": "bad batch: dbt not_null and unique tests fail, mart is not rebuilt",
+    "alerts": [
+      "TransformJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "marts",
+      "transform"
+    ],
+    "must_have_signals": [
+      "data_test_failed",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "oom_killed",
+      "schema_mismatch",
+      "statement_timeout"
+    ]
+  },
+  "sample-06": {
+    "imitates": "D3",
+    "owner": "data",
+    "note": "exclusive table lock: ingest and dbt both hit lock timeouts",
+    "alerts": [
+      "IngestJobFailing",
+      "TransformJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts",
+      "transform"
+    ],
+    "must_have_signals": [
+      "lock_timeout",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "network_timeout",
+      "statement_timeout",
+      "too_many_clients"
+    ]
+  },
+  "sample-07": {
+    "imitates": "D4",
+    "owner": "data",
+    "note": "leaked connections exhaust the warehouse: everyone fails to connect",
+    "alerts": [
+      "DashboardSlow",
+      "WarehouseConnectionsSaturated",
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts",
+      "metrics-api",
+      "transform",
+      "warehouse"
+    ],
+    "must_have_signals": [
+      "too_many_clients",
+      "db_saturation",
+      "http_5xx",
+      "connect_failed",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "lock_timeout",
+      "login_failures",
+      "unexpected_db_client"
+    ]
+  },
+  "sample-08": {
+    "imitates": "D5",
+    "owner": "data",
+    "note": "runaway analyst query; on purpose almost identical to I1 at this level",
+    "alerts": [
+      "DashboardSlow",
+      "TransformJobFailing"
+    ],
+    "components": [
+      "metrics-api",
+      "transform"
+    ],
+    "must_have_signals": [
+      "high_latency",
+      "statement_timeout"
+    ],
+    "must_not_have_signals": [
+      "stale_data",
+      "lock_timeout",
+      "unexpected_db_client"
+    ]
+  },
+  "sample-09": {
+    "imitates": "I1",
+    "owner": "infra",
+    "note": "CPU hog in the warehouse container; same signals as D5",
+    "alerts": [
+      "DashboardSlow",
+      "TransformJobFailing"
+    ],
+    "components": [
+      "metrics-api",
+      "transform"
+    ],
+    "must_have_signals": [
+      "high_latency",
+      "statement_timeout"
+    ],
+    "must_not_have_signals": [
+      "stale_data",
+      "lock_timeout",
+      "unexpected_db_client"
+    ]
+  },
+  "sample-10": {
+    "imitates": "I2",
+    "owner": "infra",
+    "note": "dbt killed by the out-of-memory killer",
+    "alerts": [
+      "TransformJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "marts",
+      "transform"
+    ],
+    "must_have_signals": [
+      "oom_killed",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "data_test_failed",
+      "statement_timeout",
+      "disk_full"
+    ]
+  },
+  "sample-11": {
+    "imitates": "I3",
+    "owner": "infra",
+    "note": "spool disk full on the ingest worker",
+    "alerts": [
+      "IngestJobFailing",
+      "OrdersMartStale"
+    ],
+    "components": [
+      "ingest",
+      "marts"
+    ],
+    "must_have_signals": [
+      "disk_full",
+      "stale_data"
+    ],
+    "must_not_have_signals": [
+      "oom_killed",
+      "network_timeout",
+      "schema_mismatch"
+    ]
+  },
+  "sample-12": {
+    "imitates": "I4",
+    "owner": "infra",
+    "note": "bad config deploy: dashboard API crash-loops",
+    "alerts": [
+      "DashboardDown"
+    ],
+    "components": [
+      "metrics-api"
+    ],
+    "must_have_signals": [
+      "service_down",
+      "connect_failed",
+      "config_invalid"
+    ],
+    "must_not_have_signals": [
+      "stale_data",
+      "login_failures",
+      "high_latency"
+    ]
+  },
+  "sample-13": {
+    "imitates": "S1",
+    "owner": "security",
+    "note": "ETL credential used by an unknown client; no error lines at all",
+    "alerts": [
+      "UnexpectedWarehouseClient",
+      "DashboardSlow"
+    ],
+    "components": [
+      "metrics-api",
+      "warehouse"
+    ],
+    "must_have_signals": [
+      "unexpected_db_client",
+      "high_latency"
+    ],
+    "must_not_have_signals": [
+      "login_failures",
+      "too_many_clients",
+      "stale_data"
+    ]
+  },
+  "sample-14": {
+    "imitates": "S2",
+    "owner": "security",
+    "note": "password guessing against the dashboard login",
+    "alerts": [
+      "DashboardSlow",
+      "LoginFailureSpike"
+    ],
+    "components": [
+      "metrics-api"
+    ],
+    "must_have_signals": [
+      "login_failures",
+      "high_latency"
+    ],
+    "must_not_have_signals": [
+      "unexpected_db_client",
+      "too_many_clients"
+    ]
+  }
+}

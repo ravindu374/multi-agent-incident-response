@@ -1,0 +1,6 @@
+[
+  {"name": "source_primary",      "listen": "0.0.0.0:18080", "upstream": "orders-api:8000", "enabled": true},
+  {"name": "source_secondary",    "listen": "0.0.0.0:18081", "upstream": "orders-api:8000", "enabled": true},
+  {"name": "warehouse_primary",   "listen": "0.0.0.0:15432", "upstream": "warehouse:5432",  "enabled": true},
+  {"name": "warehouse_secondary", "listen": "0.0.0.0:15433", "upstream": "warehouse:5432",  "enabled": true}
+]

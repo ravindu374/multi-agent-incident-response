@@ -1,0 +1,14 @@
+{
+  "warehouse": {
+    "host": "warehouse",
+    "port": 5432,
+    "dbname": "warehouse",
+    "user": "dashboard",
+    "password": "dashboard_pw"
+  },
+  "cache_ttl_s": 0,
+  "users": {
+    "analyst": "pbkdf2_sha256$200000$2d89c710029880acabea7731378d9e9e$5dcb8db2e3bca00844fb432ba37730e41a415b20952508885e700f8f15d28079"
+  },
+  "blocked_ips": []
+}

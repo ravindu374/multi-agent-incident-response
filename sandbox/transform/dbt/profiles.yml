@@ -1,0 +1,13 @@
+warehouse:
+  target: sandbox
+  outputs:
+    sandbox:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'warehouse') }}"
+      port: 5432
+      user: transformer
+      password: "{{ env_var('TRANSFORMER_PASSWORD') }}"
+      dbname: warehouse
+      schema: staging
+      threads: 1
+      connect_timeout: 10

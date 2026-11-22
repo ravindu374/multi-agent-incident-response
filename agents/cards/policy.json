@@ -1,0 +1,53 @@
+{
+  "name": "policy",
+  "description": "Policy agent. Checks every remediation plan against risk and permission rules before hand-over, and decides whether a human must approve it.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9351/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "policy",
+          "domains": [],
+          "tier": "fast",
+          "model": "rules+ollama/qwen2.5:3b",
+          "costUnits": 0.2,
+          "expectedLatencyS": 1.0,
+          "maxConcurrency": 8,
+          "tools": [],
+          "allowedIntents": []
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "validate-remediation-plan",
+      "name": "Validate remediation plan",
+      "description": "Approve, reject or escalate a RemediationPlan.",
+      "tags": [
+        "policy",
+        "safety"
+      ],
+      "examples": []
+    }
+  ]
+}

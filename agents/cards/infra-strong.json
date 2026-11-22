@@ -1,0 +1,90 @@
+{
+  "name": "infra-strong",
+  "description": "Infra specialist. Deep investigation with a larger model; slower and costlier, for ambiguous or high-impact incidents.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9322/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "specialist",
+          "domains": [
+            "infra"
+          ],
+          "tier": "strong",
+          "model": "ollama/llama3",
+          "costUnits": 4.0,
+          "expectedLatencyS": 20.0,
+          "maxConcurrency": 2,
+          "tools": [
+            "incident_logs",
+            "job_runs",
+            "container_stats",
+            "top_processes",
+            "disk_usage",
+            "recent_changes"
+          ],
+          "allowedIntents": [
+            "stop_process",
+            "resize_compute",
+            "free_storage",
+            "restart_component",
+            "restore_config"
+          ]
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "diagnose-compute-pressure",
+      "name": "Diagnose compute pressure",
+      "description": "Find CPU, memory and disk problems in the platform's containers: runaway processes, out-of-memory kills, full disks.",
+      "tags": [
+        "infra",
+        "cpu",
+        "memory",
+        "oom",
+        "disk",
+        "capacity"
+      ],
+      "examples": [
+        "dbt build was killed (SIGKILL, exit 137)",
+        "No space left on device"
+      ]
+    },
+    {
+      "id": "recover-deployment",
+      "name": "Recover failed deployments",
+      "description": "Recover components broken by a bad configuration change or crash loop.",
+      "tags": [
+        "infra",
+        "deployment",
+        "config",
+        "crash-loop",
+        "rollback"
+      ],
+      "examples": [
+        "invalid configuration in metrics_api.json, refusing to start"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: ingest
+    static_configs:
+      - targets: ["ingest:9101"]
+  - job_name: transform
+    static_configs:
+      - targets: ["transform:9102"]
+  - job_name: metrics-api
+    static_configs:
+      - targets: ["metrics-api:8000"]
+  - job_name: postgres
+    static_configs:
+      - targets: ["postgres-exporter:9187"]

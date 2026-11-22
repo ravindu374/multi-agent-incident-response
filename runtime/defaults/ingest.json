@@ -1,0 +1,22 @@
+{
+  "source": {
+    "active": "primary",
+    "endpoints": {
+      "primary": "http://toxiproxy:18080",
+      "secondary": "http://toxiproxy:18081"
+    }
+  },
+  "warehouse": {
+    "active": "primary",
+    "endpoints": {
+      "primary": "toxiproxy:15432",
+      "secondary": "toxiproxy:15433"
+    },
+    "dbname": "warehouse",
+    "user": "etl",
+    "password": "etl_pw"
+  },
+  "field_map": {},
+  "source_timeout_s": 5,
+  "batch_limit": 2000
+}
