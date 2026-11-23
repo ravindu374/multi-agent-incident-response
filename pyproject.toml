@@ -17,6 +17,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 agents = ["a2a-sdk[http-server]>=1.3,<2", "uvicorn>=0.30"]
+# the experience memory in PostgreSQL (controller/memory_pg.py). Pure-Python psycopg on the libpq of a
+# PostgreSQL install (found in Program Files, or set A2A_LIBPQ_DIR); "psycopg[binary]" also works where
+# Windows Application Control allows its bundled DLL.
+db = ["psycopg>=3.1,<4"]
 
 [project.scripts]
 oncall = "oncall.cli:main"

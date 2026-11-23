@@ -278,7 +278,9 @@ class ExperienceStore:
 
     def add(self, experience: Experience) -> None:
         """Store one closed incident. The same incident again replaces the old record (a corrected postmortem)."""
-        vector = self.embedder.embed(experience.features())
+        self._put(experience, self.embedder.embed(experience.features()))
+
+    def _put(self, experience: Experience, vector: np.ndarray) -> None:
         for i, old in enumerate(self.experiences):
             if old.incident_id == experience.incident_id:
                 self.experiences[i], self._vectors[i] = experience, vector

@@ -170,6 +170,18 @@ far fewer agent calls, and adapt faster than static or LLM-only routers when age
   incidents found per incident, no wrong action run, loss 3.42 -> 3.17, cost 10.15 -> 8.10 (the record
   learned on other faults still routes better). Over real A2A (syn-7-00046): plan 99% sure (6b 97%, none
   87%), 5 precedents listed, 3 calls (history, data-strong, policy).
+- **The memory can live in PostgreSQL; the files stay for tests and offline (Block 6d).**
+  `controller/memory_pg.py`: PostgresExperienceStore is the same store (add / similar / experiences), with
+  every add() written first, in one transaction, to the tables in `controller/memory_schema.sql` (one row per
+  incident, per agent answer, per review; a `changes` counter that each reader checks, so several programs can
+  share one memory). Not MongoDB, not a vector database alone: the learning is counting (GROUP BY agent and
+  verdict, the `agent_fix_record` view), the history needs transactions, and one system means nothing to keep
+  in sync. "Find similar" stays an exact cosine search in Python (pgvector is not installed on the Windows
+  machine; at thousands of incidents an index changes nothing). On Windows the psycopg driver runs on the
+  installed PostgreSQL's libpq, because Application Control blocked the DLL bundled in psycopg[binary].
+  Checked on a throwaway PostgreSQL 18: 840 incidents remembered straight into it in ~9 s; read back
+  exactly (round-trip tests); `eval-team` from the database and from the files gives identical numbers
+  (loss 3.2902, cost 2.8786); the history agent served from it over A2A. Database tests need A2A_TEST_DB.
 - **Consults go through the controller.** A specialist asks for a *capability*, never a named agent, so
   every delegation is visible to the router, budgeted and logged.
 - **Information barrier.** Agents never see `lab/`, Toxiproxy, orders-api `/admin`, or warehouse

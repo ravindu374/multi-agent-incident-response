@@ -53,7 +53,7 @@ def pick(incidents: Path, ids: str | None, limit: int):
 
 
 def build_agents(names: list[str], incidents: Path, reasoner_name: str, model: str | None,
-                 allowed: list[str] = INVESTIGATORS, memory: Path | None = None, trust: str = "local") -> list:
+                 allowed: list[str] = INVESTIGATORS, memory: str | None = None, trust: str = "local") -> list:
     cards = {c.name: c for c in default_pool()}
     unknown = [n for n in names if n not in cards or n not in allowed]
     if unknown:
@@ -65,11 +65,12 @@ def build_agents(names: list[str], incidents: Path, reasoner_name: str, model: s
         if role == "policy":
             agents.append(PolicyAgent(cards[name]))
             continue
-        if role == "history":  # the memory it starts from (and keeps saving to), or an empty one
-            from controller.memory import ExperienceStore
+        if role == "history":  # its memory: a folder (loaded if it exists, saved after every incident) or PostgreSQL
+            from controller.memory_pg import is_database, open_store
 
-            store = ExperienceStore.load(memory) if memory and (Path(memory) / "store.json").exists() else None
-            agents.append(HistoryAgent(cards[name], store, trust=trust, path=memory))
+            store = open_store(memory) if memory else None
+            path = Path(memory) if memory and not is_database(memory) else None
+            agents.append(HistoryAgent(cards[name], store, trust=trust, path=path))
             continue
         reasoner = OllamaReasoner(model=model) if reasoner_name == "ollama" else RuleReasoner()
         agents.append(SpecialistAgent(cards[name], reasoner, evidence))
@@ -98,8 +99,9 @@ def cmd_serve(args) -> int:
     for a in agents:
         extra = ""
         if isinstance(a, HistoryAgent):
-            extra = (f"   memory: {len(a.store)} past incidents" + (f", saved to {a.path}" if a.path else
-                                                                    " (not saved: no --memory)"))
+            where = getattr(a.store, "where", None)
+            extra = f"   memory: {len(a.store)} past incidents" + (
+                f" in {where}" if where else f", saved to {a.path}" if a.path else " (not saved: no --memory)")
         print(f"  {a.agent_id:<16} http://{args.host}:{port_of(a)}/.well-known/agent-card.json{extra}")
     try:
         asyncio.run(serve(agents, host=args.host))
@@ -157,8 +159,9 @@ def main() -> int:
     p.add_argument("--agents", default=None,
                    help=f"comma-separated (default: all {len(SERVED)}, incl. the policy and history agents)")
     p.add_argument("--host", default="127.0.0.1")
-    p.add_argument("--memory", type=Path, default=None,
-                   help="the history agent's experience memory: loaded if it exists, saved after every incident")
+    p.add_argument("--memory", default=None,
+                   help="the history agent's memory: a folder (loaded if it exists, saved after every incident), "
+                        "or 'postgres' (the database in the A2A_MEMORY_DB environment variable)")
     p.add_argument("--trust", choices=["local", "global", "off"], default="local",
                    help="how the history agent reports the agents' verified record (Block 6b)")
     p.set_defaults(func=cmd_serve)

@@ -358,7 +358,17 @@ def _memory_tables(summary: dict) -> None:
 def cmd_remember(lab: Lab, args) -> int:
     from .memory_eval import build_memory
 
-    store, r = build_memory(args.data, split=args.split, model=args.model, calibration=args.calibration,
+    from controller.memory_pg import is_database, open_store
+
+    store = None
+    if is_database(args.out):  # remember straight into PostgreSQL
+        store = open_store(args.out)
+        if len(store) and not args.replace:
+            print(f"{store.where} already holds {len(store)} incidents; add --replace to start it again from these")
+            return 1
+        if len(store):
+            print(f"replacing the {store.clear()} incidents in {store.where}")
+    store, r = build_memory(args.data, split=args.split, model=args.model, calibration=args.calibration, store=store,
                             reasoner=args.reasoner, ollama_model=args.ollama_model, mode=args.feedback,
                             noise=args.noise, limit=args.limit, seed=args.seed, approval=not args.no_approval,
                             careless=args.careless, shy=args.shy, trust=args.trust, skip_faults=args.skip_faults)
@@ -389,11 +399,11 @@ def cmd_remember(lab: Lab, args) -> int:
 
 
 def cmd_eval_memory(lab: Lab, args) -> int:
-    from controller.memory import ExperienceStore
+    from controller.memory_pg import open_store
 
     from .memory_eval import evaluate_retrieval
 
-    store = ExperienceStore.load(args.memory)
+    store = open_store(args.memory, must_exist=True)
     r = evaluate_retrieval(store, args.data, split=args.split, k=args.k, limit=args.limit, model=args.model)
     print(f"{r['queries']} {r['split']} incidents searched in a memory of {r['memory']} (k={r['k']})\n")
     rows = [("nearest past case is the same fault", _pct(r["same_fault_top1"]), "near copies make this easy"),
@@ -533,8 +543,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-approval", action="store_true",
                    help="earlier design: no 'a human approves the fix' option; every plan is priced and scored "
                         "as if it ran on its own")
-    p.add_argument("--memory", type=Path, default=None,
-                   help="Block 6b: trust agents by their verified record in this experience memory (read only)")
+    p.add_argument("--memory", default=None,
+                   help="Block 6b-c: an experience memory (a folder, or 'postgres' = A2A_MEMORY_DB), read only")
     p.add_argument("--trust", choices=["local", "global", "off"], default="local",
                    help="agents' verified record: local = whole memory + similar past incidents; global = whole "
                         "memory only; off = planning numbers")
@@ -565,11 +575,13 @@ def build_parser() -> argparse.ArgumentParser:
                    help="off: only remember (Block 6a); local/global: learn as you go, each incident using the "
                         "memory of the ones before it (Block 6b)")
     p.add_argument("--limit", type=int, default=None)
-    p.add_argument("--out", type=Path, default=Path("models/memory"))
+    p.add_argument("--out", default="models/memory",
+                   help="a folder, or 'postgres' (the database in A2A_MEMORY_DB)")
+    p.add_argument("--replace", action="store_true", help="with a database: delete what it already remembers")
     p.set_defaults(fn=cmd_remember)
 
     p = sub.add_parser("eval-memory", help="Block 6a: does the memory find similar past incidents?")
-    p.add_argument("--memory", type=Path, default=Path("models/memory"))
+    p.add_argument("--memory", default="models/memory", help="a folder, or 'postgres' (A2A_MEMORY_DB)")
     p.add_argument("--data", type=Path, default=Path("data/synthetic/dev"), help="the dataset the memory came from")
     p.add_argument("--split", choices=["train", "val", "test"], default="val")
     p.add_argument("--k", type=int, default=5)

@@ -165,16 +165,26 @@ def deliberate(args) -> int:
 
 def memory(args) -> int:
     """What the experience memory holds, and which past cases it finds for given incidents."""
-    from .memory import ExperienceStore, format_neighbours
+    from .memory import format_neighbours
+    from .memory_pg import open_store
 
-    if not (args.store / "store.json").exists():
+    try:
+        store = open_store(args.store, must_exist=True)  # a folder, or "postgres" (A2A_MEMORY_DB)
+    except FileNotFoundError:
         print(f"no experience memory at {args.store}. Fill one first, e.g.:\n"
               "  python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.json "
               "--calibration models/conformal.json --out models/memory")
         return 1
-    store = ExperienceStore.load(args.store)
+    if args.export_sql:
+        from .memory_sql import to_sql
+
+        args.export_sql.write_text(to_sql(store), encoding="utf-8")
+        print(f"wrote {len(store)} incidents as SQL to {args.export_sql}. Load them into PostgreSQL with:\n"
+              f"  psql -U postgres -d a2a_memory -f controller/memory_schema.sql   (the tables, once)\n"
+              f"  psql -U postgres -d a2a_memory -f {args.export_sql}")
+        return 0
     s = store.summary()
-    print(f"{args.store}: {s['experiences']} experiences; plans {s['plans']}; feedback from {s['sources']}; "
+    print(f"{getattr(store, 'where', args.store)}: {s['experiences']} experiences; plans {s['plans']}; feedback from {s['sources']}; "
           f"verified owners {s['owners']}")
     for key, c in s["fixes"].items():
         known = c.get("right", 0) + c.get("wrong", 0)
@@ -255,11 +265,14 @@ def main() -> int:
     p.add_argument("--no-history", action="store_true",
                    help="do not ask the history agent (Block 6c; start it with `python -m agents serve ... --memory`)")
     p = sub.add_parser("memory", help="Block 6a: show the experience memory and the past cases it finds")
-    p.add_argument("store", type=Path, nargs="?", default=Path("models/memory"))
+    p.add_argument("store", nargs="?", default="models/memory",
+                   help="a folder, or 'postgres' (the database in the A2A_MEMORY_DB environment variable)")
     p.add_argument("--incidents", type=Path, default=None, help="incidents file holding --incident")
     p.add_argument("--incident", default=None, help="comma-separated incident ids to look up")
     p.add_argument("--k", type=int, default=3)
     p.add_argument("--past-only", action="store_true", help="only incidents opened before this one")
+    p.add_argument("--export-sql", type=Path, default=None,
+                   help="write the memory as SQL rows for the PostgreSQL tables (controller/memory_schema.sql)")
     args = parser.parse_args()
 
     if args.command == "agents":

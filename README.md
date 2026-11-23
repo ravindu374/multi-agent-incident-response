@@ -224,7 +224,26 @@ python -m oncall eval-team --data data/synthetic/dev100 --model models/logreg100
     --calibration models/conformal.json --memory models/memory  [--trust off] [--no-past-cases] [--no-precedent]
 ```
 
-`agents serve --memory` saves the store after every remembered incident. Rule agents, dev100 val: honest
+**In PostgreSQL (Block 6d).** Every command that takes a memory folder also takes `postgres`: the
+database whose URL is in the `A2A_MEMORY_DB` environment variable (keep the password there, never in git).
+Records go into tables (`controller/memory_schema.sql`: experiences, proposals, reviews, plus the views
+`agent_fix_record` and `reviewer_record`), each incident in one transaction, and several programs can share
+the memory (each re-reads when another wrote). "Find similar" stays an exact search in Python until
+pgvector is installed. Needs `pip install -e ".[db]"`; on Windows the driver uses the libpq of the
+PostgreSQL install (Windows Application Control may block the DLL in `psycopg[binary]`).
+
+```powershell
+createdb -U postgres a2a_memory                                       # a database of its own
+$env:A2A_MEMORY_DB = "postgresql://postgres:YOUR_PASSWORD@localhost:5432/a2a_memory"
+python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.json `
+    --calibration models/conformal.json --out postgres                  # creates the tables if needed
+python -m agents serve data/synthetic/dev/incidents.jsonl --memory postgres   # the history agent on PostgreSQL
+python -m controller memory postgres --export-sql models/memory.sql     # or: rows for psql, no driver needed
+```
+
+Database tests run only with `A2A_TEST_DB` set to a throwaway database (they wipe it).
+
+`agents serve --memory FOLDER` saves the store after every remembered incident. Rule agents, dev100 val: honest
 agent cost 9.89 (no history) -> 3.71 (trust) -> 2.88 (trust + past cases + precedent) at loss 3.28-3.29,
 escalations 220 -> 2; learning as it goes from an empty memory, 2.2-2.5 per incident. On fault types the
 memory never saw, it finds almost nothing similar (0.28 per incident) and nothing wrong runs.

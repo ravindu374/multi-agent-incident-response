@@ -135,9 +135,9 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
     pairs = [(r, t) for r, t in load_dataset(data_dir) if split is None or t.get("split") == split][:limit]
     store = None
     if memory is not None:
-        from controller.memory import ExperienceStore
+        from controller.memory_pg import open_store
 
-        store = ExperienceStore.load(memory)
+        store = open_store(memory, must_exist=True)  # a folder, or "postgres" (A2A_MEMORY_DB)
         overlap = {e.incident_id for e in store.experiences} & {r.incident_id for r, _ in pairs}
         if overlap:
             raise ValueError(f"{len(overlap)} scored incidents are in the memory (e.g. {min(overlap)}): "
@@ -231,7 +231,8 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
         "calibrated": calibrator is not None, "cross_check": cross_check, "follow_pointers": follow_pointers,
         "escalate": escalate, "careless": careless or [], "shy": shy or [], "must_propose": must_propose,
         "approval": approval, "plan_approve": n["approve"] / total, "approve_wasted": n["approve_wasted"],
-        "memory": None if store is None else {"path": str(memory), "experiences": len(store), "trust": trust,
+        "memory": None if store is None else {"path": getattr(store, "where", str(memory)), "experiences": len(store),
+                                              "trust": trust,
                                               "past_cases": past_cases, "precedent": precedent},
         "owner_on_team": n["owner_on_team"] / total, "owner_asked": n["owner_asked"] / total,
         "correct_fix": n["correct_fix"] / total, "no_fix": n["no_fix"] / total,

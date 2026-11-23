@@ -10,7 +10,7 @@ import numpy as np
 from controller.checks import same_fix
 from controller.contracts import AlertIn, IncidentReport
 from controller.intake import extract
-from controller.memory import Experience, ExperienceStore, Feedback, HashingEmbedder, experience_from
+from controller.memory import Experience, ExperienceStore, Feedback, HashingEmbedder, ProposalRecord, experience_from
 from controller.plan import ActionOutcome, ExecutionReport, RemediationPlan
 from controller.proposal import Proposal
 from oncall.feedback import simulated_feedback
@@ -226,6 +226,28 @@ class StoreTest(unittest.TestCase):
             (Path(tmp) / "store.json").write_text(json.dumps({**meta, "format": "other"}), encoding="utf-8")
             with self.assertRaises(ValueError):
                 ExperienceStore.load(Path(tmp))
+
+
+class SqlExportTest(unittest.TestCase):
+    """controller/memory_sql.py writes rows for controller/memory_schema.sql (loaded for real with psql once)."""
+
+    def test_rows_quotes_and_empty_values(self):
+        from controller.memory_sql import to_sql
+
+        store = ExperienceStore()
+        e = remembered("it's-1", LOCK.format(1), "2026-11-01T10:00:00+00:00")
+        e.proposals = [ProposalRecord(agent_id="data-fast", domain="data", tier="fast", verdict="owner",
+                                      confidence=0.9, root_cause="session 1's lock", label="right")]
+        store.add(e)
+        sql = to_sql(store)
+        self.assertTrue(sql.startswith("BEGIN;") and sql.rstrip().endswith("COMMIT;"))
+        self.assertIn("'it''s-1'", sql)  # a quote inside a value is doubled, not left to break the statement
+        self.assertIn("'session 1''s lock'", sql)
+        self.assertEqual(sql.count("INSERT INTO experiences"), 1)
+        self.assertEqual(sql.count("INSERT INTO proposals"), 1)
+        self.assertEqual(sql.count("DELETE FROM experiences"), 1)  # loading again replaces, never duplicates
+        self.assertIn("NULL", sql)  # e.g. no postmortem credits
+        self.assertEqual(sql.count("::real[]"), 1)
 
 
 class SimulatedFeedbackTest(unittest.TestCase):
