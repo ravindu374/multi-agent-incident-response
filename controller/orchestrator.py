@@ -20,6 +20,10 @@ calls, which Block 5c turns into one plan with minimum expected loss.
 
     AgentLink  how the controller reaches agents: A2ALink (real A2A over HTTP) or an in-process link
                (agents/local.py) for tests and evaluation. The rounds are the same either way.
+
+Block 6c: when the controller looked the incident up with the history agent first, the similar past
+incidents travel in every investigation task (share_past_cases) and stay on the Deliberation for the
+optimizer.
 """
 from __future__ import annotations
 
@@ -36,6 +40,7 @@ from pydantic import BaseModel, Field
 from .cards import WELL_KNOWN_CARD_PATH, AgentCard
 from .checks import CHECK
 from .contracts import IncidentReport
+from .history import HistoryQuery, HistoryReport, RememberAck, RememberRequest
 from .plan import PolicyDecision
 from .policy import PolicyRequest
 from .proposal import InvestigationTask, Proposal, Review
@@ -48,6 +53,11 @@ class AgentLink(Protocol):
     async def review(self, card: AgentCard, task: InvestigationTask) -> Review: ...
 
     async def review_plan(self, card: AgentCard, request: PolicyRequest) -> PolicyDecision: ...
+
+    # Block 6c, only needed when the controller uses a history agent
+    async def history(self, card: AgentCard, query: HistoryQuery) -> HistoryReport: ...
+
+    async def remember(self, card: AgentCard, request: RememberRequest) -> RememberAck: ...
 
 
 class A2ALink:
@@ -70,6 +80,16 @@ class A2ALink:
         from .wire import ask_policy
 
         return await ask_policy(card, request, self.http)
+
+    async def history(self, card: AgentCard, query: HistoryQuery) -> HistoryReport:
+        from .wire import ask_history
+
+        return await ask_history(card, query, self.http)
+
+    async def remember(self, card: AgentCard, request: RememberRequest) -> RememberAck:
+        from .wire import ask_remember
+
+        return await ask_remember(card, request, self.http)
 
     async def aclose(self) -> None:
         await self.http.aclose()
@@ -112,12 +132,13 @@ class OrchestratorPolicy:
     max_escalations: int = 1  # extra senior calls per incident (escalation and second look share it)
     max_attempts: int = 2  # calls per domain: the chosen agent, then fallbacks
     transfer_belief: float = 0.5  # P(owner) assumed for a domain another agent's evidence points to
+    share_past_cases: bool = True  # Block 6c: give the investigating agents the similar past incidents
 
 
 class AgentCall(BaseModel):
     agent_id: str
     domain: str
-    kind: Literal["investigate", "review", "policy"]
+    kind: Literal["investigate", "review", "policy", "history", "remember"]
     ok: bool
     seconds: float
     cost_units: float
@@ -137,6 +158,7 @@ class Deliberation(BaseModel):
     unanswered: list[str] = Field(default_factory=list)  # domains where no agent answered
     notes: list[str] = Field(default_factory=list)
     first_round: int | None = None  # proposals[:first_round] came from round 1; the rest were asked later
+    history: HistoryReport | None = None  # Block 6c: what the history agent found (None = not asked)
 
     def claims(self) -> list[Proposal]:
         """Ownership claims: "it's mine, and here is the fix" (an owner always has a fix that passed the checks)."""
@@ -165,9 +187,11 @@ class Orchestrator:
         self.policy = policy or OrchestratorPolicy()
 
     async def run(self, report: IncidentReport, decision: RoutingDecision | None = None,
-                  now: float | None = None) -> Deliberation:
+                  now: float | None = None, history: HistoryReport | None = None,
+                  calls: list[AgentCall] | None = None) -> Deliberation:
+        """history / calls: what the controller already asked the history agent for this incident."""
         decision = decision or self.router.route(report, now=now)
-        d = Deliberation(incident_id=report.incident_id, routing=decision)
+        d = Deliberation(incident_id=report.incident_id, routing=decision, history=history, calls=list(calls or []))
         d.unanswered += [f"{x} (no eligible agent at routing time)" for x in decision.unassigned]
 
         choices, generalists = [], set()
@@ -232,8 +256,9 @@ class Orchestrator:
     # -- round 1 + pointers ----------------------------------------------------------------------
     async def _investigate(self, report: IncidentReport, choice: AgentChoice, d: Deliberation, now: float | None,
                            role: str, question: str | None = None) -> Proposal | None:
+        past = d.history.cases if d.history is not None and self.policy.share_past_cases else []
         task = InvestigationTask(incident=report, domain=choice.domain, role=role, question=question,
-                                 must_propose=self.policy.must_propose)
+                                 must_propose=self.policy.must_propose, past_cases=past)
         attempts = 0
         for agent_id in [choice.agent_id, *choice.fallbacks]:
             if attempts >= self.policy.max_attempts:
@@ -305,24 +330,29 @@ class Orchestrator:
     # -- one call ----------------------------------------------------------------------------------
     async def _call(self, agent_id: str, domain: str, kind: str, task: InvestigationTask | PolicyRequest,
                     d: Deliberation, now: float | None):
+        result, call = await self.call(agent_id, domain, kind, task, now)
+        d.calls.append(call)
+        return result
+
+    async def call(self, agent_id: str, domain: str, kind: str, payload, now: float | None = None):
+        """One call to one agent: (its answer or None, the AgentCall record). A failure is recorded, never raised."""
         card, profile = self.registry.card(agent_id), self.registry.profile(agent_id)
-        send = getattr(self.link, {"investigate": "investigate", "review": "review", "policy": "review_plan"}[kind])
+        send = getattr(self.link, {"investigate": "investigate", "review": "review", "policy": "review_plan",
+                                   "history": "history", "remember": "remember"}[kind])
         self.registry.begin_task(agent_id)
         t0 = time.monotonic()
         try:
-            result = await send(card, task)
+            result = await send(card, payload)
         except Exception as e:  # a failed agent is recorded and replaced, never fatal
             seconds = time.monotonic() - t0
             self.registry.end_task(agent_id, ok=False, latency_s=seconds, now=now)
-            d.calls.append(AgentCall(agent_id=agent_id, domain=domain, kind=kind, ok=False, seconds=round(seconds, 2),
-                                     cost_units=profile.cost_units, detail=f"{type(e).__name__}: {e}"[:300]))
-            return None
+            return None, AgentCall(agent_id=agent_id, domain=domain, kind=kind, ok=False, seconds=round(seconds, 2),
+                                   cost_units=profile.cost_units, detail=f"{type(e).__name__}: {e}"[:300])
         seconds = time.monotonic() - t0
         self.registry.end_task(agent_id, ok=True, latency_s=seconds, now=now)
         self.registry.heartbeat(agent_id, now=now)  # an answer proves the agent is alive
-        d.calls.append(AgentCall(agent_id=agent_id, domain=domain, kind=kind, ok=True, seconds=round(seconds, 2),
-                                 cost_units=profile.cost_units))
-        return result
+        return result, AgentCall(agent_id=agent_id, domain=domain, kind=kind, ok=True, seconds=round(seconds, 2),
+                                 cost_units=profile.cost_units)
 
 
 def format_deliberation(d: Deliberation) -> str:

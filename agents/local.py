@@ -9,12 +9,14 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 
-from controller.cards import AgentCard
+from controller.cards import SERVICE_ROLES, AgentCard
+from controller.history import HistoryQuery, HistoryReport, RememberAck, RememberRequest
 from controller.plan import PolicyDecision
 from controller.policy import PolicyRequest
 from controller.pool import default_pool
 from controller.proposal import InvestigationTask, Proposal, Review
 
+from .history_agent import HistoryAgent
 from .policy_agent import PolicyAgent
 from .reasoners.ollama import OllamaReasoner
 from .reasoners.rules import RuleReasoner
@@ -23,8 +25,8 @@ from .tools import EvidenceSource, RecordedEvidence
 
 
 class LocalLink:
-    def __init__(self, agents: dict[str, SpecialistAgent]):
-        self.agents = agents
+    def __init__(self, agents: dict[str, SpecialistAgent], history: HistoryAgent | None = None):
+        self.agents, self.history_agent = agents, history
 
     async def investigate(self, card: AgentCard, task: InvestigationTask) -> Proposal:
         return await asyncio.to_thread(self.agents[card.name].handle, task)
@@ -35,13 +37,23 @@ class LocalLink:
     async def review_plan(self, card: AgentCard, request: PolicyRequest) -> PolicyDecision:
         return PolicyAgent(card).decide(request)
 
+    async def history(self, card: AgentCard, query: HistoryQuery) -> HistoryReport:
+        if self.history_agent is None:
+            raise ConnectionError("no history agent in this in-process link")
+        return self.history_agent.lookup(query)
+
+    async def remember(self, card: AgentCard, request: RememberRequest) -> RememberAck:
+        if self.history_agent is None:
+            raise ConnectionError("no history agent in this in-process link")
+        return self.history_agent.remember(request)
+
 
 def local_agents(evidence: EvidenceSource, reasoner: str = "rules", model: str | None = None,
                  cards: list[AgentCard] | None = None) -> dict[str, SpecialistAgent]:
-    """Every investigating agent of the pool (all but the policy agent), sharing one evidence source."""
+    """Every investigating agent of the pool (all but the policy and history agents), sharing one evidence source."""
     brain = OllamaReasoner(model=model) if reasoner == "ollama" else RuleReasoner()
     return {c.name: SpecialistAgent(c, brain, evidence) for c in (cards or default_pool())
-            if c.routing_profile().role != "policy"}
+            if c.routing_profile().role not in SERVICE_ROLES}
 
 
 def local_link(incidents: Path, reasoner: str = "rules", model: str | None = None) -> LocalLink:

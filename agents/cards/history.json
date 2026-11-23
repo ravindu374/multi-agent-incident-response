@@ -1,0 +1,64 @@
+{
+  "name": "history",
+  "description": "History agent. Remembers every closed incident with its verified outcome, finds the past incidents most like a new one (and the fix that worked), and reports each agent's verified record.",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:9361/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "urn:a2a-oncall:routing-profile:v1",
+        "description": "Routing profile used by the a2a-oncall controller.",
+        "required": false,
+        "params": {
+          "role": "history",
+          "domains": [],
+          "tier": "fast",
+          "model": "experience-memory (hashing embeddings, cosine search)",
+          "costUnits": 0.2,
+          "expectedLatencyS": 0.5,
+          "maxConcurrency": 8,
+          "tools": [],
+          "allowedIntents": []
+        }
+      }
+    ]
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "find-similar-incidents",
+      "name": "Find similar past incidents",
+      "description": "Past incidents at least 0.85 alike, with the verified owner, the fix that worked and every agent's verified record.",
+      "tags": [
+        "history",
+        "memory",
+        "retrieval"
+      ],
+      "examples": []
+    },
+    {
+      "id": "remember-incident",
+      "name": "Remember a closed incident",
+      "description": "Store a closed incident with its verified outcome.",
+      "tags": [
+        "history",
+        "memory"
+      ],
+      "examples": []
+    }
+  ]
+}

@@ -44,6 +44,7 @@ from pydantic import BaseModel, Field, model_validator
 from . import DOMAINS
 from .checks import same_fix
 from .contracts import IncidentFeatures, IncidentReport
+from .history import PastAnswer, PastCase, describe_fix
 from .intake import extract
 from .learned import structured, tokens
 from .orchestrator import Deliberation
@@ -373,6 +374,14 @@ class ExperienceStore:
         store._vectors = list(matrix)
         store._matrix = matrix
         return store
+
+
+def past_case(score: float, e: Experience) -> PastCase:
+    """One remembered incident as the history agent hands it out (Block 6c)."""
+    return PastCase(incident_id=e.incident_id, similarity=round(score, 3), opened_at=e.opened_at, alerts=e.alerts,
+                    owner=e.owner, fix_that_worked=e.outcome.fixed_by, outcome=e.outcome.source,
+                    answers=[PastAnswer(agent_id=p.agent_id, domain=p.domain, verdict=p.verdict,
+                                        fix=describe_fix(p.actions), label=p.label) for p in e.proposals])
 
 
 def format_neighbours(neighbours: list[tuple[float, Experience]]) -> str:

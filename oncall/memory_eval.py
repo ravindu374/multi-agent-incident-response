@@ -1,7 +1,8 @@
 """Block 6a in the lab: fill the experience memory from verified (simulated) outcomes, and check it.
 
 build_memory        run the whole controller on one split, oldest incident first; after each incident, the
-                    simulated verified feedback (oncall/feedback.py) -> controller.learn -> the store. Every
+                    simulated verified feedback (oncall/feedback.py) -> controller.remember -> the history
+                    agent -> the store. Every
                     label is also checked against ground truth (only possible in the lab): a label the
                     feedback got wrong would teach Block 6b something false.
 evaluate_retrieval  for each incident of another split, are the most similar past experiences the same kind
@@ -36,14 +37,19 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
                  reasoner: str = "rules", ollama_model: str | None = None, mode: str = "bandit", noise: float = 0.0,
                  limit: int | None = None, seed: int = 0, approval: bool = True,
                  careless: list[str] | None = None, shy: list[str] | None = None, trust: str = "off",
+                 skip_faults: list[str] | None = None,
                  windows: int = 4, store: ExperienceStore | None = None) -> tuple[ExperienceStore, dict]:
     """trust "off": only remember (Block 6a). "local" / "global": learn as you go (Block 6b): every incident
     is decided with the memory of the incidents before it, then remembered; `curve` shows loss and agent cost
     over `windows` equal parts of the run, so a falling curve is learning."""
     store = store if store is not None else ExperienceStore()
     pairs = _in_time_order([(r, t) for r, t in load_dataset(data_dir) if t.get("split") == split])[:limit]
-    controller, evidence, classifier, _ = build_controller(data_dir, model, calibration, reasoner, ollama_model,
-                                                           careless, shy, approval, memory=store, trust=trust)
+    if skip_faults:  # leave whole kinds of incident out of the memory (lab only: needs ground truth)
+        pairs = [(r, t) for r, t in pairs if t["fault_id"] not in skip_faults]
+    # trust "off": the history agent only stores (Block 6a); otherwise every incident is looked up first
+    controller, evidence, classifier, _ = build_controller(
+        data_dir, model, calibration, reasoner, ollama_model, careless, shy, approval, memory=store,
+        trust=trust, history="remember" if trust == "off" else "on")
     rng = random.Random(seed)
     labels = {lab: Counter() for lab in ("right", "wrong", "unknown")}  # label -> {truly right: n, ...}
     owners, sources, plans = Counter(), Counter(), Counter()
@@ -56,7 +62,7 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
                              resolution.deliberation.cost_units))
         feedback = simulated_feedback(resolution.deliberation, resolution.plan, truth, seen, mode=mode, noise=noise,
                                       rng=rng, approval=approval)
-        experience = controller.learn(report, resolution, feedback)
+        experience = asyncio.run(controller.remember(report, resolution, feedback))
         for p in experience.proposals:
             if p.label is not None:
                 labels[p.label]["truly right" if is_right(p, truth, seen) else "truly wrong"] += 1
@@ -71,6 +77,7 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
         curve.append({"from": start + 1, "to": start + len(part), "loss": sum(x for x, _ in part) / len(part),
                       "cost": sum(c for _, c in part) / len(part)})
     return store, {"incidents": len(pairs), "split": split, "mode": mode, "noise": noise, "trust": trust,
+                   "skip_faults": skip_faults or [],
                    "careless": careless or [], "shy": shy or [],
                    "reasoner": reasoner, "classifier": classifier.name, "sources": dict(sources),
                    "plans": dict(plans), "labels": {k: dict(v) for k, v in labels.items()}, "owners": dict(owners),

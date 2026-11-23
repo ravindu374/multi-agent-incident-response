@@ -1,4 +1,5 @@
-"""The default agent pool: a fast and a strong specialist per domain, one generalist, one policy agent.
+"""The default agent pool: a fast and a strong specialist per domain, one generalist, one policy agent and
+one history agent (Block 6c: the experience memory behind its own Agent Card).
 
 Two variants per domain are what make agent *selection* a real decision (otherwise choosing an agent
 is the same as choosing a domain): the router trades the fast agent's low cost against the strong
@@ -27,7 +28,8 @@ from .cards import (
 )
 
 FAST_MODEL, STRONG_MODEL = "ollama/qwen2.5:3b", "ollama/llama3"
-PORTS = {"network": 9301, "data": 9311, "infra": 9321, "security": 9331, "generalist": 9341, "policy": 9351}
+PORTS = {"network": 9301, "data": 9311, "infra": 9321, "security": 9331, "generalist": 9341, "policy": 9351,
+         "history": 9361}
 
 TIERS = {
     #          model         cost  latency  concurrency  blurb
@@ -127,4 +129,15 @@ def default_pool() -> list[AgentCard]:
                        max_concurrency=8),
         [AgentSkill(id="validate-remediation-plan", name="Validate remediation plan",
                     description="Approve, reject or escalate a RemediationPlan.", tags=["policy", "safety"])]))
+    cards.append(_card(
+        "history", "History agent. Remembers every closed incident with its verified outcome, finds the past "
+                   "incidents most like a new one (and the fix that worked), and reports each agent's verified "
+                   "record.", PORTS["history"],
+        RoutingProfile(role="history", model="experience-memory (hashing embeddings, cosine search)",
+                       cost_units=0.2, expected_latency_s=0.5, max_concurrency=8),
+        [AgentSkill(id="find-similar-incidents", name="Find similar past incidents",
+                    description="Past incidents at least 0.85 alike, with the verified owner, the fix that worked "
+                                "and every agent's verified record.", tags=["history", "memory", "retrieval"]),
+         AgentSkill(id="remember-incident", name="Remember a closed incident",
+                    description="Store a closed incident with its verified outcome.", tags=["history", "memory"])]))
     return cards

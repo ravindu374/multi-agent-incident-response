@@ -16,7 +16,8 @@ from pydantic import BaseModel, Field, model_validator
 
 from . import DOMAINS
 
-SCHEMA_VERSION = "1.2"  # 1.1: staged actions, plan kind, options considered; 1.2: kind "approve"
+SCHEMA_VERSION = "1.3"  # 1.1: staged actions, plan kind, options considered; 1.2: kind "approve";
+#                        1.3: precedents (similar past incidents from the history agent)
 Risk = Literal["low", "medium", "high"]
 RISK_ORDER = {"low": 0, "medium": 1, "high": 2}
 
@@ -169,6 +170,16 @@ class PlanOption(BaseModel):
     chosen: bool = False
 
 
+class Precedent(BaseModel):
+    """A similar past incident behind the plan (from the history agent), so a human sees why it is trusted."""
+
+    incident_id: str
+    similarity: float = Field(ge=0.0, le=1.0)
+    owner: str | None = None  # verified owner of that incident
+    fix: list[str] = Field(default_factory=list)  # the kind of fix that resolved it, e.g. "stop_session on warehouse (pid)"
+    verified_by: str = ""  # "executor" (health checks) or "operator" (postmortem)
+
+
 class RemediationPlan(BaseModel):
     """Controller -> executor. One plan per incident."""
 
@@ -189,6 +200,7 @@ class RemediationPlan(BaseModel):
     actions: list[PlannedAction] = Field(default_factory=list)
     expected_loss: float | None = None  # of the chosen option (see controller/optimizer.py)
     options: list[PlanOption] = Field(default_factory=list)
+    precedents: list[Precedent] = Field(default_factory=list)  # similar past incidents (empty: none, or no history)
     policy: PolicyDecision | None = None  # set by the policy agent before hand-over
 
     @model_validator(mode="after")

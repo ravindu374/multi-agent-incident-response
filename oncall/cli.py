@@ -267,10 +267,14 @@ def cmd_eval_team(lab: Lab, args) -> int:
                       escalate=not args.no_escalation, careless=args.careless,
                       second_look_below=args.second_look_below, must_propose=not args.may_abstain,
                       shy=args.shy, approval=not args.no_approval, memory=args.memory, trust=args.trust,
-                      show=args.show)
+                      past_cases=not args.no_past_cases, precedent=not args.no_precedent, show=args.show)
     m = r["memory"]
-    print("agents trusted by " + (f"their verified record ({m['trust']}): {m['experiences']} past incidents in "
-                                  f"{m['path']}" if m else "planning numbers (no memory)"))
+    if m:
+        print(f"history agent: {m['experiences']} past incidents in {m['path']}; agents' verified record "
+              f"{m['trust']}; past incidents shown to experts {'yes' if m['past_cases'] else 'no'}; "
+              f"precedent counted {'yes' if m['precedent'] else 'no'}")
+    else:
+        print("no history agent: agents trusted by planning numbers, no past incidents")
     print(f"{r['incidents']} incidents (split: {r['split']}); classifier {r['classifier']}"
           f"{' + conformal' if r['calibrated'] else ''}; agents: {r['reasoner']}; cross-check {r['cross_check']}; "
           f"pointers {'on' if r['follow_pointers'] else 'off'}; escalation {'on' if r['escalate'] else 'off'}; "
@@ -357,13 +361,14 @@ def cmd_remember(lab: Lab, args) -> int:
     store, r = build_memory(args.data, split=args.split, model=args.model, calibration=args.calibration,
                             reasoner=args.reasoner, ollama_model=args.ollama_model, mode=args.feedback,
                             noise=args.noise, limit=args.limit, seed=args.seed, approval=not args.no_approval,
-                            careless=args.careless, shy=args.shy, trust=args.trust)
+                            careless=args.careless, shy=args.shy, trust=args.trust, skip_faults=args.skip_faults)
     folder = store.save(args.out)
     print(f"remembered {r['incidents']} incidents ({r['split']}, oldest first); agents: {r['reasoner']}; "
           f"classifier {r['classifier']}; feedback {r['mode']}" + (f", {r['noise']:.0%} of operator answers wrong"
                                                                      if r["noise"] else "")
           + (f"; CARELESS: {', '.join(r['careless'])}" if r["careless"] else "")
-          + (f"; SHY: {', '.join(r['shy'])}" if r["shy"] else ""))
+          + (f"; SHY: {', '.join(r['shy'])}" if r["shy"] else "")
+          + (f"; faults left out: {', '.join(r['skip_faults'])}" if r["skip_faults"] else ""))
     print(f"saved to {folder}")
     if r["trust"] != "off":
         print(f"\nlearning as it goes (trust {r['trust']}): each incident used the memory of the ones before it")
@@ -530,8 +535,11 @@ def build_parser() -> argparse.ArgumentParser:
                         "as if it ran on its own")
     p.add_argument("--memory", type=Path, default=None,
                    help="Block 6b: trust agents by their verified record in this experience memory (read only)")
-    p.add_argument("--trust", choices=["local", "global"], default="local",
-                   help="local: whole memory + similar past incidents; global: whole memory only")
+    p.add_argument("--trust", choices=["local", "global", "off"], default="local",
+                   help="agents' verified record: local = whole memory + similar past incidents; global = whole "
+                        "memory only; off = planning numbers")
+    p.add_argument("--no-past-cases", action="store_true", help="do not show similar past incidents to the experts")
+    p.add_argument("--no-precedent", action="store_true", help="the optimizer ignores what fixed similar incidents")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--show", action="store_true", help="print the rounds of every incident that went wrong")
     p.set_defaults(fn=cmd_eval_team)
@@ -551,6 +559,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-approval", action="store_true", help="earlier design: no 'a human approves' plans")
     p.add_argument("--careless", nargs="*", default=[], help="make these agents over-eager (robustness test)")
     p.add_argument("--shy", nargs="*", default=[], help="these agents find the fix but say 'not mine'")
+    p.add_argument("--skip-faults", nargs="*", default=[],
+                   help="leave these faults out of the memory (to test history on kinds of incident it never saw)")
     p.add_argument("--trust", choices=["off", "local", "global"], default="off",
                    help="off: only remember (Block 6a); local/global: learn as you go, each incident using the "
                         "memory of the ones before it (Block 6b)")

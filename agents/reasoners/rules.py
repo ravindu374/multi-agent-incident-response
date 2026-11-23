@@ -3,6 +3,11 @@
 Fast specialists only call the first FAST_TOOL_BUDGET tools of their domain (cheaper, quicker,
 sometimes blind); strong specialists and the generalist call all of theirs. Each check either
 finds a root cause (with a fix from the agent's allowed intents) or records what it saw.
+
+Block 6c: when the task carries similar past incidents, a fast specialist first calls the tools that show
+the evidence behind the fixes that resolved those incidents in its domain ("last time it was a schema
+change: look at the source sample first"). History changes WHERE it looks, never what it concludes: every
+identifier still comes from today's tool results.
 """
 from __future__ import annotations
 
@@ -17,6 +22,14 @@ from controller.proposal import Finding, InvestigationTask, Proposal, Review
 from ..tools import Toolbox
 
 FAST_TOOL_BUDGET = 2
+# where an engineer looks for the evidence behind each kind of fix (stop_session: by what it names)
+EVIDENCE_TOOL = {"map_schema_fields": "source_sample", "quarantine_records": "dbt_failures",
+                 "stop_process": "top_processes", "free_storage": "disk_usage", "restore_config": "recent_changes",
+                 "resize_compute": "container_stats", "restart_component": "container_stats",
+                 "reroute_connection": "probe_paths", "rotate_credential": "db_client_origins",
+                 "block_client": "failed_logins"}
+STOP_SESSION_TOOL = {"pid": "locks", "pids": "active_queries", "application_name": "connections_by_app",
+                     "usename": "active_queries", "client_addr": "active_queries"}
 FAST_CONFIDENCE_FACTOR = 0.9
 SLOW_PATH_MS = 3000
 DISK_FULL_PCT = 95
@@ -241,24 +254,51 @@ def best_guess(domain: str, toolbox: Toolbox) -> PlannedAction | None:
     return None
 
 
+def evidence_tool(a: PlannedAction) -> str | None:
+    if a.intent == "stop_session":
+        return next((STOP_SESSION_TOOL[k] for k in a.params if k in STOP_SESSION_TOOL), None)
+    return EVIDENCE_TOOL.get(a.intent)
+
+
+def hinted_tools(domain: str, past_cases, tools: list[str]) -> list[str]:
+    """The tools behind the fixes that resolved similar past incidents of this domain, most similar first."""
+    hinted: list[str] = []
+    for case in past_cases:
+        if case.owner != domain:
+            continue
+        for a in case.fix_that_worked:
+            t = evidence_tool(a)
+            if t in tools and t not in hinted:
+                hinted.append(t)
+    return hinted
+
+
 class RuleReasoner:
     name = "rules"
 
-    def _domain_tools(self, domain: str, profile: RoutingProfile) -> list[str]:
+    def _domain_tools(self, domain: str, profile: RoutingProfile, past_cases=()) -> list[str]:
         tools = [t for t in DOMAIN_TOOLS[domain] if t in profile.tools]
-        return tools[:FAST_TOOL_BUDGET] if profile.role == "specialist" and profile.tier == "fast" else tools
+        if not (profile.role == "specialist" and profile.tier == "fast"):
+            return tools
+        hinted = hinted_tools(domain, past_cases, tools)
+        return (hinted + [t for t in tools if t not in hinted])[:FAST_TOOL_BUDGET]
 
     def investigate(self, task: InvestigationTask, agent_id: str, profile: RoutingProfile,
                     toolbox: Toolbox) -> Proposal:
         domains = [task.domain] if profile.role == "specialist" else [d for d in DOMAINS if d in profile.domains]
-        outcomes = {}
+        outcomes, hints = {}, []
         for domain in domains:
-            results = {t: toolbox.try_call(t) for t in self._domain_tools(domain, profile)}
+            tools = self._domain_tools(domain, profile, task.past_cases)
+            results = {t: toolbox.try_call(t) for t in tools}
             outcomes[domain] = CHECKS[domain](results)
+            hinted = [t for t in hinted_tools(domain, task.past_cases, tools) if t in tools]
+            if hinted and profile.tier == "fast" and profile.role == "specialist":
+                hints.append(Finding(tool="history", fact=f"similar past {domain} incidents were resolved by fixes "
+                                                          f"whose evidence is in {', '.join(hinted)}: looked there first"))
 
         diagnosed = [(o.diagnosis.confidence, d) for d, o in outcomes.items() if o.diagnosis]
         factor = FAST_CONFIDENCE_FACTOR if profile.tier == "fast" and profile.role == "specialist" else 1.0
-        findings = [f for o in outcomes.values() for f in o.findings]
+        findings = [f for o in outcomes.values() for f in o.findings] + hints
         if diagnosed:
             _, domain = max(diagnosed)
             dx = outcomes[domain].diagnosis

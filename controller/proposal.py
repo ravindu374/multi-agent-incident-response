@@ -14,6 +14,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 from .contracts import IncidentReport
+from .history import PastCase
 from .plan import PlannedAction
 
 
@@ -52,6 +53,9 @@ class InvestigationTask(BaseModel):
     # evidence is weak (it still says how weak, in its verdict). Never an invented fix: the agent's
     # executable + grounded checks still drop those. False: "not mine" may come without a fix.
     must_propose: bool = False
+    # Block 6c: similar past incidents from the history agent (verified owner, the fix that worked). A hint
+    # of where to look first; identifiers always come from today's tools.
+    past_cases: list[PastCase] = Field(default_factory=list)
 
 
 class Review(BaseModel):

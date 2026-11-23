@@ -16,7 +16,7 @@ Without must_propose, a "not mine" / "unsure" answer carries no fixes.
 """
 from __future__ import annotations
 
-from controller.cards import AgentCard
+from controller.cards import SERVICE_ROLES, AgentCard
 from controller.checks import CHECK, action_problems, evidence_text, location_problems
 from controller.proposal import Finding, InvestigationTask, Proposal, Review
 
@@ -27,8 +27,8 @@ from .tools import EvidenceSource, Toolbox
 class SpecialistAgent:
     def __init__(self, card: AgentCard, reasoner: Reasoner, evidence: EvidenceSource):
         self.card, self.profile = card, card.routing_profile()
-        if self.profile.role == "policy":
-            raise ValueError("the policy agent validates plans; use PolicyAgent (Block 5c)")
+        if self.profile.role in SERVICE_ROLES:
+            raise ValueError(f"{card.name} is a {self.profile.role} agent; use PolicyAgent / HistoryAgent")
         self.reasoner, self.evidence = reasoner, evidence
 
     @property

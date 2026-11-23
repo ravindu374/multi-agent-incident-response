@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
+from .cards import SERVICE_ROLES
 from .classifier import RuleClassifier, choose_team
 from .contracts import load_incidents
 from .intake import extract
@@ -136,25 +137,21 @@ def deliberate(args) -> int:
     else:
         reports = reports[: args.limit]
 
-    store = None
-    if args.memory:
-        from .memory import ExperienceStore
-
-        store = ExperienceStore.load(args.memory)
-        print(f"trusting agents by their verified record ({args.trust}): {len(store)} past incidents in {args.memory}\n")
-
     async def run() -> int:
         async with httpx.AsyncClient(timeout=args.timeout) as http:
             controller = Controller(router, A2ALink(http), policy, OptimizerPolicy(approval=not args.no_approval),
-                                    memory=store, trust=args.trust)
-            for report in reports:
+                                    history="off" if args.no_history else "on")
+            for n, report in enumerate(reports):
                 alive = await probe_agents(registry, http)  # discovery doubles as the heartbeat
                 for agent_id in args.down:
                     registry.mark_down(agent_id)
-                if not any(ok for a, ok in alive.items() if registry.profile(a).role != "policy"):
+                if not any(ok for a, ok in alive.items() if registry.profile(a).role not in SERVICE_ROLES):
                     print("no agent answered at its card URL. Start them first:\n"
                           "  python -m agents serve data/synthetic/dev/incidents.jsonl")
                     return 1
+                if n == 0 and not args.no_history:
+                    print("history agent: " + ("asked first for every incident" if registry.history_agents()
+                                               else "not running (agents trusted by planning numbers)") + "\n")
                 resolution = await controller.handle(report)
                 print(format_deliberation(resolution.deliberation))
                 print(format_plan(resolution.plan))
@@ -255,9 +252,8 @@ def main() -> int:
                    help="no 'a human approves the fix' option (earlier design)")
     p.add_argument("--timeout", type=float, default=180.0, help="seconds to wait for one agent answer")
     p.add_argument("--json", action="store_true", help="also print the RemediationPlan JSON (what MCP receives)")
-    p.add_argument("--memory", type=Path, default=None,
-                   help="Block 6b: trust agents by their verified record in this experience memory (read only)")
-    p.add_argument("--trust", choices=["local", "global"], default="local")
+    p.add_argument("--no-history", action="store_true",
+                   help="do not ask the history agent (Block 6c; start it with `python -m agents serve ... --memory`)")
     p = sub.add_parser("memory", help="Block 6a: show the experience memory and the past cases it finds")
     p.add_argument("store", type=Path, nargs="?", default=Path("models/memory"))
     p.add_argument("--incidents", type=Path, default=None, help="incidents file holding --incident")

@@ -217,9 +217,14 @@ class LearningTest(unittest.TestCase):
         self.assertEqual([(c["from"], c["to"]) for c in r["curve"]], [(1, 14), (15, 28), (29, 42)])
         self.assertEqual(r["labels"]["right"].get("truly wrong", 0), 0)  # reading the memory never corrupts labels
 
-    def test_the_controller_refuses_an_unknown_trust_mode(self):
+    def test_unknown_modes_are_refused(self):
+        from agents.history_agent import HistoryAgent
+
         with self.assertRaises(ValueError):
-            Controller(Router(FixedClassifier(data=0.9), AgentRegistry()), None, trust="sometimes")
+            Controller(Router(FixedClassifier(data=0.9), AgentRegistry()), None, history="sometimes")
+        card = next(c for c in default_pool() if c.name == "history")
+        with self.assertRaises(ValueError):
+            HistoryAgent(card, trust="sometimes")
 
 
 if __name__ == "__main__":

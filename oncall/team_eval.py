@@ -80,9 +80,13 @@ def oracle_loss(good: list[PlannedAction], truth: dict, seen: str, optimizer, pr
 def build_controller(data_dir: Path, model: Path | None = None, calibration: Path | None = None,
                      reasoner: str = "rules", ollama_model: str | None = None, careless: list[str] | None = None,
                      shy: list[str] | None = None, approval: bool = True, memory=None, trust: str = "local",
+                     past_cases: bool = True, precedent: bool = True, history: str | None = None,
                      **orchestration):
     """The whole controller with in-process agents reading this dataset's evidence bundles.
-    memory + trust: Block 6b (trust "off" = the memory is only written).
+    memory: an ExperienceStore, served by an in-process history agent (Block 6c) that reports the agents'
+    verified record (trust: local / global / off, Block 6b) and similar past incidents, which the experts see
+    (past_cases) and the optimizer counts (precedent). history: the controller's mode ("on" when a memory
+    is given; "remember" = only store outcomes, as in Block 6a).
     orchestration: OrchestratorPolicy fields (cross_check, follow_pointers, escalate, ...)."""
     if model:
         from controller.learned import LogRegClassifier
@@ -104,9 +108,16 @@ def build_controller(data_dir: Path, model: Path | None = None, calibration: Pat
         from agents.reasoners.shy import ShyReasoner
 
         agents[agent_id].reasoner = ShyReasoner()
-    controller = Controller(Router(classifier, registry, calibrator), LocalLink(agents),
-                            OrchestratorPolicy(**orchestration), OptimizerPolicy(approval=approval), memory=memory,
-                            trust=trust)
+    keeper = None
+    if memory is not None:
+        from agents.history_agent import HistoryAgent
+
+        keeper = HistoryAgent(next(c for c in default_pool() if c.name == "history"), memory, trust=trust,
+                              cases=past_cases or precedent)
+    mode = history or ("on" if memory is not None else "off")
+    controller = Controller(Router(classifier, registry, calibrator), LocalLink(agents, history=keeper),
+                            OrchestratorPolicy(share_past_cases=past_cases, **orchestration),
+                            OptimizerPolicy(approval=approval, precedent=precedent), history=mode)
     return controller, evidence, classifier, calibrator
 
 
@@ -115,9 +126,12 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
                   limit: int | None = None, cross_check: str = "always", follow_pointers: bool = True,
                   escalate: bool = True, careless: list[str] | None = None, second_look_below: float = 0.7,
                   must_propose: bool = True, shy: list[str] | None = None, approval: bool = True,
-                  memory: Path | None = None, trust: str = "local", show: bool = False) -> dict:
-    """memory: a saved experience memory (Block 6a) to trust agents by (Block 6b); it is only read here,
-    never written, so the incidents scored cannot leak into it."""
+                  memory: Path | None = None, trust: str = "local", past_cases: bool = True,
+                  precedent: bool = True, show: bool = False) -> dict:
+    """memory: a saved experience memory (Block 6a), served by an in-process history agent (6c): agents
+    trusted by their verified record (trust, 6b), similar past incidents shown to the experts (past_cases)
+    and counted by the optimizer (precedent). Only read here, never written, so the incidents scored cannot
+    leak into it."""
     pairs = [(r, t) for r, t in load_dataset(data_dir) if split is None or t.get("split") == split][:limit]
     store = None
     if memory is not None:
@@ -130,6 +144,7 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
                              "build it from another split")
     controller, evidence, classifier, calibrator = build_controller(
         data_dir, model, calibration, reasoner, ollama_model, careless, shy, approval, memory=store, trust=trust,
+        past_cases=past_cases, precedent=precedent,
         cross_check=cross_check, follow_pointers=follow_pointers, escalate=escalate,
         second_look_below=second_look_below, must_propose=must_propose)
     optimizer = controller.optimizer
@@ -216,7 +231,8 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
         "calibrated": calibrator is not None, "cross_check": cross_check, "follow_pointers": follow_pointers,
         "escalate": escalate, "careless": careless or [], "shy": shy or [], "must_propose": must_propose,
         "approval": approval, "plan_approve": n["approve"] / total, "approve_wasted": n["approve_wasted"],
-        "memory": None if store is None else {"path": str(memory), "experiences": len(store), "trust": trust},
+        "memory": None if store is None else {"path": str(memory), "experiences": len(store), "trust": trust,
+                                              "past_cases": past_cases, "precedent": precedent},
         "owner_on_team": n["owner_on_team"] / total, "owner_asked": n["owner_asked"] / total,
         "correct_fix": n["correct_fix"] / total, "no_fix": n["no_fix"] / total,
         "fixes_per_incident": n["fixes"] / total,

@@ -4,6 +4,8 @@
     agent server --(A2A task, state COMPLETED, artifact "proposal": JSON data part)--> caller
     review task (role "review", carries the claim) --> agent server --> artifact "review"
     PolicyRequest (a RemediationPlan + priority) --> policy agent --> artifact "policy" (PolicyDecision)
+    HistoryQuery (the incident) --> history agent --> artifact "history" (HistoryReport)
+    RememberRequest (a closed, verified incident) --> history agent --> artifact "remembered" (RememberAck)
 
 Uses the official a2a-sdk (pip install -e ".[agents]"). Our pydantic Agent Cards are converted to
 the SDK's AgentCard protobuf *strictly*: an unknown field or a missing REQUIRED field is an error,
@@ -28,6 +30,7 @@ from google.protobuf.json_format import ParseDict
 from pydantic import ValidationError
 
 from .cards import AgentCard
+from .history import HistoryQuery, HistoryReport, RememberAck, RememberRequest
 from .plan import PolicyDecision
 from .policy import PolicyRequest
 from .proposal import InvestigationTask, Proposal, Review
@@ -36,6 +39,8 @@ JSON = "application/json"
 PROPOSAL_ARTIFACT = "proposal"
 REVIEW_ARTIFACT = "review"
 POLICY_ARTIFACT = "policy"
+HISTORY_ARTIFACT = "history"
+REMEMBERED_ARTIFACT = "remembered"
 DEFAULT_TIMEOUT_S = 120.0  # an LLM-backed strong agent can take ~20-60 s
 
 
@@ -128,7 +133,35 @@ def read_policy(task: Task, agent: str = "policy") -> PolicyDecision:
     return _read(task, agent, POLICY_ARTIFACT, PolicyDecision)
 
 
-def result_parts(result: Proposal | Review | PolicyDecision) -> list[Part]:
+def history_message(request: HistoryQuery | RememberRequest) -> Message:
+    if isinstance(request, HistoryQuery):
+        summary = (f"Find past incidents like {request.incident.incident_id} (at least {request.min_similarity:.2f} "
+                   f"alike, up to {request.k}) and every agent's verified record.")
+    else:
+        summary = f"Remember the closed incident {request.experience.get('incident_id', '?')} and its verified outcome."
+    return new_message([new_text_part(summary), new_data_part(request.model_dump(mode="json"), media_type=JSON)],
+                       role=Role.ROLE_USER)
+
+
+def read_history_request(message: Message | None) -> HistoryQuery | RememberRequest:
+    """A lookup (it carries an incident) or a remember request (it carries an experience)."""
+    if message is None:
+        raise ValueError("the request carries no message")
+    try:
+        return _first_valid(message.parts, HistoryQuery)
+    except ValueError:
+        return _first_valid(message.parts, RememberRequest)
+
+
+def read_history(task: Task, agent: str = "history") -> HistoryReport:
+    return _read(task, agent, HISTORY_ARTIFACT, HistoryReport)
+
+
+def read_remembered(task: Task, agent: str = "history") -> RememberAck:
+    return _read(task, agent, REMEMBERED_ARTIFACT, RememberAck)
+
+
+def result_parts(result) -> list[Part]:
     return [new_data_part(result.model_dump(mode="json"), media_type=JSON)]
 
 
@@ -171,6 +204,18 @@ async def ask_policy(card: AgentCard, request: PolicyRequest, http: httpx.AsyncC
                      timeout: float = DEFAULT_TIMEOUT_S) -> PolicyDecision:
     """Ask the policy agent to approve, reject or escalate a plan."""
     return read_policy(await _send(card, policy_message(request), http, timeout), card.name)
+
+
+async def ask_history(card: AgentCard, query: HistoryQuery, http: httpx.AsyncClient | None = None,
+                      timeout: float = DEFAULT_TIMEOUT_S) -> HistoryReport:
+    """Ask the history agent for similar past incidents and the agents' verified record."""
+    return read_history(await _send(card, history_message(query), http, timeout), card.name)
+
+
+async def ask_remember(card: AgentCard, request: RememberRequest, http: httpx.AsyncClient | None = None,
+                       timeout: float = DEFAULT_TIMEOUT_S) -> RememberAck:
+    """Send a closed, verified incident to the history agent to store."""
+    return read_remembered(await _send(card, history_message(request), http, timeout), card.name)
 
 
 async def ask_review(card: AgentCard, task: InvestigationTask, http: httpx.AsyncClient | None = None,

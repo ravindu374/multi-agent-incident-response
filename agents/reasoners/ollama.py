@@ -35,6 +35,7 @@ from pydantic import BaseModel
 from controller import DOMAINS
 from controller.cards import DOMAIN_TOOLS, SHARED_TOOLS, RoutingProfile
 from controller.checks import CHECK, action_problems, evidence_text, location_problems
+from controller.history import describe_fix
 from controller.plan import COMPONENTS, INTENTS, PARAM_SCHEMAS, PlannedAction
 from controller.pool import SKILLS
 from controller.proposal import Finding, InvestigationTask, Proposal, Review
@@ -155,8 +156,25 @@ def build_prompt(task: InvestigationTask, profile: RoutingProfile, results: dict
     evidence = json.dumps({t: (v if v is not None else "NO DATA") for t, v in results.items()}, indent=1, default=str)
     question = f"\nThe primary agent asks: {task.question}\n" if task.question else ""
     return (f"Incident {task.incident.incident_id} (you are the {task.role}).{question}\n\nALERTS\n{alerts}\n\n"
-            f"RECENT LOGS\n{logs}\n\nYOUR TOOL RESULTS ({task.domain})\n{evidence}\n\nALLOWED INTENTS\n{intents}\n\n"
-            f"PLATFORM COMPONENTS (valid targets)\n{', '.join(COMPONENTS)}")
+            f"RECENT LOGS\n{logs}\n\nYOUR TOOL RESULTS ({task.domain})\n{evidence}\n\n{past_cases_text(task)}"
+            f"ALLOWED INTENTS\n{intents}\n\nPLATFORM COMPONENTS (valid targets)\n{', '.join(COMPONENTS)}")
+
+
+PAST_CASES_MAX = 3
+
+
+def past_cases_text(task: InvestigationTask) -> str:
+    """Block 6c: the similar past incidents, as kinds of fix (no identifiers to copy). Empty when there are none."""
+    if not task.past_cases:
+        return ""
+    lines = ["SIMILAR PAST INCIDENTS (verified outcomes; a hint of where to look, not evidence about today. Their "
+             "identifiers belong to those incidents: take today's from YOUR TOOL RESULTS)"]
+    for c in task.past_cases[:PAST_CASES_MAX]:
+        fix = "; ".join(describe_fix(c.fix_that_worked)) or "a person (no recorded fix)"
+        said = ", ".join(f"{x.agent_id} said {x.verdict} ({x.label})" for x in c.answers if x.label in ("right", "wrong"))
+        lines.append(f"- {c.similarity:.2f} alike: owner {c.owner or 'unknown'}; fixed by {fix}"
+                     + (f"; then {said}" if said else ""))
+    return "\n".join(lines) + "\n\n"
 
 
 REPAIR_PROMPT = """The controller checked your actions against your tool results and REJECTED:

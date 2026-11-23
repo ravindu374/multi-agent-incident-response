@@ -159,7 +159,8 @@ class Router:
         best.fallbacks = [a.agent_id for a in ranked[1:]]
         return best
 
-    def route(self, report: IncidentReport, now: float | None = None) -> RoutingDecision:
+    def route(self, report: IncidentReport, now: float | None = None, trust: TrustTable | None = None) -> RoutingDecision:
+        """trust: the agents' verified record (Block 6c: from the history agent); else from trust_model, if any."""
         features = extract(report)
         scores = self.classifier.predict(features)
         team, confident, team_reason = self._team(scores)
@@ -167,7 +168,8 @@ class Router:
         value = self.policy.priority_value[priority]
         difficulty = 1.0 - max(scores.owner_probs.values())
         reasons = [f"team {team}: {team_reason}", f"priority {priority} (value {value:g})"]
-        trust = self.trust_model.table(features) if self.trust_model is not None else None
+        if trust is None and self.trust_model is not None:
+            trust = self.trust_model.table(features)
         if trust is not None:
             reasons.append(f"agents' verified record: {trust.mode}, {trust.neighbours} past incidents at least "
                            f"{trust.min_similarity:.2f} alike")

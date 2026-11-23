@@ -35,6 +35,9 @@ DOMAIN_TOOLS: dict[str, dict[str, str]] = {
                  "failed_logins": "security.failed_logins_by_ip"},
 }
 SHARED_TOOLS = ("incident_logs", "job_runs")  # every agent can read the incident itself
+# Agents that serve the controller instead of investigating: the policy agent checks plans, the history
+# agent (Block 6c) remembers verified incidents and finds similar ones.
+SERVICE_ROLES = ("policy", "history")
 
 # Which intents a domain's agents may propose (enforced again by the policy agent).
 DOMAIN_INTENTS: dict[str, tuple[str, ...]] = {
@@ -84,7 +87,7 @@ class AgentSkill(A2AModel):
 class RoutingProfile(A2AModel):
     """This project's extension params: what the router needs to know about an agent."""
 
-    role: Literal["specialist", "generalist", "policy"]
+    role: Literal["specialist", "generalist", "policy", "history"]
     domains: list[str] = Field(default_factory=list)
     tier: Literal["fast", "strong"] = "fast"
     model: str
@@ -98,7 +101,7 @@ class RoutingProfile(A2AModel):
     def _check(self) -> RoutingProfile:
         if not set(self.domains) <= set(DOMAINS):
             raise ValueError(f"unknown domain(s) in {self.domains}")
-        if self.role != "policy" and not self.domains:
+        if self.role not in SERVICE_ROLES and not self.domains:
             raise ValueError("specialists and generalists must cover at least one domain")
         unknown = set(self.allowed_intents) - set(INTENTS)
         if unknown:

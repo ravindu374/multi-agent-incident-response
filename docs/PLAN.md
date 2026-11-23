@@ -139,6 +139,37 @@ far fewer agent calls, and adapt faster than static or LLM-only routers when age
   cost: past ~20% wrong, the memory stops paying for itself. Over real A2A (syn-7-00046, D1): data-strong
   asked first (100% right in 298 verified cases, 30 on incidents like this), 2 calls / 4.2 units instead of
   5 / 10.2, plan 97% sure instead of 87%.
+- **History is an agent, asked once per incident, before routing (Block 6c).** `agents/history_agent.py`
+  (role `history`, own Agent Card, A2A port 9361) holds the experience memory. Lookup: the past incidents
+  at least 0.85 alike (verified owner, fix that worked, what each agent said) + every agent's verified
+  record (6b). Used four ways: the router trusts agents by the record; the experts see the past incidents
+  (LLM: a prompt section; rules: a fast agent first calls the tools behind the past fix, "last time it was
+  a schema change: look at the source sample"), always as kinds of fix, never with old ids; the optimizer
+  counts precedent per fix, log((same kind + 1) / (other kind + 1)) over similar incidents of the fix's
+  domain, capped at 3, and never for which domain owns it (the classifier learned that from the same kind
+  of incidents: counting it again would count it twice); the plan lists the precedents (contract 1.3).
+  Verified outcomes go back to it (`Controller.remember`), closing the loop. Hard policy rules stay
+  deterministic in the policy agent (a retrieved "similar policy" could silently skip a rule).
+  Rule agents, dev100 val (280), memory from train, loss / agent cost per incident (escalations):
+
+  | agents | no history | trust only (6b) | past cases only | all three |
+  |---|---|---|---|---|
+  | honest | 3.28 / 9.89 (220) | 3.28 / 3.71 (28) | 3.28 / 2.78 (9) | 3.29 / 2.88 (2) |
+  | careless data-fast | 3.44 / 9.89 (220) | 3.29 / 3.71 (26) | 3.30 / 3.43 (22) | 3.29 / 2.87 (1) |
+  | shy (all 8) | 4.85 / 13.32 (280) | 3.39 / 4.51 (27) | 4.82 / 13.53 (280) | 3.39 / 4.45 (25) |
+
+  (6b's costs are +0.2 here: the history lookup is a call too.) Past cases do what trust cannot for honest
+  agents (a fast agent that looks in the right place no longer needs a senior: escalations 28 -> 2), and
+  nothing for shy agents, whose problem is trust, not knowledge. Precedent barely matters for rule agents,
+  whose fixes are exact (careless: 3.07 -> 2.87 cost); it is meant for LLM agents, whose fixes vary
+  (untested). "All three" costs slightly more than "past cases only" for honest agents because the record
+  was learned before agents had hints (it still remembers data-fast failing); learning as it goes removes
+  that lag: honest cost per quarter 2.47, 2.20, 2.50, 2.25 (6b: 4.34 -> 3.70; none: ~10) at the same loss,
+  shy loss 3.32, 3.27, 3.66, 3.39 (none: 4.69-4.97), cost 5.44 -> 3.30; labels still all consistent with
+  ground truth. Unseen faults (memory without D1, D4, I3, N3; their 80 val incidents): 0.28 "similar" past
+  incidents found per incident, no wrong action run, loss 3.42 -> 3.17, cost 10.15 -> 8.10 (the record
+  learned on other faults still routes better). Over real A2A (syn-7-00046): plan 99% sure (6b 97%, none
+  87%), 5 precedents listed, 3 calls (history, data-strong, policy).
 - **Consults go through the controller.** A specialist asks for a *capability*, never a named agent, so
   every delegation is visible to the router, budgeted and logged.
 - **Information barrier.** Agents never see `lab/`, Toxiproxy, orders-api `/admin`, or warehouse

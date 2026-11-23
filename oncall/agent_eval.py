@@ -22,6 +22,7 @@ from agents.reasoners.rules import RuleReasoner
 from agents.specialist import SpecialistAgent
 from agents.tools import EvidenceUnavailable, RecordedEvidence
 from controller import DOMAINS
+from controller.cards import SERVICE_ROLES
 from controller.checks import action_problems, evidence_text, identifiers
 from controller.contracts import IncidentReport
 from controller.plan import PlannedAction
@@ -73,7 +74,7 @@ def evaluate_agents(data_dir: Path, split: str | None = "val", reasoner: str = "
     evidence = RecordedEvidence.from_incidents_file(Path(data_dir) / "incidents.jsonl")
     brain = OllamaReasoner(model=model) if reasoner == "ollama" else RuleReasoner()
     agents = [SpecialistAgent(c, brain, evidence) for c in default_pool()
-              if c.routing_profile().role != "policy" and (not agent_ids or c.name in agent_ids)]
+              if c.routing_profile().role not in SERVICE_ROLES and (not agent_ids or c.name in agent_ids)]
 
     stats = defaultdict(lambda: {"own": 0, "solved": 0, "wrong_target": 0, "other": 0, "false_claims": 0,
                                  "unsure": 0, "n": 0, "tools": 0, "tokens": 0, "seconds": 0.0})

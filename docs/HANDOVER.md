@@ -17,7 +17,7 @@ JSON Schema: [`contract/remediation_plan.schema.json`](contract/remediation_plan
 
 ```json
 {
-  "schema_version": "1.2",
+  "schema_version": "1.3",
   "incident_id": "syn-7-00022",
   "created_at": "2026-11-20T10:16:02+00:00",
   "kind": "remediate",
@@ -35,6 +35,10 @@ JSON Schema: [`contract/remediation_plan.schema.json`](contract/remediation_plan
     {"label": "escalate to a human now", "actions": [], "p_fixed": 0.0, "expected_loss": 8.5, "chosen": false},
     {"label": "fix data (data-fast, data-strong)", "actions": ["stage 1: stop_session on warehouse ..."],
      "p_fixed": 0.85, "expected_loss": 5.78, "chosen": true}
+  ],
+  "precedents": [
+    {"incident_id": "syn-8-00412", "similarity": 1.0, "owner": "data",
+     "fix": ["stop_session on warehouse (pids)"], "verified_by": "executor"}
   ],
   "policy": {"approved": true, "needs_human": false,
              "reasons": ["low/medium risk, reversible or confident: may run automatically"]}
@@ -57,6 +61,10 @@ Rules for the executor:
 - Run the plan **stage by stage**: run every action of stage 1, re-check the platform's health, and run
   stage 2 only if the incident is still open, and so on. Stop as soon as it is resolved. (The optimizer
   orders stages so that the most likely fix per unit of risk goes first.)
+- `precedents` (since 1.3) lists similar past incidents from the history agent: their verified owner and
+  the kind of fix that resolved them (no identifiers: those belonged to the old incidents). They are
+  information for the operator, e.g. on an `approve` plan ("this fix resolved 5 incidents like this"),
+  never instructions to run anything. Empty when nothing similar was seen before.
 - Refuse any `intent` you do not implement, and report it as `rejected`.
 - `risk` is a floor set by the controller. The executor may treat an action as riskier, never as safer.
 - Every parameter name and type is fixed by `PARAM_SCHEMAS` in `controller/plan.py` (e.g. `stop_session`

@@ -9,7 +9,7 @@ and how to learn from verified outcomes. The research questions are about that r
 of the system exists so those decisions can be measured honestly.
 
 > **Status:** the controller (routing, A2A expert agents, cross-checking, the expected-loss optimizer,
-> the policy agent, human approval) and the experience memory with learned agent trust are built and tested (255 unit tests) on
+> the policy agent, human approval) and the experience memory, learned agent trust and the history agent are built and tested (255 unit tests) on
 > synthetic incidents, with rule-based and local-LLM agents (Ollama). The Docker sandbox is built and its
 > compose file validates, but it has not yet been run end to end (see [Calibration](#calibration)).
 
@@ -165,9 +165,9 @@ did), to compare `--may-abstain` with the default.
 wire format and converts every card to the SDK's protobuf `AgentCard` strictly, so the cards stay
 spec-compliant (`tests/test_a2a_server.py`).
 
-## Experience memory and learned trust (Blocks 6a-6b)
+## Experience memory, learned trust and the history agent (Blocks 6a-6c)
 
-After an incident is closed, `Controller.learn` stores one experience (`controller/memory.py`): the
+After an incident is closed, `Controller.remember` stores one experience (`controller/memory.py`): the
 incident's masked text and an embedding, what every agent proposed and every review said, the plan, and
 the **verified** outcome. That outcome is the executor's report (which stages ran, healthy again or not)
 plus, only when a person was involved, the operator's postmortem (owner, and whose fix was right). Each
@@ -199,15 +199,35 @@ python -m oncall eval-team --data data/synthetic/dev100 --model models/logreg100
     --calibration models/conformal.json --memory models/memory          # read only; memory from train
 python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.json \
     --calibration models/conformal.json --trust local --out models/memory-online   # learn as it goes
-python -m controller deliberate data/synthetic/dev/incidents.jsonl --model models/logreg100.json \
-    --calibration models/conformal.json --incident syn-7-00046 --memory models/memory   # over A2A
 ```
 
-Rule agents, dev100 val (280), memory from train (840): agent cost per incident 9.89 -> 3.51 with the
-same loss (3.28) for honest agents; a careless data-fast 3.44 -> 3.29 loss, 9.89 -> 3.51 cost; agents that
-find the fix but say "not mine" 4.85 -> 3.39 loss, 13.32 -> 4.31 cost (best possible 3.04). With 20% of
-operator answers wrong the loss holds and cost rises (more second looks); at 40% on every incident it
-breaks down (cost above the no-memory level). Details in docs/PLAN.md.
+Rule agents, dev100 val (280), memory from train (840), trust only: agent cost per incident 9.89 -> 3.71
+with the same loss (3.28) for honest agents; a careless data-fast 3.44 -> 3.29 loss; agents that find the
+fix but say "not mine" 4.85 -> 3.39 loss (best possible 3.04). With 20% of operator answers wrong the loss
+holds and cost rises (more second looks); at 40% on every incident it breaks down. Details in docs/PLAN.md.
+
+**The history agent (Block 6c).** The memory lives behind its own Agent Card and A2A server
+(`agents/history_agent.py`, role `history`, port 9361). The controller asks it once per incident, before
+routing: it answers with the past incidents at least 0.85 alike (verified owner, the fix that worked, what
+each agent said then) and every agent's verified record. The router uses the record; the experts see the
+past incidents (an LLM agent in its prompt, a rule agent as "look at these tools first"), shown as kinds of
+fix (`map_schema_fields on ingest (mapping)`), never with old ids; the optimizer counts precedent for each
+fix (how often this kind of fix resolved similar incidents of that domain, never which domain owns it);
+the plan lists the precedents (`RemediationPlan.precedents`, contract 1.3). After the incident, the
+controller sends the verified outcome back.
+
+```bash
+python -m agents serve data/synthetic/dev/incidents.jsonl --memory models/memory   # experts + policy + history
+python -m controller deliberate data/synthetic/dev/incidents.jsonl --model models/logreg100.json \
+    --calibration models/conformal.json --incident syn-7-00046                   # asks the history agent first
+python -m oncall eval-team --data data/synthetic/dev100 --model models/logreg100.json \
+    --calibration models/conformal.json --memory models/memory  [--trust off] [--no-past-cases] [--no-precedent]
+```
+
+`agents serve --memory` saves the store after every remembered incident. Rule agents, dev100 val: honest
+agent cost 9.89 (no history) -> 3.71 (trust) -> 2.88 (trust + past cases + precedent) at loss 3.28-3.29,
+escalations 220 -> 2; learning as it goes from an empty memory, 2.2-2.5 per incident. On fault types the
+memory never saw, it finds almost nothing similar (0.28 per incident) and nothing wrong runs.
 
 ## Layout
 

@@ -51,8 +51,9 @@ from dataclasses import dataclass, field
 
 from . import DOMAINS
 from .checks import CHECK, same_fix
+from .history import describe_fix, precedent
 from .orchestrator import Deliberation
-from .plan import INTENTS, PlannedAction, PlanOption, RemediationPlan
+from .plan import INTENTS, PlannedAction, PlanOption, Precedent, RemediationPlan
 from .policy import approval_reasons
 from .proposal import Proposal
 from .router import PRIORITY_VALUE, SuccessModel
@@ -88,6 +89,9 @@ class OptimizerPolicy:
     approval_base: float = 1.0  # per fix the human must check (vs human_base to diagnose from zero)
     approval_delay: float = 0.15  # waiting for the yes: a ready fix is answered faster than an incident
     approved_risk: float = 0.2  # share of a fix's risk left when a human checked it and watches it run
+    # Block 6c: on similar past incidents owned by the fix's domain, how often did this kind of fix resolve
+    # them vs another kind (controller/history.py precedent). Moves P(fix | domain) only, never P(domain).
+    precedent: bool = True
     max_stages: int = 3
     priority_value: dict[str, float] = field(default_factory=lambda: dict(PRIORITY_VALUE))
 
@@ -195,6 +199,12 @@ class Optimizer:
                         h.why.append(f"{r.reviewer} {r.stance} the fix")
                 wrong *= 1.0 - _sigmoid(q)
             raw[i] = 1.0 - wrong
+            if self.policy.precedent and d.history is not None and d.history.cases:
+                same, other, llr = precedent(d.history.cases, h.domain, h.actions)
+                if same or other:
+                    raw[i] = _sigmoid(_logit(raw[i]) + llr)
+                    h.why.append(f"history: of {same + other} similar past incidents owned by {h.domain}, this kind "
+                                 f"of fix resolved {same}, another kind {other}")
 
             def who(c: Proposal) -> str:
                 said = "claim" if c.verdict == "owner" else "guess: " + c.verdict
@@ -292,8 +302,11 @@ class Optimizer:
                                           max(d.routing.owner_probs, key=d.routing.owner_probs.get))
         team = [owner] + [x for x in dict.fromkeys(d.routing.team + [p.domain for p in d.proposals])
                           if x != owner and x in DOMAINS]
+        precedents = [Precedent(incident_id=c.incident_id, similarity=min(1.0, c.similarity), owner=c.owner,
+                                fix=describe_fix(c.fix_that_worked), verified_by=c.outcome)
+                      for c in (d.history.cases if d.history is not None else [])]
         common = dict(incident_id=d.incident_id, owner=owner, team=team, evidence=evidence[:12],
-                      options=options, expected_loss=options[best].expected_loss)
+                      options=options, expected_loss=options[best].expected_loss, precedents=precedents)
         if kind == "escalate":
             reason = ("no agent found a root cause with a usable fix" if not hyps else
                       "acting is riskier than asking a human: " + "; ".join(

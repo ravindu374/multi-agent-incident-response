@@ -10,12 +10,15 @@ A message without a valid InvestigationTask is *rejected*; a crash inside the ag
 task. Either way the caller gets a clear state, never a made-up proposal.
 
 The policy agent is served the same way: it takes a PolicyRequest (plan + priority) and answers with
-artifact "policy" (a PolicyDecision from controller/policy.py's deterministic rules).
+artifact "policy" (a PolicyDecision from controller/policy.py's deterministic rules). So is the history
+agent (Block 6c): a HistoryQuery -> artifact "history" (similar past incidents + the agents' verified
+record), a RememberRequest -> artifact "remembered".
 
 The reasoner is ordinary blocking code (the Ollama reasoner waits on HTTP), so it runs in a worker
 thread, and at most `maxConcurrency` (from the card) investigations run at once; extra requests wait.
 
-    python -m agents serve data/synthetic/dev/incidents.jsonl          # 9 investigators + the policy agent
+    python -m agents serve data/synthetic/dev/incidents.jsonl          # 9 investigators + policy + history
+    python -m agents serve data/synthetic/dev/incidents.jsonl --memory models/memory   # history remembers
 """
 from __future__ import annotations
 
@@ -33,18 +36,27 @@ from a2a.server.tasks import InMemoryTaskStore, TaskUpdater
 from a2a.types import TaskState
 from starlette.applications import Starlette
 
+from controller.history import HistoryQuery, HistoryReport, RememberAck
 from controller.plan import PolicyDecision
 from controller.proposal import Proposal, Review
-from controller.wire import (POLICY_ARTIFACT, PROPOSAL_ARTIFACT, REVIEW_ARTIFACT, read_policy_request, read_task,
-                             result_parts, to_sdk_card)
+from controller.wire import (HISTORY_ARTIFACT, POLICY_ARTIFACT, PROPOSAL_ARTIFACT, REMEMBERED_ARTIFACT,
+                             REVIEW_ARTIFACT, read_history_request, read_policy_request, read_task, result_parts,
+                             to_sdk_card)
 
+from .history_agent import HistoryAgent
 from .policy_agent import PolicyAgent
 from .specialist import SpecialistAgent
 
 log = logging.getLogger(__name__)
+Agent = SpecialistAgent | PolicyAgent | HistoryAgent
 
 
-def summary(r: Proposal | Review | PolicyDecision) -> str:
+def summary(r) -> str:
+    if isinstance(r, HistoryReport):
+        return (f"history: {len(r.cases)} similar past incident(s) (>= {r.min_similarity:.2f}) in a memory of "
+                f"{r.memory_size}" + (", with the agents' verified record" if r.trust else ""))
+    if isinstance(r, RememberAck):
+        return f"history: remembered {r.incident_id} (memory now {r.memory_size})"
     if isinstance(r, PolicyDecision):
         verdict = "approved" if r.approved else "not approved"
         return f"policy: {verdict}{', needs a human' if r.needs_human else ''} - {'; '.join(r.reasons)}"
@@ -116,21 +128,54 @@ class PolicyExecutor(AgentExecutor):
         await TaskUpdater(event_queue, context.task_id, context.context_id).cancel()
 
 
-def build_app(agent: SpecialistAgent | PolicyAgent) -> Starlette:
+class HistoryExecutor(AgentExecutor):
+    """Bridges A2A requests to HistoryAgent.lookup / remember (one store, so calls go one at a time)."""
+
+    def __init__(self, agent: HistoryAgent):
+        self.agent = agent
+        self.lock = asyncio.Lock()
+
+    async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
+        if context.current_task is None:
+            await event_queue.enqueue_event(new_task(context.task_id, context.context_id,
+                                                     TaskState.TASK_STATE_SUBMITTED, history=[context.message]))
+        updater = TaskUpdater(event_queue, context.task_id, context.context_id)
+        try:
+            request = read_history_request(context.message)
+        except ValueError as e:
+            await updater.reject(updater.new_agent_message([new_text_part(f"rejected: {e}")]))
+            return
+        lookup = isinstance(request, HistoryQuery)
+        try:
+            async with self.lock:
+                result = await asyncio.to_thread(self.agent.lookup if lookup else self.agent.remember, request)
+        except Exception as e:  # e.g. an experience that does not validate
+            log.exception("history agent failed")
+            await updater.failed(updater.new_agent_message([new_text_part(f"history error: {e!r}")]))
+            return
+        await updater.add_artifact(result_parts(result), name=HISTORY_ARTIFACT if lookup else REMEMBERED_ARTIFACT)
+        await updater.complete(updater.new_agent_message([new_text_part(summary(result))]))
+
+    async def cancel(self, context: RequestContext, event_queue: EventQueue) -> None:
+        await TaskUpdater(event_queue, context.task_id, context.context_id).cancel()
+
+
+def build_app(agent: Agent) -> Starlette:
     """A Starlette app serving one agent's card and its JSON-RPC endpoint (path taken from the card)."""
     card = to_sdk_card(agent.card)
-    executor = PolicyExecutor(agent) if isinstance(agent, PolicyAgent) else InvestigationExecutor(agent)
+    executor = (PolicyExecutor(agent) if isinstance(agent, PolicyAgent) else
+                HistoryExecutor(agent) if isinstance(agent, HistoryAgent) else InvestigationExecutor(agent))
     handler = DefaultRequestHandler(agent_executor=executor, task_store=InMemoryTaskStore(), agent_card=card)
     rpc_path = urlparse(agent.card.supported_interfaces[0].url).path or "/"
     return Starlette(routes=create_agent_card_routes(card) + create_jsonrpc_routes(handler, rpc_url=rpc_path))
 
 
-def port_of(agent: SpecialistAgent | PolicyAgent) -> int:
+def port_of(agent: Agent) -> int:
     url = urlparse(agent.card.supported_interfaces[0].url)
     return url.port or (443 if url.scheme == "https" else 80)
 
 
-async def serve(agents: list[SpecialistAgent | PolicyAgent], host: str = "127.0.0.1", log_level: str = "warning") -> None:
+async def serve(agents: list[Agent], host: str = "127.0.0.1", log_level: str = "warning") -> None:
     """Run several agent servers in one process, each on the port from its card. Ctrl+C stops all."""
     import uvicorn
 

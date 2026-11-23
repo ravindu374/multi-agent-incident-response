@@ -21,7 +21,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from .cards import AgentCard, RoutingProfile
+from .cards import SERVICE_ROLES, AgentCard, RoutingProfile
 
 HEARTBEAT_TTL_S = 30.0
 BREAKER_THRESHOLD = 3
@@ -123,8 +123,8 @@ class AgentRegistry:
         """Return why the agent may NOT take this task, or None if it may."""
         now = self._now(now)
         profile, state = self._profiles[agent_id], self._states[agent_id]
-        if profile.role == "policy":
-            return "policy agents validate plans; they do not investigate incidents"
+        if profile.role in SERVICE_ROLES:
+            return f"{profile.role} agents serve the controller; they do not investigate incidents"
         if domain is not None and domain not in profile.domains:
             return f"does not cover the {domain} domain"
         if intent is not None and intent not in profile.allowed_intents:
@@ -153,19 +153,26 @@ class AgentRegistry:
             if reason is None:
                 candidates.append(Candidate(agent_id=agent_id, card=self._cards[agent_id], profile=profile,
                                             state=self._states[agent_id]))
-            elif profile.role != "policy" and domain in profile.domains:
+            elif profile.role not in SERVICE_ROLES and domain in profile.domains:
                 excluded.append(Exclusion(agent_id=agent_id, reason=reason))
         return candidates, excluded
 
-    def policy_agents(self, now: float | None = None) -> list[str]:
-        return [a for a in self._order() if self._profiles[a].role == "policy"
+    def service_agents(self, role: str, now: float | None = None) -> list[str]:
+        """Live agents of a service role ("policy", "history")."""
+        return [a for a in self._order() if self._profiles[a].role == role
                 and self._states[a].status == "up"
                 and self._states[a].last_heartbeat is not None
                 and self._now(now) - self._states[a].last_heartbeat <= HEARTBEAT_TTL_S]
 
+    def policy_agents(self, now: float | None = None) -> list[str]:
+        return self.service_agents("policy", now)
+
+    def history_agents(self, now: float | None = None) -> list[str]:
+        return self.service_agents("history", now)
+
     # -- helpers -----------------------------------------------------------------------------------
     def _order(self) -> list[str]:
-        rank = {"specialist": 0, "generalist": 1, "policy": 2}
+        rank = {"specialist": 0, "generalist": 1, "policy": 2, "history": 3}
         tier = {"fast": 0, "strong": 1}
         return sorted(self._cards, key=lambda a: (rank[self._profiles[a].role], tier[self._profiles[a].tier], a))
 
