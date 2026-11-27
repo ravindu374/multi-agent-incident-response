@@ -153,7 +153,7 @@ for a best guess (agents' self-reported confidence is ignored), then the staged 
 stage + the chance it is still broken x the cost of calling a human), or "escalate to a human" if that is
 cheaper. If the best plan is less than 70% sure, a stronger agent gets a second look first. The policy
 agent (`controller/policy.py`, served over A2A) approves, refuses, or asks for a human, and the result is
-the `RemediationPlan` an MCP executor receives (`--json` prints it; see docs/HANDOVER.md). A plan the
+the `RemediationPlan` an MCP executor receives (`--json` prints it; `python -m controller schema` writes its JSON Schema). A plan the
 policy would not let run alone (high risk, irreversible while unsure, P1 while unsure) can instead go to
 a human for approval (plan kind `approve`: a person checks each stage before it runs), which is cheaper
 than a person starting from zero when the agents' fix is likely right; `--no-approval` turns that off.
@@ -204,7 +204,7 @@ python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.
 Rule agents, dev100 val (280), memory from train (840), trust only: agent cost per incident 9.89 -> 3.71
 with the same loss (3.28) for honest agents; a careless data-fast 3.44 -> 3.29 loss; agents that find the
 fix but say "not mine" 4.85 -> 3.39 loss (best possible 3.04). With 20% of operator answers wrong the loss
-holds and cost rises (more second looks); at 40% on every incident it breaks down. Details in docs/PLAN.md.
+holds and cost rises (more second looks); at 40% on every incident it breaks down.
 
 **The history agent (Block 6c).** The memory lives behind its own Agent Card and A2A server
 (`agents/history_agent.py`, role `history`, port 9361). The controller asks it once per incident, before
@@ -260,6 +260,4 @@ agents/                   expert agents: evidence tools, reasoners (rules / Olla
 agents/cards/             A2A Agent Cards of the default agent pool (python -m controller agents --export agents/cards)
 samples/                  hand-written incidents for checking controller intake (not training data)
 tests/                    unit tests for the pure logic
-docs/PLAN.md              phases, exit criteria, design decisions
-docs/HANDOVER.md          output contract for an executor (MCP / Microsoft Fabric) + Fabric mapping
 ```

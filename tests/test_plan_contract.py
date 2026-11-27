@@ -75,6 +75,8 @@ class SandboxMappingTest(unittest.TestCase):
 
 class SchemaFilesTest(unittest.TestCase):
     def test_published_schemas_are_up_to_date(self):
+        if not (ROOT / "docs" / "contract").is_dir():  # docs/ is kept locally, not in git
+            self.skipTest("docs/contract is not here (python -m controller schema writes it)")
         for name, text in schema_documents().items():
             with self.subTest(file=name):
                 published = (ROOT / "docs" / "contract" / name).read_text(encoding="utf-8")

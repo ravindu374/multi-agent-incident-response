@@ -18,3 +18,6 @@ models/
 # dbt artefacts if run locally
 sandbox/transform/dbt/target/
 sandbox/transform/dbt/logs/
+
+# design notes, executor contract, figures and the project guide: kept on this PC only, not published
+docs/
