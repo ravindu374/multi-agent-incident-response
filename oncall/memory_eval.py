@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import random
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -26,7 +27,7 @@ from controller.memory import ExperienceStore
 
 from .evaluate import load_dataset
 from .feedback import is_right, simulated_feedback
-from .team_eval import build_controller, plan_loss
+from .team_eval import build_controller, plan_loss, progress_line
 
 
 def _in_time_order(pairs):
@@ -38,7 +39,8 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
                  limit: int | None = None, seed: int = 0, approval: bool = True,
                  careless: list[str] | None = None, shy: list[str] | None = None, trust: str = "off",
                  skip_faults: list[str] | None = None,
-                 windows: int = 4, store: ExperienceStore | None = None) -> tuple[ExperienceStore, dict]:
+                 windows: int = 4, store: ExperienceStore | None = None,
+                 progress: bool = False) -> tuple[ExperienceStore, dict]:
     """trust "off": only remember (Block 6a). "local" / "global": learn as you go (Block 6b): every incident
     is decided with the memory of the incidents before it, then remembered; `curve` shows loss and agent cost
     over `windows` equal parts of the run, so a falling curve is learning."""
@@ -54,8 +56,11 @@ def build_memory(data_dir: Path, split: str = "train", model: Path | None = None
     labels = {lab: Counter() for lab in ("right", "wrong", "unknown")}  # label -> {truly right: n, ...}
     owners, sources, plans = Counter(), Counter(), Counter()
     per_incident: list[tuple[float, float]] = []  # (realized loss, agent cost units)
-    for report, truth in pairs:
+    started = time.monotonic()
+    for i, (report, truth) in enumerate(pairs, 1):
         resolution = asyncio.run(controller.handle(report))
+        if progress:
+            progress_line(i, len(pairs), report.incident_id, started, resolution.plan.kind)
         seen = evidence_text(evidence.bundles.get(report.incident_id), report)
         per_incident.append((plan_loss(resolution.plan, truth, seen, controller.optimizer,
                                        resolution.deliberation.routing.priority),

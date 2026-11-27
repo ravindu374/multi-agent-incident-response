@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>a2a-oncall: Project Guide</title>
+<style>
+  @page { size: A4; margin: 15mm 15mm 16mm 15mm;
+          @bottom-center { content: counter(page); font-family: "Segoe UI", Arial, sans-serif; font-size: 8.5pt; color: #333; } }
+  @page :first { @bottom-center { content: none; } }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Segoe UI", Arial, Helvetica, sans-serif; font-size: 10.2pt; line-height: 1.45; color: #111;
+         background: #fff; margin: 0; }
+  h1, h2, h3 { font-weight: 700; color: #000; break-after: avoid; }
+  h1.ch { font-size: 19pt; border-top: 2.5px solid #000; border-bottom: 1px solid #000; padding: 6px 0 5px;
+          margin: 0 0 12px; break-before: page; }
+  h1.ch .num { font-weight: 400; margin-right: 8px; }
+  h2 { font-size: 13pt; border-bottom: 1px solid #000; padding-bottom: 2px; margin: 18px 0 8px; }
+  h3 { font-size: 11pt; margin: 14px 0 5px; }
+  p { margin: 5px 0 7px; }
+  ul, ol { margin: 4px 0 8px; padding-left: 20px; }
+  li { margin: 2px 0; }
+  code, .mono { font-family: Consolas, "Courier New", monospace; font-size: 9pt; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.4pt; line-height: 1.35; border: 1px solid #000;
+        padding: 7px 9px; margin: 6px 0 10px; white-space: pre-wrap; break-inside: avoid; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 10px; font-size: 9.4pt; break-inside: auto; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; }
+  th { text-align: left; font-weight: 700; border-top: 1.4px solid #000; border-bottom: 1.1px solid #000;
+       padding: 4px 6px; vertical-align: bottom; }
+  td { border-bottom: 0.5px solid #888; padding: 3.5px 6px; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 1.4px solid #000; }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  .box { border: 1px solid #000; padding: 7px 10px; margin: 9px 0; break-inside: avoid; }
+  .box > .tag { font-weight: 700; display: block; margin-bottom: 2px; }
+  .box p:last-child, .box ul:last-child { margin-bottom: 0; }
+  .analogy { border: 1.2px dashed #000; }
+  .warn { border: 3px double #000; }
+  .example { border: 1.5px solid #000; }
+  .si, .si * { font-family: "Nirmala UI", "Iskoola Pota", sans-serif; }
+  .si { border: none; border-left: 4px solid #000; padding: 3px 0 3px 11px; margin: 12px 0; line-height: 1.6;
+        break-inside: avoid; }
+  .si .tag { font-weight: 700; }
+  td.si, th.si { border-left: none; padding: 3.5px 6px; margin: 0; line-height: 1.45; }
+  .small { font-size: 8.8pt; }
+  .muted { color: #333; }
+  .center { text-align: center; }
+  figure { margin: 10px 0; break-inside: avoid; }
+  figure img { width: 100%; display: block; }
+  figcaption { font-size: 8.8pt; margin-top: 4px; color: #222; }
+  /* Figure 1 is wide: it gets a page of its own, turned sideways */
+  .figpage { height: 262mm; position: relative; break-before: page; break-after: page; }
+  .figrot { position: absolute; left: 50%; top: 50%; width: 246mm; transform: translate(-50%, -50%) rotate(-90deg); }
+  .figrot img { width: 246mm; display: block; }
+  .figrot .cap { font-size: 8.6pt; margin-top: 2mm; }
+  /* cover */
+  .cover { height: 262mm; display: flex; flex-direction: column; justify-content: center; }
+  .cover .big { font-size: 40pt; font-weight: 700; letter-spacing: -0.5px; border-bottom: 3px solid #000;
+                padding-bottom: 6px; margin-bottom: 10px; }
+  .cover .sub { font-size: 16pt; margin-bottom: 14px; }
+  .cover .meta { font-size: 10.5pt; line-height: 1.7; margin-top: 18px; }
+  .toc { columns: 1; font-size: 10pt; }
+  .toc ol { padding-left: 18px; }
+  .toc li { margin: 3px 0; }
+  .toc ul { list-style: none; padding-left: 14px; font-size: 9.2pt; color: #222; margin: 1px 0 4px; }
+  .keep { break-inside: avoid; }
+  .step { display: inline-block; border: 1.3px solid #000; border-radius: 50%; min-width: 17px; height: 17px;
+          line-height: 16px; text-align: center; font-size: 8.5pt; font-weight: 700; margin-right: 4px; }
+</style>
+<style>
+  /* ---------- colour theme (layers match the figures: controller blue, agents violet, memory teal,
+                sandbox green, lab rose) ---------- */
+  :root { --blue: #1b5fb8; --blue-d: #16407a; --violet: #5b3fd0; --teal: #0f7470; --green: #1f7a35;
+          --rose: #a8326a; --grey: #5f6b7a; --ink: #1f2933; }
+  body { color: var(--ink); }
+  h1.ch { border-top: none; border-bottom: 3px solid var(--blue); color: var(--blue-d); padding: 0 0 6px; }
+  h1.ch .num { display: inline-block; background: linear-gradient(135deg, var(--blue), var(--violet)); color: #fff;
+               border-radius: 8px; padding: 0 11px; margin-right: 10px; font-weight: 700; }
+  h2 { color: var(--blue-d); border-bottom: 1.5px solid #c9d8ee; }
+  h3 { color: #2b3a4a; }
+  th { background: #eaf1fb; border-top: none; border-bottom: 2px solid var(--blue); color: #16324f; }
+  td { border-bottom: 1px solid #e3e8ee; }
+  tbody tr:nth-child(even) td { background: #f9fbfd; }
+  tbody tr:last-child td { border-bottom: 2px solid #c9d8ee; }
+  td code, li code, p code { background: #f1f4f8; border-radius: 3px; padding: 0 3px; }
+  pre { background: #f6f8fa; border: 1px solid #d5dce4; border-radius: 6px; }
+  .box { border: none; border-left: 5px solid var(--grey); border-radius: 6px; background: #f5f7fa; padding: 8px 12px; }
+  .analogy { background: #eef4fd; border-left-color: var(--blue); }
+  .analogy .tag { color: var(--blue); }
+  .warn { background: #fff5e0; border-left-color: #e0a000; }
+  .warn .tag { color: #8a5a00; }
+  .example { background: #eef8f1; border-left-color: var(--green); }
+  .example .tag { color: var(--green); }
+  .si { background: #f5f0fc; border-left: 5px solid #7b3fb0; border-radius: 6px; padding: 6px 12px; }
+  .si .tag { color: #6a2c9e; }
+  td.si, th.si { background: transparent; border-left: none; border-radius: 0; }
+  tbody tr:nth-child(even) td.si { background: #f9fbfd; }
+  .step { border: none; background: var(--blue); color: #fff; }
+  .step.l { background: var(--rose); }
+  .step.h { background: var(--teal); }
+  .step.a { background: var(--violet); }
+  figure { border: 1px solid #e1e7ef; border-radius: 8px; padding: 8px 8px 6px; }
+  figcaption b { color: var(--blue-d); }
+  .toc li > b { color: var(--blue-d); }
+  .cover .big { background: linear-gradient(120deg, var(--blue), var(--violet)); color: #fff; border-bottom: none;
+                border-radius: 12px; padding: 16px 20px 18px; }
+  .cover .sub { color: var(--blue-d); font-weight: 600; }
+  .keychips span { display: inline-block; border-radius: 10px; padding: 1px 9px; margin: 2px 4px 2px 0;
+                   font-size: 9pt; color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ COVER -->
+<section class="cover">
+  <div class="big">a2a-oncall</div>
+  <div class="sub">Project Guide: Multi-Agent Incident Response over A2A</div>
+  <p style="font-size:11.5pt; max-width: 150mm;">A plain-language guide to come back to later: what the project is, how one incident
+  flows through it, what every file does, what has been measured, and what is still open.</p>
+  <div class="meta">
+    <b>Ravindu Lakshan</b><br>
+    Repository: <span class="mono">github.com/ravindu374/multi-agent-incident-response</span>
+    &nbsp;·&nbsp; local folder <span class="mono">D:\VScode\a2a-oncall</span><br>
+    Snapshot: <b>27 November 2026</b> &nbsp;·&nbsp; last commit 24 Nov 2026 (Block 6d) &nbsp;·&nbsp; 281 automated tests
+  </div>
+  <p class="keychips" style="margin-top: 14px;">Colours used in every figure:
+    <span style="background:#1f7a35">sandbox</span><span style="background:#a8326a">lab</span><span
+    style="background:#1b5fb8">controller</span><span style="background:#5b3fd0">agents</span><span
+    style="background:#0f7470">memory</span><span style="background:#5f6b7a">executor</span>
+    &nbsp;·&nbsp; teams: <span style="background:#257de0">network</span><span style="background:#f47230">data</span><span
+    style="background:#00a383">infra</span><span style="background:#d99500">security</span></p>
+  <div class="box" style="margin-top: 12px;">
+    <span class="tag">How to read this guide</span>
+    <ul>
+      <li><b>Five minutes?</b> Read Chapter 1 (the idea) and the first table of Chapter 2 (what is done).</li>
+      <li><b>Getting back into the code?</b> Chapter 3 follows one real incident through every step, with the real
+        output; Chapter 4 says what each file does; Chapter 7 lists the commands.</li>
+      <li><b>Preparing for an interview?</b> Chapter 5 explains each idea simply; Chapter 6 explains the CV bullets
+        and what <i>not</i> to over-claim.</li>
+      <li>Every chapter ends with a short <b>Sinhala summary</b> (thick rule on the left). Chapter 8 is a glossary
+        with Sinhala meanings.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ CONTENTS -->
+<h1 class="ch">Contents</h1>
+<div class="toc">
+<ol>
+  <li><b>The project in one page</b>
+    <ul><li>the idea · the hospital picture · the practice company · the 14 faults · the research question</li></ul></li>
+  <li><b>Where the project stands (27 Nov 2026)</b>
+    <ul><li>what is built · results so far · what is not done · next steps · the 12-week plan</li></ul></li>
+  <li><b>How one incident flows</b>
+    <ul><li>Figure 5 (the whole flow) · steps 1–10 with incident syn-7-00046 · Figure 6 (with vs without memory) · Figure 7 (the learning loop)</li></ul></li>
+  <li><b>The files and their jobs</b>
+    <ul><li>top level · docs · sandbox · lab (oncall) · controller · agents · data, models, samples · tests</li></ul></li>
+  <li><b>The key ideas, explained simply</b>
+    <ul><li>A2A and Agent Cards · information barrier · synthetic data and incident ids · TF-IDF · logistic regression ·
+      conformal prediction · fast vs strong agents · owner / not mine / unsure · cross-check, escalation, second look ·
+      expected loss and staged plans · policy agent · LLM guardrails · memory, trust and history · PostgreSQL ·
+      robustness tests</li></ul></li>
+  <li><b>The project on the CV</b>
+    <ul><li>the four bullets · what each one claims · interview cautions · the conformal bullet in Sinhala</li></ul></li>
+  <li><b>How to run things</b>
+    <ul><li>set-up rules · tests · data and models · evaluations · agents over A2A · PostgreSQL · the Docker sandbox</li></ul></li>
+  <li><b>Glossary (English → plain meaning → සිංහල)</b></li>
+</ol>
+</div>
+
+<!-- ============================================================ 1 -->
+<h1 class="ch"><span class="num">1</span>The project in one page</h1>
+
+<div class="box example">
+  <span class="tag">In one sentence</span>
+  <p>When something breaks on a small data platform, a <b>controller</b> decides which <b>AI expert agents</b> to ask,
+  collects their diagnoses over the <b>A2A protocol</b>, merges them into the <b>safest repair plan</b>, gets the plan
+  checked by a <b>policy agent</b>, hands it to another team to carry out, and <b>learns from the verified outcome</b>.</p>
+</div>
+
+<figure>
+  <img src="../figures/fig-overview.svg" alt="Figure 1: the big picture">
+  <figcaption><b>Figure 1.</b> The big picture. The numbers are the step numbers used in the rest of the guide; H is the
+  history agent (H1 = look up first, H2 = remember the outcome).</figcaption>
+</figure>
+
+<h2>The hospital picture</h2>
+<p>The whole project maps onto an emergency department. Keep this table in mind; the rest of the guide uses it.</p>
+<table>
+  <thead><tr><th>In a hospital</th><th>In the project</th><th>Step</th><th>Main file</th></tr></thead>
+  <tbody>
+    <tr><td>A patient arrives</td><td>An <b>incident</b> (alerts + logs + evidence)</td><td>2</td><td><code>oncall/incidents.py</code></td></tr>
+    <tr><td>The receptionist reads the notes</td><td><b>Intake</b>: clean the logs, pick out the signals</td><td>3</td><td><code>controller/intake.py</code></td></tr>
+    <tr><td>The triage nurse guesses the department</td><td><b>Classifier</b>: chance it is network / data / infra / security</td><td>4</td><td><code>controller/learned.py</code></td></tr>
+    <tr><td>Deciding how many doctors to call</td><td><b>Router</b> with conformal prediction</td><td>5</td><td><code>controller/router.py</code></td></tr>
+    <tr><td>Checking the medical records first</td><td><b>History agent</b>: similar past incidents, each agent's track record</td><td>H1</td><td><code>agents/history_agent.py</code></td></tr>
+    <tr><td>Doctors examine the patient</td><td><b>Expert agents</b> investigate their own domain</td><td>6–7</td><td><code>agents/specialist.py</code></td></tr>
+    <tr><td>Second opinions</td><td><b>Cross-check</b>: agents review each other's claims</td><td>6</td><td><code>controller/orchestrator.py</code></td></tr>
+    <tr><td>The head doctor picks the treatment plan</td><td><b>Optimizer</b>: the plan with the lowest expected damage</td><td>8</td><td><code>controller/optimizer.py</code></td></tr>
+    <tr><td>The safety officer signs it off</td><td><b>Policy agent</b>: approve, ask a human, or refuse</td><td>9</td><td><code>agents/policy_agent.py</code></td></tr>
+    <tr><td>Another team gives the treatment</td><td>The <b>executor</b> (MCP / Microsoft Fabric team): out of scope</td><td>10</td><td><code>controller/plan.py</code></td></tr>
+    <tr><td>The outcome is written in the records</td><td><b>Remember</b> the verified outcome</td><td>H2</td><td><code>controller/memory.py</code></td></tr>
+  </tbody>
+</table>
+
+<h2>The practice company</h2>
+<p>The platform being looked after is a small, pretend <b>food-delivery analytics company</b>, built as a Docker sandbox
+that a lab can break on purpose:</p>
+<figure>
+  <img src="../figures/fig-company.svg" alt="Figure 2: the practice company and the faults">
+  <figcaption><b>Figure 2.</b> The practice company (sandbox) and where each fault hits. Badge colour = owner team.</figcaption>
+</figure>
+<p>It is framed as a miniature <b>Microsoft Fabric</b>-style data platform; <code>docs/HANDOVER.md</code> maps each part
+onto Fabric items. Four teams (domains) can own a problem: <b>network</b>, <b>data</b>, <b>infra</b> and <b>security</b>.</p>
+
+<h2>The 14 faults the lab can cause</h2>
+<p>The <b>owner</b> is the team whose fix removes the cause, not the team where the symptom shows up. Several faults share
+a symptom on purpose (for example, "ingest timed out" can be N1, D3 or I1), which is what makes choosing the right team hard.</p>
+<table class="small">
+  <thead><tr><th>Id</th><th>Owner</th><th>What breaks</th></tr></thead>
+  <tbody>
+    <tr><td>N1</td><td>network</td><td>Heavy latency on the primary network path to the orders API</td></tr>
+    <tr><td>N2</td><td>network</td><td>Connections on the primary path to the warehouse are reset</td></tr>
+    <tr><td>N3</td><td>network</td><td>Orders API hostname on the primary path no longer resolves</td></tr>
+    <tr><td>D1</td><td>data</td><td>Source renamed <code>amount</code> to <code>total_amount</code> (our worked example, Chapter 3)</td></tr>
+    <tr><td>D2</td><td>data</td><td>Source sends a batch with null amounts and re-sent orders</td></tr>
+    <tr><td>D3</td><td>data</td><td>Ad-hoc maintenance session holds an exclusive lock on <code>raw.orders</code></td></tr>
+    <tr><td>D4</td><td>data</td><td>Reporting worker leaks connections until the warehouse runs out</td></tr>
+    <tr><td>D5</td><td>data</td><td>Analyst notebook runs CPU-heavy queries against the warehouse</td></tr>
+    <tr><td>I1</td><td>infra</td><td>Unknown process burns the warehouse container's CPU</td></tr>
+    <tr><td>I2</td><td>infra</td><td>Transform container's memory limit is too small for dbt</td></tr>
+    <tr><td>I3</td><td>infra</td><td>Ingest worker's spool disk is full</td></tr>
+    <tr><td>I4</td><td>infra</td><td>Bad config deploy crash-loops the dashboard API</td></tr>
+    <tr><td>S1</td><td>security</td><td>Unapproved client bulk-exports raw orders with the ETL credential</td></tr>
+    <tr><td>S2</td><td>security</td><td>Password-guessing client hammers the dashboard login</td></tr>
+  </tbody>
+</table>
+
+<h2>The research question</h2>
+<p>The parts on their own (agents, routing, learning from feedback) are known ideas. The new value comes from <b>putting
+them together in a setting where outcomes can be checked</b>, and from evaluating them honestly. The three contributions:</p>
+<table>
+  <thead><tr><th>Id</th><th>Contribution</th><th>In plain words</th></tr></thead>
+  <tbody>
+    <tr><td>C1</td><td>Cost-aware conformal delegation</td><td>Decide <i>how many</i> agents to involve, with a guarantee that the right owner is among them.</td></tr>
+    <tr><td>C2</td><td>Open-pool routing from Agent Cards</td><td>Agents can join, slow down or fail without retraining anything.</td></tr>
+    <tr><td>C3</td><td>Learning from verified outcomes only</td><td>Trust agents by what was <i>proven</i> to work, and stay robust when some feedback is wrong.</td></tr>
+  </tbody>
+</table>
+
+<div class="si">
+  <span class="tag">සිංහලෙන් කෙටියෙන්</span><br>
+  මේ project එක රෝහලක හදිසි අංශයක් වගේ. Data platform එකේ මොකක් හරි කැඩුණම (incident එකක්), <b>controller</b> එක
+  ඒක කියවලා, කුමන team එකේ ප්‍රශ්නයක්ද කියලා අනුමාන කරලා, හරි <b>AI expert agents</b> ලාට A2A protocol එකෙන් කතා කරනවා.
+  ඔවුන්ගේ යෝජනා එකතු කරලා ආරක්ෂිතම repair plan එක තෝරනවා. Policy agent එක ඒක check කරනවා. ඊට පස්සේ වෙනත් team එකක් ඒ fix එක
+  කරනවා. අන්තිමට ඇත්තටම වැඩ කළේ මොකක්ද කියලා මතක තියාගෙන, ඊළඟ වතාවේ ඉක්මනින් සහ ලාභෙට තීරණය කරනවා.
+  කැඩෙන්න පුළුවන් දේවල් (faults) 14ක් තියෙනවා: network, data, infra, security කියන teams හතරට බෙදිලා.
+</div>
+
+<!-- ============================================================ 2 -->
+<h1 class="ch"><span class="num">2</span>Where the project stands (27 Nov 2026)</h1>
+
+<h2>What is built</h2>
+<p>The controller was built <b>block by block</b>, one block per step, each explained before the next began.</p>
+<figure>
+  <img src="../figures/fig-timeline.svg" alt="Figure 3: build timeline">
+  <figcaption><b>Figure 3.</b> How the build went. Everything is done except running the Docker sandbox.</figcaption>
+</figure>
+<table>
+  <thead><tr><th>Block</th><th>What it does</th><th>Main files</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>Phase 1</td><td>Docker sandbox + fault lab (inject, detect, fix, undo)</td><td><code>sandbox/</code>, <code>oncall/</code></td><td><b>Code written, never run</b></td></tr>
+    <tr><td>Data</td><td>Synthetic incident generator</td><td><code>oncall/synth/</code></td><td>Done</td></tr>
+    <tr><td>1</td><td>Intake: incident → features</td><td><code>intake.py</code></td><td>Done</td></tr>
+    <tr><td>2a / 2b</td><td>Rules classifier (baseline) / learned classifier</td><td><code>classifier.py</code>, <code>learned.py</code></td><td>Done</td></tr>
+    <tr><td>3</td><td>Agent Cards + registry (who exists, who is up)</td><td><code>cards.py</code>, <code>pool.py</code>, <code>registry.py</code></td><td>Done</td></tr>
+    <tr><td>4</td><td>Conformal router (C1)</td><td><code>conformal.py</code>, <code>router.py</code></td><td>Done</td></tr>
+    <tr><td>5a</td><td>Expert agents (rules + Ollama LLM) as real A2A servers</td><td><code>agents/</code>, <code>wire.py</code></td><td>Done</td></tr>
+    <tr><td>5b</td><td>Orchestrator: pointers, escalation, cross-check</td><td><code>orchestrator.py</code></td><td>Done</td></tr>
+    <tr><td>5c</td><td>Optimizer + policy agent + "a human approves" plans</td><td><code>optimizer.py</code>, <code>policy.py</code></td><td>Done</td></tr>
+    <tr><td>6a</td><td>Experience memory (verified outcomes, similarity search)</td><td><code>memory.py</code></td><td>Done</td></tr>
+    <tr><td>6b</td><td>Trust agents by their verified record (C3)</td><td><code>trust.py</code>, <code>reliability.py</code></td><td>Done</td></tr>
+    <tr><td>6c</td><td>History agent over A2A; past cases for experts; precedent in the plan</td><td><code>history.py</code>, <code>history_agent.py</code></td><td>Done</td></tr>
+    <tr><td>6d</td><td>The memory stored in PostgreSQL</td><td><code>memory_pg.py</code>, <code>memory_schema.sql</code></td><td>Done</td></tr>
+  </tbody>
+</table>
+
+<h2>Results so far</h2>
+<div class="box warn">
+  <span class="tag">Read this before quoting any number</span>
+  <ul>
+    <li>Every number is on <b>synthetic</b> incidents (made by the generator), not on the Docker sandbox.</li>
+    <li>Most runs use <b>rule-based agents</b>, which share knowledge with the generator. The evaluation itself prints:
+      <i>"this shows the rounds work, not a result."</i></li>
+    <li>Numbers come from different dates and design versions. Re-run before putting a number anywhere.</li>
+  </ul>
+</div>
+<table>
+  <thead><tr><th>What was measured</th><th>Result</th><th>What it means</th><th>Date</th></tr></thead>
+  <tbody>
+    <tr><td>Classifier, top-1 accuracy (seed 7 val, 84 incidents)</td><td>learned <b>91.7%</b> vs rules 88.1%</td><td>Picks the owner team first 9 times in 10. Small sample: a bigger set is needed before claiming a difference.</td><td>19 Nov</td></tr>
+    <tr><td>Conformal team choice (dev100 val, Mondrian, α = 0.05)</td><td><b>100%</b> owner coverage at <b>1.12</b> teams per incident</td><td>The right team was always called, usually alone. Fixed thresholds also hit 100% (1.14 teams), so the gain is the <i>guarantee</i>, not savings.</td><td>20 Nov</td></tr>
+    <tr><td>One over-claiming ("careless") agent in the pool</td><td>optimizer loss <b>4.37</b> vs 5.74 for "trust the first claim"</td><td>The optimizer resists a loud, wrong agent.</td><td>20 Nov</td></tr>
+    <tr><td>First LLM run (llama3, 10 incidents)</td><td>loss 5.62 vs top-claim 6.17, human 8.35, perfect 5.17</td><td>Still helps, but the LLM agents were weak: no claim on 40% of incidents, and their reviews were close to random.</td><td>20 Nov</td></tr>
+    <tr><td>Memory + trust (dev100 val, memory = 840 train incidents)</td><td>agent cost <b>9.89 → 2.88</b> per incident; escalations <b>220 → 2</b>; loss unchanged (3.28)</td><td>Remembering who was right cuts the agent work by about 71% with no loss in plan quality.</td><td>23–24 Nov</td></tr>
+    <tr><td>"Shy" agents (find the fix, then say "not mine")</td><td>loss 4.85 → 3.39 with trust</td><td>The track record rescues agents that under-claim, as the small LLMs did.</td><td>22 Nov</td></tr>
+    <tr><td>Wrong operator feedback</td><td>20% wrong: quality holds (cost rises); 40% wrong: breaks</td><td>The C3 robustness target (20%) is met.</td><td>22 Nov</td></tr>
+    <tr><td>Four fault types left out of the memory</td><td>few cases shown (0.28 per incident), no wrong actions</td><td>An unseen kind of incident does not trick the memory into a wrong fix.</td><td>23 Nov</td></tr>
+    <tr><td>PostgreSQL vs files</td><td>identical (loss 3.2902, cost 2.8786)</td><td>The database version changes storage only, not decisions.</td><td>24 Nov</td></tr>
+    <tr><td>Worked example syn-7-00046 (Chapter 3)</td><td>5 calls / 10.2 units → 3 calls / 4.4 units; confidence 0.87 → 0.99</td><td>The same incident with and without memory, run on 27 Nov.</td><td>27 Nov</td></tr>
+    <tr><td>Automated tests</td><td><b>281</b> collected</td><td>8 are skipped by design (7 need a throwaway test database).</td><td>27 Nov</td></tr>
+  </tbody>
+</table>
+<p class="small muted"><b>Loss</b> = a score for expected damage (lower is better): the cost of a wrong or late fix, scaled by
+priority, plus the risk of each action plus the agents' cost. <b>Cost units</b>: one fast-agent call = 1, strong = 4, generalist = 6,
+policy and history agents = 0.2 each. Both are explained in Chapter 5.</p>
+<figure>
+  <img src="../figures/fig-memory-effect.svg" alt="Figure 4: what the memory changed">
+  <figcaption><b>Figure 4.</b> The headline result of Block 6: much less agent work, almost no escalations, the same plan
+  quality (synthetic data, rule agents).</figcaption>
+</figure>
+
+<h2>What is not done yet</h2>
+<ul>
+  <li><b>The Docker sandbox has never run.</b> Docker was not started on the laptop; it is meant for a GitHub Codespace.
+    The plan's first exit test (<code>python -m oncall validate</code> on all 14 faults) is still open, and final results must come from it.</li>
+  <li><b>The LLM agents are the weak link.</b> llama3 and qwen2.5:3b over-claim, answer "unsure" or "not mine" on clear evidence,
+    and give near-random reviews. The guardrails (Chapter 5.12) stop bad fixes, but they cannot make a weak model find good ones.</li>
+  <li><b>Open design items:</b> choosing the second-look agent by value of information; a coordinator Agent Card; the sandbox should
+    also write each incident's evidence bundle and fix targets.</li>
+  <li><b>Work in progress on 27 Nov:</b> uncommitted edits in <code>oncall/cli.py</code>, <code>oncall/memory_eval.py</code>,
+    <code>oncall/team_eval.py</code>.</li>
+</ul>
+
+<h2>Next steps (suggested order)</h2>
+<ol>
+  <li>Run <code>eval-team</code> with the real LLM agents (fast = qwen2.5:3b, strong = llama3), with and without memory.</li>
+  <li>Start the sandbox in a Codespace and pass <code>oncall validate</code> on all 14 faults.</li>
+  <li>Capture sandbox incidents and use them as the final test set (synthetic data is for development only).</li>
+  <li>Value-of-information second look; then ablations, statistics and the write-up.</li>
+</ol>
+
+<h2>Against the 12-week plan (<code>docs/PLAN.md</code>)</h2>
+<table>
+  <thead><tr><th>Weeks</th><th>Phase</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>1–2</td><td>Sandbox + fault lab</td><td>Code written; exit test not run</td></tr>
+    <tr><td>3–4</td><td>A2A specialists, Agent Cards, registry</td><td>Done (synthetic evidence)</td></tr>
+    <tr><td>5–6</td><td>Dataset + baselines</td><td>Synthetic dataset and rules baseline done; sandbox dataset open</td></tr>
+    <tr><td>7–8</td><td>Router, consults, ownership transfer, validator</td><td>Done</td></tr>
+    <tr><td>9–10</td><td>Learning from verified outcomes, join/fail/degrade experiments</td><td>Memory + trust done; join/degrade experiments open</td></tr>
+    <tr><td>11–12</td><td>End-to-end runs, ablations, write-up, demo</td><td>Not started</td></tr>
+  </tbody>
+</table>
+
+<div class="si">
+  <span class="tag">සිංහලෙන් කෙටියෙන්</span><br>
+  Controller එකේ "මොළය" (Blocks 1–6d) සම්පූර්ණයෙන්ම හදලා ඉවරයි: incident කියවීම, team එක අනුමාන කිරීම, conformal router එක,
+  A2A agents, cross-check, optimizer, policy agent, සහ memory එක (PostgreSQL එකෙනුත්). Tests 281ක් තියෙනවා.<br>
+  හැබැයි <b>හැම ප්‍රතිඵලයක්ම synthetic data</b> (computer එකෙන් හදපු incidents) මත, බොහෝ වෙලාවට rule agents එක්ක. Docker sandbox එක තාම
+  run කරලා නැහැ. LLM agents (llama3, qwen) තාම දුර්වලයි. ඊළඟ පියවර: LLM agents එක්ක eval එක, ඊට පස්සේ Codespace එකේ sandbox එක run කිරීම.
+  වැදගත්ම ප්‍රතිඵලය: memory එක නිසා agent වැඩ <b>9.89 → 2.88</b> දක්වා අඩු වුණා, plan එකේ ගුණාත්මකභාවය අඩු නොවී.
+</div>
+
+<!-- ============================================================ 3 -->
+<h1 class="ch"><span class="num">3</span>How one incident flows</h1>
+<p><b>Figure 5</b> on the next page shows the whole system on one page, turned sideways (turn the page clockwise to read it;
+it is vector, so it stays sharp when zoomed on screen; the source is <code>docs/figures/make_flow_figure.py</code>). Each row is one folder, the numbered circles
+1–10 are the order of the steps, and H1/H2 are the history agent's two moments: <b>look up first</b> and <b>remember after</b>.
+After the figure, the same steps are followed with one real incident, using the real output of the code.</p>
+<table class="small">
+  <thead><tr><th>Arrow or box</th><th>Means</th></tr></thead>
+  <tbody>
+    <tr><td>row colour</td><td>the folder: <b style="color:#1f7a35">sandbox</b>, <b style="color:#a8326a">lab</b>,
+      <b style="color:#1b5fb8">controller</b>, <b style="color:#5b3fd0">agents</b>; <b style="color:#0f7470">teal</b> = memory / history</td></tr>
+    <tr><td>black arrow</td><td>the main flow</td></tr>
+    <tr><td>rose dashed arrow</td><td>lab only: practice incidents feeding in, or the lab scoring the plan against the answer key</td></tr>
+    <tr><td>violet two-headed arrow</td><td>a request and its reply over A2A</td></tr>
+    <tr><td>teal arrow</td><td>the history agent: look up first (H1), remember after (H2)</td></tr>
+    <tr><td>card with a coloured header / thin card</td><td>a step / a helper file</td></tr>
+    <tr><td>grey dashed column (right)</td><td>the executor: another team (MCP / Microsoft Fabric), out of scope</td></tr>
+    <tr><td>red dashed line</td><td>the information barrier: the controller never sees the answer key</td></tr>
+  </tbody>
+</table>
+
+<div class="figpage">
+  <div class="figrot">
+    <img src="../figures/system-flow.svg" alt="Figure 1: how one incident flows through the project files">
+  </div>
+</div>
+
+<h2>Following one incident: syn-7-00046</h2>
+<p>This is a <b>D1</b> incident: the source system renamed the field <code>amount</code> to <code>total_amount</code>.
+Everything below was produced by the code on 27 Nov 2026 (learned classifier <code>models/logreg100.json</code>, calibration
+<code>models/conformal.json</code>, rule-based agents).</p>
+
+<table>
+  <thead><tr><th style="width:9%">Step</th><th style="width:31%">What happens</th><th>In our example</th></tr></thead>
+  <tbody>
+    <tr><td><span class="step l">1</span>Break</td><td>The lab causes a fault and records the true answer (<code>faults.py</code>).</td>
+      <td>D1: the source renames <code>amount</code> → <code>total_amount</code>. The answer key says: owner <b>data</b>, correct fix
+      <code>map_schema_fields</code> with <code>total_amount</code>.</td></tr>
+    <tr><td><span class="step l">2</span>Spot</td><td>Health checks fail; an incident opens (<code>oracle.py</code>, <code>incidents.py</code>).</td>
+      <td>Detected after 27 s. Alert <code>IngestJobFailing</code>: <i>"ingest failed 2 runs in a row; SchemaMismatch: source payload
+      missing required field(s) ['amount']; got [..., 'total_amount']"</i>.</td></tr>
+    <tr><td><span class="step">3</span>Read</td><td>Intake cleans the text and extracts signals (<code>intake.py</code>).</td>
+      <td>components = <code>ingest</code>; signals = <code>schema_mismatch</code> × 3.</td></tr>
+    <tr><td><span class="step">4</span>Guess</td><td>The classifier gives each team a probability (<code>learned.py</code>).</td>
+      <td><b>data 0.96</b>, network 0.02, infra 0.01, security 0.00.</td></tr>
+    <tr><td><span class="step">5</span>Team</td><td>Conformal cut-offs decide how many teams; the router picks the agent (<code>conformal.py</code>, <code>router.py</code>).</td>
+      <td>Cut-offs: network ≥ 0.91, data ≥ 0.36, infra ≥ 0.42, security ≥ 0.45 (pooled). Only data passes → team = [data], "confident".
+      Priority P3. Without memory the router picks <b>data-fast</b> (cheapest: utility 4.0; backups data-strong, generalist).</td></tr>
+    <tr><td><span class="step h">H1</span>Look up</td><td>With memory: the history agent returns similar past incidents and each agent's verified record.</td>
+      <td>5 past incidents with similarity 1.00, all fixed by <code>map_schema_fields</code>. data-fast's record on such incidents is
+      poor, so the router picks <b>data-strong</b> straight away.</td></tr>
+    <tr><td><span class="step">6</span>Ask</td><td>The orchestrator sends A2A tasks (<code>orchestrator.py</code>, <code>wire.py</code>).</td>
+      <td>One investigation task to the chosen data agent.</td></tr>
+    <tr><td><span class="step a">7</span>Investigate</td><td>Each agent uses only its own read-only tools (<code>specialist.py</code>, <code>tools.py</code>).</td>
+      <td>data-strong: <b>OWNER</b>, confidence 0.90, <i>"schema drift: the source renamed 'amount' to 'total_amount'"</i>; fix
+      <code>map_schema_fields</code> on ingest, mapping {total_amount: amount}.</td></tr>
+    <tr><td><span class="step">8</span>Plan</td><td>The optimizer prices every option (<code>optimizer.py</code>).</td>
+      <td>"escalate to a human now" loss 6.40; <b>"a human approves: fix data"</b> P(fixed) 0.89, loss <b>4.38</b> ← chosen.</td></tr>
+    <tr><td><span class="step a">9</span>Safety</td><td>The policy agent checks the plan (<code>policy_agent.py</code>, rules in <code>policy.py</code>).</td>
+      <td><b>Approved, needs a human</b>: <code>map_schema_fields</code> is high risk because it changes what the data means. So the
+      plan is kind <b>"approve"</b>: a person says yes before stage 1 runs.</td></tr>
+    <tr><td><span class="step">10</span>Hand over</td><td>The RemediationPlan goes to the executor (<code>plan.py</code>).</td>
+      <td>In the lab, the intent <code>map_schema_fields</code> becomes the sandbox action <code>set_field_mapping</code>; an
+      ExecutionReport comes back.</td></tr>
+    <tr><td><span class="step h">H2</span>Remember</td><td>The verified outcome becomes an Experience in the memory (<code>memory.py</code>).</td>
+      <td>data-strong's claim is marked <b>right</b>; next time the trust in it grows a little more.</td></tr>
+  </tbody>
+</table>
+
+<h2>The same incident with and without memory</h2>
+<p>Without memory the controller does not know yet that data-fast (which looks at only two tools) is weak on schema
+problems. Here is what really happened in each run (data-fast's wrong guess was <code>stop_session</code> on pid 6434):</p>
+<figure>
+  <img src="../figures/fig-sequence.svg" alt="Figure 6: the worked example as two sequence diagrams">
+  <figcaption><b>Figure 6.</b> The same incident without and with memory, as sequence diagrams: time runs downwards; each
+  vertical dashed line is one participant.</figcaption>
+</figure>
+<p>The final fix is the same, but with memory it costs <b>less than half</b>, needs no escalation, and the plan is surer.
+This is the learning loop in Figure 7.</p>
+
+<figure>
+  <img src="../figures/learning-loop.svg" alt="Figure 2: the learning loop">
+  <figcaption><b>Figure 7.</b> The learning loop (Block 6). A new incident is looked up first (H1); the decision uses the
+  agents' track record, the past cases and the precedent; after the executor reports back, the verified outcome is remembered
+  (H2) and is there for the next incident.</figcaption>
+</figure>
+
+<div class="si">
+  <span class="tag">සිංහලෙන් කෙටියෙන්</span><br>
+  <b>syn-7-00046</b> කියන්නේ D1 incident එකක්: source එක <code>amount</code> field එකේ නම <code>total_amount</code> කියලා වෙනස් කළා.
+  Classifier එක data team එකට 96%ක් දුන්නා, ඉතින් team එක data විතරයි. Memory නැතුව, ලාභ data-fast agent එක මුලින් ගියා, ඒත්
+  ඒකට හේතුව හොයාගන්න බැරි වුණා (වැරදි අනුමානයකුත් දුන්නා). ඊට පස්සේ data-strong agent එක හරි හේතුව හොයාගත්තා: calls 5යි, cost 10.2යි.<br>
+  Memory එක්ක, history agent එක "මේ වගේ incidents 5ක් කලින් තිබුණා, data-fast ඒවට දුර්වලයි" කියලා කිව්වා. ඉතින් කෙලින්ම data-strong ගියා:
+  calls 3යි, cost 4.4යි, confidence 0.99යි. Fix එක ඉහළ අවදානම් (data වල අර්ථය වෙනස් වෙන නිසා) නිසා, run කරන්න කලින් මිනිසෙක් "ඔව්" කියන්න ඕන.
+</div>
+
+<!-- ============================================================ 4 -->
+<h1 class="ch"><span class="num">4</span>The files and their jobs</h1>
+<p>About 160 files in eight folders (not counting <code>.venv</code> and caches). The rule that holds everything together:
+<b><code>controller/</code> may never import <code>oncall/</code></b>, so the controller can never see the answer key.
+A test enforces it.</p>
+<table class="small">
+  <thead><tr><th>Folder</th><th>In the hospital picture</th><th>What it really is</th></tr></thead>
+  <tbody>
+    <tr><td><code>sandbox/</code></td><td>a practice hospital</td><td>the pretend data company, in Docker</td></tr>
+    <tr><td><code>oncall/</code></td><td>the exam board with the answer key</td><td>breaks things, detects incidents, makes practice data, scores the controller</td></tr>
+    <tr><td><code>controller/</code></td><td>the head doctor's brain</td><td>reads incidents, picks agents, builds the plan, remembers</td></tr>
+    <tr><td><code>agents/</code></td><td>the doctors (and the records office)</td><td>expert agents, the policy agent, the history agent, each an A2A server</td></tr>
+    <tr><td><code>data/</code>, <code>models/</code>, <code>samples/</code></td><td>practice patients, trained knowledge</td><td>generated incidents, trained models, the saved memory</td></tr>
+    <tr><td><code>tests/</code></td><td>quality checks</td><td>281 automatic tests</td></tr>
+  </tbody>
+</table>
+
+<h2>Top level and docs</h2>
+<table class="small">
+  <thead><tr><th>File</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><code>README.md</code></td><td>Overview, fault list, quick-start commands, folder layout.</td></tr>
+    <tr><td><code>pyproject.toml</code></td><td>Declares the package and its libraries (extras: <code>dev</code>, <code>agents</code>, <code>db</code>); Python ≥ 3.10.</td></tr>
+    <tr><td><code>docker-compose.yml</code></td><td>Starts the sandbox: warehouse, orders-api, toxiproxy, ingest, transform, metrics-api, postgres-exporter, prometheus, toolbox.</td></tr>
+    <tr><td><code>.devcontainer/devcontainer.json</code></td><td>GitHub Codespace set-up (4 CPUs, 8 GB, Docker inside) so the heavy lab runs off the laptop.</td></tr>
+    <tr><td><code>LICENSE</code>, <code>.gitignore</code>, <code>.gitattributes</code></td><td>MIT licence and git housekeeping.</td></tr>
+    <tr><td><code>docs/PLAN.md</code></td><td>Research question, 12-week phases, settled design decisions, data strategy.</td></tr>
+    <tr><td><code>docs/HANDOVER.md</code></td><td>For the executor team: what a plan looks like, what to send back, how intents map onto Fabric.</td></tr>
+    <tr><td><code>docs/contract/*.schema.json</code></td><td>Machine-readable shapes of RemediationPlan and ExecutionReport (schema 1.3).</td></tr>
+    <tr><td><code>docs/figures/</code></td><td>All nine figures (SVG + PNG) and <code>make_figures.py</code>, which draws them.</td></tr>
+    <tr><td><code>docs/guide/</code></td><td>This guide's source (<code>project-guide.html</code>) and <code>build.sh</code>.</td></tr>
+  </tbody>
+</table>
+
+<h2><code>sandbox/</code>: the practice company (Docker)</h2>
+<table class="small">
+  <thead><tr><th>File(s)</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><code>orders_api/app.py</code></td><td>Fake food-delivery orders system (the source).</td></tr>
+    <tr><td><code>ingest/ingest.py</code>, <code>ingest/schema.py</code></td><td>Pulls new orders into the warehouse every 15 s; checks each order's shape (D1 breaks this).</td></tr>
+    <tr><td><code>warehouse/init.sql</code></td><td>Creates the PostgreSQL database: tables, users, permissions.</td></tr>
+    <tr><td><code>warehouse/backup-compress.sh</code></td><td>A fake "backup" script that secretly burns CPU (I1).</td></tr>
+    <tr><td><code>transform/runner.py</code> + <code>transform/dbt/</code></td><td>Runs dbt every 30 s: staging (<code>stg_orders.sql</code>) → revenue table (<code>orders_mart.sql</code>), with data tests.</td></tr>
+    <tr><td><code>metrics_api/app.py</code></td><td>Dashboard backend: analyst login + revenue figures.</td></tr>
+    <tr><td><code>toxiproxy/toxiproxy.json</code></td><td>A switchboard on the orders→ingest and ingest→warehouse lines; the lab adds delay or cuts the line.</td></tr>
+    <tr><td><code>prometheus/prometheus.yml</code></td><td>Monitoring: which health numbers to collect.</td></tr>
+    <tr><td><code>toolbox/*.py</code></td><td>"Bad actor" scripts: <code>bi_sync.py</code> (S1), <code>web_client.py</code> (S2), <code>report_worker.py</code> (D4), <code>notebook_job.py</code> (D5).</td></tr>
+    <tr><td><code>*/Dockerfile</code>, <code>requirements.txt</code></td><td>How each container is built and what it needs.</td></tr>
+    <tr><td><code>runtime/defaults/*.json</code></td><td>The services' live settings; faults and fixes edit the live copy.</td></tr>
+  </tbody>
+</table>
+
+<h2><code>oncall/</code>: the lab and exam board</h2>
+<table class="small">
+  <thead><tr><th>File</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><code>cli.py</code></td><td>Every <code>python -m oncall …</code> command (Chapter 7).</td></tr>
+    <tr><td><code>settings.py</code>, <code>compose.py</code>, <code>toxiproxy.py</code>, <code>runtime_config.py</code></td><td>Where the sandbox lives and its health targets; the only door to Docker; remote control for Toxiproxy; read/edit the live settings.</td></tr>
+    <tr><td><code>faults.py</code></td><td>The 14 faults: how to cause, the true owner, how to undo.</td></tr>
+    <tr><td><code>actions.py</code>, <code>intents.py</code></td><td>The 13 allowed sandbox fixes; how the controller's 11 intents map onto them.</td></tr>
+    <tr><td><code>oracle.py</code>, <code>incidents.py</code></td><td>Health checker; turns failing checks into incidents.</td></tr>
+    <tr><td><code>episodes.py</code></td><td>One fire drill: break → detect → fix → recover → undo (Phase 1 exit test).</td></tr>
+    <tr><td><code>lab.py</code></td><td>The answer-key ledger, kept away from agents.</td></tr>
+    <tr><td><code>synth/</code> (<code>world</code>, <code>evidence</code>, <code>scenarios</code>, <code>noise</code>, <code>simulate</code>, <code>generate</code>)</td><td>The practice-incident generator: random setting, healthy baseline, one recipe per fault, red herrings, simulation through the real health checks, writing the files.</td></tr>
+    <tr><td><code>train.py</code>, <code>evaluate.py</code>, <code>route_eval.py</code></td><td>Train the classifier; mark it; calibrate the router (C1).</td></tr>
+    <tr><td><code>agent_eval.py</code>, <code>team_eval.py</code></td><td>Mark each agent alone; mark the whole controller end to end.</td></tr>
+    <tr><td><code>feedback.py</code></td><td>Simulated verified feedback (what the executor and an operator would report), with optional noise.</td></tr>
+    <tr><td><code>memory_eval.py</code></td><td>Fill the memory in time order and check it (Block 6a).</td></tr>
+  </tbody>
+</table>
+
+<h2><code>controller/</code>: the brain (in flow order)</h2>
+<table class="small">
+  <thead><tr><th>File</th><th>Step</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><code>contracts.py</code></td><td>in</td><td>Shape of an IncidentReport: alerts and evidence only, never the answer.</td></tr>
+    <tr><td><code>intake.py</code></td><td>3</td><td>Clean logs, hide changing numbers/IPs, extract signals and components.</td></tr>
+    <tr><td><code>evidence.py</code></td><td>3</td><td>Splits deeper evidence into one slice per domain for the experts.</td></tr>
+    <tr><td><code>classifier.py</code>, <code>learned.py</code></td><td>4</td><td>Rules baseline + team choice; the learned TF-IDF + logistic-regression classifier.</td></tr>
+    <tr><td><code>conformal.py</code></td><td>5</td><td>Conformal cut-offs (LAC and Mondrian).</td></tr>
+    <tr><td><code>cards.py</code>, <code>pool.py</code>, <code>registry.py</code></td><td>5</td><td>Agent Cards; the default pool (11 cards); live status, breaker, capacity, permissions.</td></tr>
+    <tr><td><code>router.py</code></td><td>5</td><td>Main agent, helpers and backups by utility (value × chance of owning × chance of success − cost − latency).</td></tr>
+    <tr><td><code>proposal.py</code>, <code>wire.py</code></td><td>6</td><td>The message forms (task, Proposal, Review); packing them for A2A.</td></tr>
+    <tr><td><code>orchestrator.py</code></td><td>6</td><td>Ask in parallel, follow pointers, escalate, cross-check, second look.</td></tr>
+    <tr><td><code>checks.py</code></td><td>7</td><td>Is a proposed action runnable, and grounded in evidence?</td></tr>
+    <tr><td><code>optimizer.py</code></td><td>8</td><td>One staged plan with the lowest expected loss.</td></tr>
+    <tr><td><code>policy.py</code></td><td>9</td><td>The safety rules the policy agent applies.</td></tr>
+    <tr><td><code>plan.py</code></td><td>10</td><td>The output contract: RemediationPlan, ExecutionReport, the 11 intents.</td></tr>
+    <tr><td><code>history.py</code></td><td>H1/H2</td><td>What the controller and the history agent say to each other; precedent.</td></tr>
+    <tr><td><code>memory.py</code></td><td>H2</td><td>Experience records, labels from verified feedback, similarity search, saving to disk.</td></tr>
+    <tr><td><code>trust.py</code>, <code>reliability.py</code></td><td>H1</td><td>Each agent's verified record → how much to trust it.</td></tr>
+    <tr><td><code>memory_pg.py</code>, <code>memory_schema.sql</code>, <code>memory_sql.py</code></td><td>H2</td><td>The memory in PostgreSQL: tables, views, export to SQL.</td></tr>
+    <tr><td><code>pipeline.py</code></td><td>all</td><td>The whole journey for one incident: H1 → 5 → 6 → 8 → 9 → plan; <code>remember</code> = H2.</td></tr>
+    <tr><td><code>__main__.py</code></td><td>—</td><td>Commands: intake, classify, schema, agents, route, deliberate, memory.</td></tr>
+  </tbody>
+</table>
+
+<h2><code>agents/</code>: the doctors</h2>
+<table class="small">
+  <thead><tr><th>File</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><code>specialist.py</code></td><td>One expert: card + reasoner + tools; drops fixes that fail the checks.</td></tr>
+    <tr><td><code>tools.py</code></td><td>Read-only evidence tools; an agent may use only the tools on its own card.</td></tr>
+    <tr><td><code>reasoners/rules.py</code></td><td>No-AI reasoning: the checks an engineer would make (the stand-in that works today).</td></tr>
+    <tr><td><code>reasoners/ollama.py</code></td><td>LLM reasoning through local Ollama, forced into a fixed JSON shape at temperature 0.</td></tr>
+    <tr><td><code>reasoners/careless.py</code>, <code>reasoners/shy.py</code></td><td>Test agents: one over-claims, one under-claims (robustness experiments only).</td></tr>
+    <tr><td><code>server.py</code>, <code>local.py</code></td><td>Each agent as a real A2A web server; the same agents in-process for fast evaluation.</td></tr>
+    <tr><td><code>policy_agent.py</code></td><td>The safety officer, as its own A2A agent.</td></tr>
+    <tr><td><code>history_agent.py</code></td><td>The records office: looks up and remembers, as its own A2A agent.</td></tr>
+    <tr><td><code>cards/*.json</code> (11)</td><td>network / data / infra / security × fast / strong, generalist, policy, history.</td></tr>
+    <tr><td><code>__main__.py</code></td><td>Commands: investigate, serve, ask.</td></tr>
+  </tbody>
+</table>
+
+<h2><code>data/</code>, <code>models/</code>, <code>samples/</code>, <code>tests/</code></h2>
+<table class="small">
+  <thead><tr><th>Path</th><th>What it holds</th></tr></thead>
+  <tbody>
+    <tr><td><code>data/synthetic/dev/</code></td><td>420 incidents (30 per fault), seed 7.</td></tr>
+    <tr><td><code>data/synthetic/dev100/</code></td><td>1,400 incidents (100 per fault), seed 8; split 840 train / 280 val / 280 test.</td></tr>
+    <tr><td>…<code>/incidents.jsonl</code>, <code>ground_truth.jsonl</code>, <code>manifest.json</code></td><td>What the controller sees; the answer key; how the set was made.</td></tr>
+    <tr><td><code>models/logreg.json</code>, <code>logreg100.json</code></td><td>The classifier trained on dev / dev100.</td></tr>
+    <tr><td><code>models/conformal.json</code></td><td>The router's calibrated cut-offs.</td></tr>
+    <tr><td><code>models/memory/</code> (+ <code>-careless</code>, <code>-shy</code>)</td><td>Saved experience memories (840 train incidents): <code>experiences.jsonl</code>, <code>vectors.npy</code>, <code>store.json</code>.</td></tr>
+    <tr><td><code>models/memory.sql</code></td><td>The same memory exported as SQL for PostgreSQL.</td></tr>
+    <tr><td><code>samples/</code></td><td>14 hand-written incidents + what intake should extract (checking only, never training).</td></tr>
+    <tr><td><code>tests/</code> (23 files)</td><td>Lab, controller, agents, orchestration, optimizer, memory, trust, history, PostgreSQL; plus <code>test_controller_isolation.py</code>, which fails if the brain imports the answer key.</td></tr>
+  </tbody>
+</table>
+
+<div class="si">
+  <span class="tag">සිංහලෙන් කෙටියෙන්</span><br>
+  <code>sandbox/</code> = පුහුණු සමාගම (Docker). <code>oncall/</code> = විභාග මණ්ඩලය: දේවල් කඩනවා, incidents හොයනවා, පුහුණු data හදනවා,
+  උත්තර පත්‍රය (answer key) තියාගෙන ලකුණු දෙනවා. <code>controller/</code> = මොළය. <code>agents/</code> = වෛද්‍යවරු, ආරක්ෂක නිලධාරියා
+  (policy agent) සහ වාර්තා කාර්යාලය (history agent). <code>data/</code> සහ <code>models/</code> වල පුහුණු incidents, train කරපු models
+  සහ memory එක තියෙනවා. වැදගත්ම නීතිය: <b>controller එකට කවදාවත් answer key එක බලන්න බැහැ</b>. ඒක test එකකින් බලාගන්නවා.
+</div>
+
+<!-- ============================================================ 5 -->
+<h1 class="ch"><span class="num">5</span>The key ideas, explained simply</h1>
+
+<h2>5.1 A2A protocol and Agent Cards</h2>
+<p><b>A2A</b> (Agent-to-Agent) is an open standard for AI agents to send each other tasks and results over HTTP. The project
+uses the official <code>a2a-sdk</code> (version 1.3.1). Each agent publishes an <b>Agent Card</b> at
+<code>/.well-known/agent-card.json</code>: its name, skills, tools, address and, through a project extension, its cost, speed
+and allowed actions.</p>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+An Agent Card is a <b>business card</b>. The controller is a <b>switchboard operator</b>: agents never phone each other
+directly; every task goes through the controller, so each one is visible, budgeted and logged ("hub-and-spoke").</div>
+<p class="si">A2A = AI agents එකිනෙකාට වැඩ යවන සම්මත ක්‍රමයක්. Agent Card = agent ගේ visiting card එක. Agents කෙලින්ම කතා කරන්නේ නැහැ, හැමදේම controller (switchboard) හරහා.</p>
+
+<h2>5.2 The information barrier</h2>
+<p>The lab knows the true cause of every incident; the controller must never see it, or the results would be fake. So the
+<code>controller</code> package may not import <code>oncall</code>, and a test fails if it does. Only alerts, logs and evidence cross
+the barrier (and trained model files, which were trained on the separate train split).</p>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+The exam board never hands the answer sheet to the student. It only marks the paper afterwards.</div>
+<p class="si">Exam board එක උත්තර පත්‍රය ළමයාට දෙන්නේ නැහැ, පස්සේ ලකුණු විතරක් දෙනවා. Controller එකත් answer key එක දකින්නේ නැහැ.</p>
+
+<h2>5.3 Synthetic data, seeds, splits and incident ids</h2>
+<table class="small">
+  <thead><tr><th>Term</th><th>Plain meaning</th><th>Project value</th></tr></thead>
+  <tbody>
+    <tr><td>Synthetic</td><td>Made by the generator, not by the real sandbox</td><td><code>oncall/synth/</code>; final results must come from the sandbox</td></tr>
+    <tr><td>Seed</td><td>The recipe number for the randomness: same seed, same incidents</td><td>dev = seed 7, dev100 = seed 8</td></tr>
+    <tr><td>Split</td><td>Train (learn from), val (check while building), test (final, touched once)</td><td>dev100: 840 / 280 / 280</td></tr>
+    <tr><td>Red herring</td><td>A harmless clue that points the wrong way</td><td>e.g. one benign failed login on a data incident</td></tr>
+  </tbody>
+</table>
+<p><b>Reading an incident id</b> such as <code>syn-7-00046</code>: <code>syn</code> = synthetic; <code>7</code> = seed 7 (the dev set);
+<code>00046</code> = incident number 46. Incidents are shuffled before numbering, so the number says nothing about the fault and
+the controller cannot cheat from the id. Its answer key: fault D1, owner data, fix <code>map_schema_fields</code>, noise = one
+benign failed login + missing "recent changes" evidence, split = val.</p>
+<p class="si">syn = synthetic, 7 = seed එක (දත්ත හදන "recipe අංකය"), 00046 = incident අංක 46. අංක දෙන්නේ shuffle කළාට පස්සේ, ඉතින් id එකෙන් fault එක හොයන්න බැහැ.</p>
+
+<h2>5.4 TF-IDF: turning words into numbers</h2>
+<p><b>TF-IDF = Term Frequency × Inverse Document Frequency.</b> Each word gets a score: high when it appears in <i>this</i>
+incident <b>and</b> is rare in the others.</p>
+<table class="small">
+  <thead><tr><th>Word (illustrative counts over 420 incidents)</th><th>In how many incidents</th><th>IDF = log(420 ÷ count)</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>failed</code></td><td>~400</td><td>≈ 0.05</td><td>tells nothing: almost every incident has failures</td></tr>
+    <tr><td><code>SchemaMismatch</code></td><td>~30</td><td>≈ 2.64</td><td>a strong clue for a schema (data) problem</td></tr>
+  </tbody>
+</table>
+<p>In <code>learned.py</code> the text is masked first (so <code>pid 6079</code> and <code>pid 5121</code> look the same), single words and
+word pairs are both scored, repeats are damped (a word ten times does not count ten times), and every incident is put on the
+same scale. Why not an LLM here? TF-IDF runs on a laptop CPU in milliseconds, is free, and shows exactly which words drove the decision.</p>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+An automatic <b>highlighter</b>: you do not highlight "the" or "said" in an article, only the unusual words that tell what it is about.</div>
+<p class="si">TF = වචනය මේ incident එකේ කී පාරක් තියෙනවද. IDF = අනිත් incidents වල ඒ වචනය කොච්චර දුර්ලභද. හැම තැනම තියෙන "failed" ට ලකුණු ≈ 0; දුර්ලභ "SchemaMismatch" ට ලකුණු වැඩියි. Automatic highlighter එකක් වගේ.</p>
+
+<h2>5.5 Logistic regression</h2>
+<p>A simple model that gives each TF-IDF feature a <b>weight per team</b>, adds them up, and turns the totals into
+probabilities that sum to 1 (softmax). For syn-7-00046: data 0.96, network 0.02, infra 0.01, security 0.00. Trained with Adam
+on the train split; a second "involved" head says which teams are involved at all.</p>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+A judge with a score sheet: every clue adds or subtracts points for each team, and the points are turned into percentages.</div>
+<p class="si">හැම clue එකකටම team එකකට ලකුණු එකතු හෝ අඩු කරලා, අන්තිමට ඒ ලකුණු ප්‍රතිශත (probabilities) බවට හරවන සරල model එකක්.</p>
+
+<h2>5.6 Conformal prediction: how many teams to call</h2>
+<p>Calling one team is cheap but risky; calling every team is safe but wasteful. A hand-picked threshold ("call every team above
+30%") has no reason behind it and no guarantee. <b>Conformal prediction</b> uses past incidents with known answers (the
+calibration set) to measure how often and how badly the model is wrong, and sets the cut-off so that the <b>true owner is in the
+chosen team at least 95% of the time</b> (α = 0.05). Confident model → one team; unsure model → two or three.</p>
+<ul>
+  <li><b>LAC</b>: one cut-off for all teams. <b>Mondrian</b> (the default): a separate cut-off per team, so each team gets the guarantee, not just the average.</li>
+  <li>A team with too few calibration incidents is <b>pooled</b> (uses the shared cut-off): security had 18, one short of the 19 needed at α = 0.05.</li>
+  <li>The top guess is always in the team (a bug once let a 1%-security agent become the main agent; fixed).</li>
+</ul>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+Fishing with a net: a big net always catches the fish but costs more. Conformal prediction picks the <b>smallest net that still
+catches the fish 95 times in 100</b>: a small net in clear water (a sure model), a bigger one in muddy water.</div>
+<figure>
+  <img src="../figures/fig-conformal.svg" alt="Figure 8: conformal prediction on two real incidents">
+  <figcaption><b>Figure 8.</b> Conformal prediction on two real incidents: a sure one gets one team, an unsure one gets two,
+  and the true owner is on the team both times.</figcaption>
+</figure>
+<p><b>Result</b> (dev100 val): 100% owner coverage at 1.12 teams per incident. <b>Be honest about it:</b> the guarantee is 95%;
+100% is what this data gave; it holds only if new incidents look like past ones; and fixed thresholds also reached 100% here
+(1.14 teams). The value is the <b>guarantee</b>, not savings.</p>
+<p class="si">Conformal prediction = "100න් 95 පාරක්වත් හරි team එක ඇතුළේ ඉන්න" විදිහට, පරණ incidents වලින් ගණනය කරපු cut-off එකක්. Model එක sure නම් team 1යි, sure නැත්නම් 2–3යි. මාළු අල්ලන පොඩිම දැල වගේ.</p>
+
+<h2>5.7 Fast vs strong agents, and the router's utility</h2>
+<p>Each domain has a <b>fast</b> agent (qwen2.5:3b, cost 1, looks at only its first two tools) and a <b>strong</b> one (llama3, cost 4,
+looks at everything), plus one <b>generalist</b> (cost 6). Two tiers make "which agent?" a real decision, not the same as "which team?".
+The router scores each candidate:</p>
+<p class="center"><b>utility = value(priority) × P(owner) × P(success) − cost − 0.05 × latency</b></p>
+<p>Priority values: P1 = 30, P2 = 15, P3 = 8. Example: data-fast on syn-7-00046 = 8 × 0.96 × 0.68 − 1 − 0.05 × 6 ≈ <b>4.0</b>. Without
+memory P(success) is a planning guess (fast 0.70, strong 0.88, generalist 0.78, minus a difficulty penalty); with memory it comes
+from the agent's verified record (5.13).</p>
+<p class="si">හැම team එකකටම ඉක්මන්, ලාභ "fast" agent කෙනෙක් (cost 1) සහ ගැඹුරින් බලන, මිල අධික "strong" agent කෙනෙක් (cost 4) ඉන්නවා. Router එක utility එක (වටිනාකම × සාර්ථක වෙන්න ඇති ඉඩ − වියදම) වැඩිම agent ව තෝරනවා.</p>
+
+<h2>5.8 The three answers: owner, not mine, unsure</h2>
+<table class="small">
+  <thead><tr><th>Answer</th><th>Meaning</th><th>Hospital version</th></tr></thead>
+  <tbody>
+    <tr><td><code>owner</code></td><td>"It is my domain's fault, and here is the fix."</td><td>"A heart problem. I'll treat it."</td></tr>
+    <tr><td><code>not_mine</code></td><td>"My domain is healthy; the cause is elsewhere." May add a <b>pointer</b>: "try network".</td><td>"Not my department; send them to cardiology."</td></tr>
+    <tr><td><code>unsure</code></td><td>"I can't tell."</td><td>"I need more tests."</td></tr>
+  </tbody>
+</table>
+<p>What the controller does with "not mine": <b>(1)</b> follows the pointer and asks that domain's best agent, at most one extra
+domain per incident (ownership transfer); <b>(2)</b> lowers that domain's score: fast agent −0.3, generalist −0.7, strong agent −1.0
+(a senior's "no" counts more); <b>(3)</b> keeps its fix only as a <i>best guess</i>, worth 0.3 of a real claim (an "unsure"
+fix is worth 0.6, an owner claim 1.0). In the current design every chosen agent must hand in its best-guess fix, even when it says
+"not mine": that is how data-fast's wrong guess appeared in Chapter 3, and why it barely moved the plan.</p>
+<p class="si">"Not mine" = "මගේ අංශය හොඳින්, ප්‍රශ්නය වෙන තැනක". Pointer එකක් තිබුණොත් controller එක ඒ team එකට කතා කරනවා. Strong agent කෙනෙක්ගේ "not mine" එකට වැඩි බරක් (−1.0), fast agent කෙනෙක්ගේ එකට අඩු බරක් (−0.3). එක්ක දෙන fix එක "best guess" එකක් විතරයි: claim එකක 0.3ක වටිනාකමක්.</p>
+
+<h2>5.9 Cross-check, escalation and the second look</h2>
+<ul>
+  <li><b>Cross-check (round 2)</b>: every claim goes to the other agents that took part; each answers <i>supports</i>, <i>contradicts</i> or <i>cannot tell</i> from its own evidence.</li>
+  <li><b>Escalation</b>: if nobody claims ownership, the strongest agent not yet asked looks at the most likely domain (cheap agents first, a senior only when they find nothing).</li>
+  <li><b>Second look</b>: if the best plan is less than <b>70%</b> sure, a stronger agent is asked and the plan is rebuilt (at most one extra escalation per incident).</li>
+</ul>
+<p class="si">Cross-check = අනිත් agents ලාගෙන් දෙවැනි මතයක්. කවුරුත් "මගේ" කියන්නේ නැත්නම් strong agent කෙනෙක්ට කතා කරනවා. Plan එක 70%ට අඩුවෙන් sure නම් තවත් strong agent කෙනෙක්ගෙන් "දෙවැනි බැල්මක්" ගන්නවා.</p>
+
+<h2>5.10 Expected loss and staged plans (the optimizer)</h2>
+<p>The optimizer does <b>not</b> ask an LLM to judge. It prices every option and picks the cheapest in expected damage:</p>
+<p class="center"><b>expected loss ≈ P(not fixed) × value(priority) + risk of the actions + cost of running them</b></p>
+<ul>
+  <li>Action risk: low 0.5, medium 2, high 5; doubled if the action cannot be undone; 0.5 per stage.</li>
+  <li>"Escalate to a human now" is always an option: 4 + 0.3 × value (P3: 4 + 2.4 = <b>6.40</b>, as in the example).</li>
+  <li>A <b>staged plan</b> tries the most promising, cheapest fix first and the next only if still broken (ordered by chance ÷ cost).
+    Example from S1: rotate the credential alone = 11, stop the session alone = 14, both at once = 9.4, staged = <b>7.8</b>.</li>
+  <li>Beliefs come from the classifier, the claims, the reviews and (with memory) the agents' track record and precedent.
+    The agents' own confidence numbers are <b>ignored</b>, because loud agents (and LLMs) over-state them.</li>
+</ul>
+<figure>
+  <img src="../figures/fig-loss.svg" alt="Figure 9: the optimizer's options for the worked example">
+  <figcaption><b>Figure 9.</b> The options the optimizer priced for syn-7-00046, without and with memory.</figcaption>
+</figure>
+<p class="si">Optimizer එක හැම විකල්පයකටම "බලාපොරොත්තු වන හානිය" (expected loss) ගණනය කරලා අඩුම එක තෝරනවා. "දැන්ම මිනිසෙකුට දෙන්න" කියන විකල්පයත් හැමවෙලේම තියෙනවා. Plan එක පියවරෙන් පියවර: හොඳම, ලාභම fix එක මුලින්, ඒකෙන් හරි නොගියොත් ඊළඟ එක.</p>
+
+<h2>5.11 The policy agent and "approve" plans</h2>
+<p>The last gate before a plan leaves the controller. The rules stay deterministic (no LLM decides safety):</p>
+<ul>
+  <li><b>Refused</b>: an action is not executable, or the plan has more than 6 actions. <b>Escalations</b> are never run automatically.</li>
+  <li><b>Needs a human</b>: a high-risk action; an irreversible action when confidence &lt; 0.8; a P1 incident when confidence &lt; 0.6.</li>
+  <li>If the plan is approved but needs a human, it becomes kind <b>"approve"</b>: a person says yes before each stage.</li>
+  <li>If no policy agent answers, the plan is never approved.</li>
+</ul>
+<table class="small">
+  <thead><tr><th>Intent (11, platform-neutral)</th><th>Risk</th><th>Undoable?</th><th>Intent</th><th>Risk</th><th>Undoable?</th></tr></thead>
+  <tbody>
+    <tr><td><code>reroute_connection</code></td><td>low</td><td>yes</td><td><code>stop_process</code></td><td>medium</td><td>no</td></tr>
+    <tr><td><code>restore_config</code></td><td>medium</td><td>yes</td><td><code>resize_compute</code></td><td>medium</td><td>yes</td></tr>
+    <tr><td><code>map_schema_fields</code></td><td>high</td><td>yes</td><td><code>free_storage</code></td><td>medium</td><td>no</td></tr>
+    <tr><td><code>quarantine_records</code></td><td>low</td><td>yes</td><td><code>restart_component</code></td><td>medium</td><td>yes</td></tr>
+    <tr><td><code>stop_session</code></td><td>medium</td><td>no</td><td><code>rotate_credential</code></td><td>high</td><td>yes</td></tr>
+    <tr><td><code>block_client</code></td><td>medium</td><td>yes</td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+<p class="si">Policy agent = ආරක්ෂක නිලධාරියා. ඉහළ අවදානම් fix එකක් නම්, හෝ ආපසු හරවන්න බැරි fix එකක් අඩු confidence එකකින් නම්, මිනිසෙක් "ඔව්" කියන්න ඕන ("approve" plan). Policy agent උත්තර දුන්නේ නැත්නම් plan එක කවදාවත් approve වෙන්නේ නැහැ.</p>
+
+<h2>5.12 Guardrails on the LLM agents</h2>
+<ul>
+  <li><b>Structured outputs</b>: Ollama is given a JSON Schema, so the model can only answer in the Proposal shape, with only its own tools, valid targets and the right parameters for each intent.</li>
+  <li><b>Executable + grounded checks</b> (<code>checks.py</code>): a fix is dropped unless an executor could run it <i>and</i> its ids appear in the tool results. Example from the first llama3 run: it proposed <code>stop_session</code> on "prometheus" with no parameters, which was dropped.</li>
+  <li>A process can only be stopped if it is among the top processes on that component; an owner claim without a usable fix is downgraded to "unsure".</li>
+</ul>
+<p class="si">LLM agents ලාට කැමති දෙයක් කියන්න බැහැ: JSON schema එකකින් උත්තරේ හැඩය සීමා කරනවා. Run කරන්න බැරි, හෝ evidence වලින් සනාථ නොවන fix එකක් ඉවත් කරනවා.</p>
+
+<h2>5.13 Experience memory, trust and the history agent</h2>
+<ul>
+  <li><b>Experience</b> (<code>memory.py</code>): after an incident closes, the controller stores what was decided and what the
+    <b>verified</b> feedback says. Each agent's answer is labelled <b>right</b> (the operator says so, or it was the fix that worked),
+    <b>wrong</b> (the operator says so, it ran and failed, or it named the wrong domain) or <b>unknown</b> (never tried: a fix nobody ran proves nothing).</li>
+  <li><b>Similarity</b>: each incident gets a 2,048-number fingerprint of its words and signals; past incidents less alike than
+    <b>0.85</b> are ignored, because an early test showed that a merely "nearest" incident is often a different fault.</li>
+  <li><b>Trust</b> (<code>trust.py</code>, <code>reliability.py</code>): counts of each agent's verified right and wrong answers,
+    over the whole memory and over the 30 most similar incidents. New agents start from the planning numbers; the record takes over
+    as evidence grows ("shrinkage").</li>
+  <li><b>History agent</b> (<code>history_agent.py</code>): serves the memory over A2A. It is asked <b>first</b> (H1) and told the
+    outcome <b>last</b> (H2). Experts see the past cases; the optimizer counts <b>precedent</b> = log((same fix + 1) ÷ (other fixes + 1)),
+    capped at 3. Old ids (like an old pid) are never copied into a new fix.</li>
+</ul>
+<div class="box analogy"><span class="tag">Everyday picture</span>
+A new employee's reputation: at first you trust them by their job title; after a few months you trust them by what they actually
+got right. The memory is the team's shared logbook of <i>proven</i> results, not of opinions.</div>
+<p class="si">Memory එක = ඇත්තටම වැඩ කළේ මොකක්ද කියලා ලියපු logbook එකක්. සනාථ වුණ ප්‍රතිඵල විතරයි ගණන් ගන්නේ. අලුත් agent කෙනෙක්ව මුලින් තනතුරෙන් (fast/strong) විශ්වාස කරනවා, පස්සේ එයාගේ ඇත්ත ප්‍රතිඵල වලින්. 0.85ට අඩු සමානකමක් තියෙන පරණ incidents ගණන් ගන්නේ නැහැ.</p>
+
+<h2>5.14 The memory in PostgreSQL</h2>
+<p>The same memory can live in PostgreSQL (<code>memory_pg.py</code>): tables <code>experiences</code>, <code>proposals</code>,
+<code>reviews</code>, <code>memory_meta</code>, and views <code>agent_fix_record</code> and <code>reviewer_record</code> that count each
+agent's record with SQL. Every new experience is written in one transaction. Results are identical to the file version. Why
+PostgreSQL: records and (later, with pgvector) vectors in one place, and counting is just <code>GROUP BY</code>. On this laptop
+PostgreSQL 18 runs natively; the binary psycopg build is blocked by Windows Application Control, so the pure-Python psycopg is used.</p>
+<p class="si">Memory එක PostgreSQL database එකෙත් තියාගන්න පුළුවන්. Tables වල records, views වලින් හැම agent කෙනෙක්ගේම ප්‍රතිඵල ගණන් කරනවා. Files වලින් ලැබෙන ප්‍රතිඵලමයි database එකෙනුත් ලැබෙන්නේ.</p>
+
+<h2>5.15 Robustness tests: careless and shy agents</h2>
+<ul>
+  <li><b>Careless</b> (<code>careless.py</code>): claims ownership loudly even when wrong, like an over-eager LLM. The optimizer
+    and, later, the trust table keep it from steering the plan.</li>
+  <li><b>Shy</b> (<code>shy.py</code>): finds the right fix and then says "not mine", which is what qwen2.5:3b and llama3 did. The
+    track record rescues it (loss 4.85 → 3.39).</li>
+  <li><b>Noisy feedback</b>: 20% wrong operator answers are tolerated; 40% breaks it.</li>
+</ul>
+<p class="si">Careless agent = බොරුවට "මගේ" කියන agent. Shy agent = හරි fix එක හොයාගෙනත් "මගේ නෙවෙයි" කියන agent. මේ දෙකෙන්ම පද්ධතිය කොච්චර ශක්තිමත්ද කියලා test කරනවා.</p>
+
+<!-- ============================================================ 6 -->
+<h1 class="ch"><span class="num">6</span>The project on the CV</h1>
+<p>The project is in the CV store (<code>D:\VScode\career\data\projects.toml</code>, id <code>multi-agent-incident-response</code>) and is
+project #2 in the base AI/Data Engineer CV, after the Autonomous Data Analyst. Title: <b>Multi-Agent Incident Response (LLM
+Agents over A2A)</b>, <i>2026 – ongoing</i>, with the GitHub link. All six commits in the repository are yours, so there is no team note.</p>
+
+<table>
+  <thead><tr><th style="width:42%">Bullet on the CV</th><th>What it claims, simply</th><th style="width:26%">Interview caution</th></tr></thead>
+  <tbody>
+    <tr><td>Building a multi-agent on-call system… specialist AI agents (network, data, infra, security; fast and strong tiers on local LLMs via Ollama), each served as a real A2A protocol server with the official a2a-sdk.</td>
+      <td>You built the agents and they really talk over the standard protocol, not a mock.</td>
+      <td>Say the LLM agents are still weak; the rule agents carry the results so far.</td></tr>
+    <tr><td>Chose each response team with conformal prediction over a TF-IDF + logistic-regression classifier… (100% owner coverage at 1.12 teams per incident on synthetic validation data).</td>
+      <td>The right team is always called, almost always alone, with a statistical guarantee instead of a guessed threshold.</td>
+      <td>The guarantee is 95%; fixed thresholds also got 100% here; synthetic data.</td></tr>
+    <tr><td>Designed a decision-theoretic optimizer… staged repair plan with minimum expected loss… policy agent gating risky or irreversible actions.</td>
+      <td>The plan is chosen by arithmetic on risk and cost, never by an LLM's opinion, and safety rules sit on top.</td>
+      <td>Be ready to explain the loss formula and the 6.40 "call a human" option.</td></tr>
+    <tr><td>Added an experience memory in PostgreSQL… cutting agent calls per incident by ~71% (9.89 → 2.88) and human escalations from 220 to 2 at unchanged plan quality (synthetic validation data).</td>
+      <td>Remembering who was right makes the system much cheaper without making it worse.</td>
+      <td>"Calls" is really agent <i>cost units</i>; rule agents; synthetic data.</td></tr>
+  </tbody>
+</table>
+<p>Kept in the store for specific jobs: <code>llm-guardrails</code> (LLM-heavy ads), <code>eval-lab</code> (research/testing ads: the
+1,400-incident generator and 281 tests), <code>robust-to-bad-agents</code> (4.37 vs 5.74), and <code>fault-sandbox</code>, which is
+blocked until the Docker sandbox has actually run. The conformal and memory bullets carry <code>verify = true</code>: re-check the
+numbers against your latest run, then delete the <code>verify</code> lines so the build stops warning.</p>
+
+<h2>The conformal bullet, explained in Sinhala</h2>
+<div class="si">
+  <b>කෙටියෙන්:</b> "Incident එකක් ආවම ඒක හදන්න කතා කරන්න ඕන team එක (හෝ teams කීපය) තෝරන ක්‍රමයක් මම හැදුවා. හරි team එක අතපසු
+  නොවෙන බවට මේ ක්‍රමය ගණිතමය සහතිකයක් දෙනවා. ඒ වගේම අනවශ්‍ය teams වලට කතා කරන්නෙත් නැහැ."<br><br>
+  <b>1. TF-IDF + logistic regression:</b> TF-IDF incident එකේ වචන ඉලක්කම් බවට හරවනවා ("error" වගේ හැම තැනම තියෙන වචනවලට අඩු වටිනාකමක්,
+  "SchemaMismatch" වගේ විශේෂ වචනවලට වැඩි වටිනාකමක්). Logistic regression ඒ ඉලක්කම් වලින් එක් එක් team එකට සම්භාවිතාවක් දෙනවා
+  (syn-7-00046: data 96%).<br>
+  <b>2. ප්‍රශ්නය:</b> එක team එකකට විතරක් කතා කළොත් model එක වැරදුනොත් හරි team එක නැහැ. හැම team එකටම කතා කළොත් වියදම වැඩියි.
+  අතින් තෝරපු threshold එකකට ("30%ට වැඩි හැම team එකටම") හේතුවකුත් නැහැ, සහතිකයකුත් නැහැ.<br>
+  <b>3. Conformal prediction:</b> උත්තර දන්නා පරණ incidents වලින් model එක කොච්චර වැරදෙනවද කියලා මැනලා, "100න් 95 පාරක්වත් හරි team එක
+  ලැයිස්තුවේ ඉන්න" විදිහට cut-off එක ගණනය කරනවා. Model එක sure නම් team 1යි; sure නැත්නම් 2–3යි. උපමාව: මාළුවා 100න් 95 පාරක්වත් අහු වෙන
+  <b>පොඩිම දැල</b> තෝරනවා වගේ.<br>
+  <b>4. ප්‍රතිඵල:</b> "100% owner coverage" = test කරපු හැම incident එකකම හරි team එක හිටියා. "1.12 teams" = බොහෝ වෙලාවට team 1යි,
+  සමහර වෙලාවට 2යි (උදා: 100න් 88කට 1ක්, 12කට 2ක්).<br>
+  <b>5. "synthetic validation data":</b> computer එකෙන් හදපු incidents; train කරන්න පාවිච්චි නොකළ වෙනම කොටස.<br><br>
+  <b>Interview එකකදී (සැලකිලිමත් වෙන්න):</b> (1) සහතිකය 95%යි; 100% කියන්නේ මේ data එකේ ප්‍රතිඵලය විතරයි. (2) සහතිකය වලංගු වෙන්නේ අලුත් incidents පරණ
+  ඒවට සමාන නම් විතරයි. (3) Fixed threshold එකටත් මෙතන 100% ලැබුණා (1.14 teams): conformal එකේ වාසිය සහතිකය, වියදම ඉතිරි කිරීම නෙවෙයි.
+  මේ තුන්වෙනි කරුණ අවංකව කිව්වොත් interviewer ට හොඳ හැඟීමක් ඇති වෙනවා.
+</div>
+
+<!-- ============================================================ 7 -->
+<h1 class="ch"><span class="num">7</span>How to run things</h1>
+<div class="box warn"><span class="tag">Set-up rules (Windows laptop)</span>
+<ul>
+  <li>Always use the project's own Python: <code>.\.venv\Scripts\python.exe</code> (Python 3.10, built from the <code>cnn_gpu</code>
+    conda env, so it sees torch with CUDA). The shell's bare <code>python</code> is a different 3.12.</li>
+  <li>Keep the code Python 3.10-compatible (no <code>tomllib</code>, <code>StrEnum</code>, <code>typing.Self</code>, <code>except*</code>).</li>
+  <li>Heavy things (the Docker sandbox, big downloads) go to a GitHub Codespace, not the laptop. Ollama must be running for LLM agents.</li>
+</ul></div>
+<p class="small muted">Below, <code>py</code> stands for <code>.\.venv\Scripts\python.exe</code>.</p>
+
+<h3>Tests</h3>
+<pre>py -m pytest -q                                  # 281 tests; 8 skip by design (7 need a test database)</pre>
+
+<h3>Data and models</h3>
+<pre>py -m oncall synth --per-fault 30 --seed 7                                  # data/synthetic/dev (420)
+py -m oncall synth --per-fault 100 --seed 8 --out data/synthetic/dev100     # 1,400 incidents
+py -m oncall train --data data/synthetic/dev100 --out models/logreg100.json --device auto
+py -m oncall evaluate --data data/synthetic/dev --split val
+py -m oncall calibrate --data data/synthetic/dev100 --model models/logreg100.json   # mondrian, alpha 0.05</pre>
+
+<h3>Look at one incident</h3>
+<pre>py -m controller intake data/synthetic/dev/incidents.jsonl --text
+py -m controller route  data/synthetic/dev/incidents.jsonl --model models/logreg100.json \
+                        --calibration models/conformal.json --why --limit 3</pre>
+
+<h3>Evaluate agents and the whole controller (in-process, no network)</h3>
+<pre>py -m oncall eval-agents --data data/synthetic/dev100 --split val
+py -m oncall eval-team   --data data/synthetic/dev100 --split val --model models/logreg100.json \
+                         --calibration models/conformal.json --memory models/memory
+    # robustness:  --careless data-fast    --shy data-fast    --trust off    --no-past-cases
+    # real LLMs:   --reasoner ollama  (fast = qwen2.5:3b, strong = llama3; Ollama must be running)</pre>
+
+<h3>Build and check the memory</h3>
+<pre>py -m oncall remember    --data data/synthetic/dev100 --split train --model models/logreg100.json \
+                         --calibration models/conformal.json --out models/memory
+py -m oncall eval-memory --memory models/memory --data data/synthetic/dev100 --split val
+py -m controller memory models/memory --export-sql models/memory.sql</pre>
+
+<h3>Agents over real A2A</h3>
+<pre>py -m agents serve data/synthetic/dev/incidents.jsonl --memory models/memory       # terminal 1: all agents
+py -m controller deliberate data/synthetic/dev/incidents.jsonl --incident syn-7-00046 \
+                 --model models/logreg100.json --calibration models/conformal.json  # terminal 2
+py -m agents ask data/synthetic/dev/incidents.jsonl --agent data-strong --incident syn-7-00046</pre>
+
+<h3>PostgreSQL memory</h3>
+<pre>psql -U postgres -d a2a_memory -f controller/memory_schema.sql      # create the tables once
+set A2A_MEMORY_DB=postgresql://postgres@localhost:5432/a2a_memory   # (password not stored anywhere here)
+py -m oncall remember ... --out postgres          py -m oncall eval-team ... --memory postgres</pre>
+
+<h3>The Docker sandbox (in a Codespace)</h3>
+<pre>python -m oncall init
+docker compose --profile lab build &amp;&amp; docker compose up -d
+python -m oncall health                 # ~1-2 min until every check passes
+python -m oncall validate N1            # one fire drill: inject -> detect -> fix -> recover -> revert
+python -m oncall validate               # all 14 faults (~60-75 min)</pre>
+
+<h3>This guide and the figures</h3>
+<pre>bash docs/guide/build.sh                # redraws all 9 figures (+ PNGs), then prints docs/a2a-oncall_Project_Guide.pdf</pre>
+
+<div class="si">
+  <span class="tag">සිංහලෙන් කෙටියෙන්</span><br>
+  හැමවෙලේම <code>.\.venv\Scripts\python.exe</code> පාවිච්චි කරන්න. Tests: <code>-m pytest</code>. Data හදන්න <code>oncall synth</code>,
+  model එක train කරන්න <code>oncall train</code>, මුළු පද්ධතියම test කරන්න <code>oncall eval-team</code>. A2A එකෙන් ඇත්තටම
+  run කරන්න terminal එකක <code>agents serve</code>, අනිත් එකේ <code>controller deliberate</code>. Docker sandbox එක Codespace එකේ විතරක්.
+</div>
+
+<!-- ============================================================ 8 -->
+<h1 class="ch"><span class="num">8</span>Glossary</h1>
+<table class="small">
+  <thead><tr><th style="width:19%">Term</th><th style="width:43%">Plain meaning</th><th class="si">සිංහලෙන්</th></tr></thead>
+  <tbody>
+    <tr><td>Incident</td><td>Something broke and an alert fired</td><td class="si">පද්ධතියේ මොකක් හරි කැඩීමක්</td></tr>
+    <tr><td>On-call</td><td>The person or system that must respond when something breaks</td><td class="si">කැඩීමකදී ප්‍රතිචාර දක්වන්න සූදානම්ව සිටීම</td></tr>
+    <tr><td>Domain / team</td><td>network, data, infra or security</td><td class="si">ප්‍රශ්නය අයිති අංශය</td></tr>
+    <tr><td>Owner</td><td>The team whose fix removes the cause (not where the symptom shows)</td><td class="si">හේතුව නැති කරන fix එක තියෙන team එක</td></tr>
+    <tr><td>Agent</td><td>A program (rules or an LLM) that investigates and proposes a fix</td><td class="si">විමර්ශනය කරලා fix එකක් යෝජනා කරන program එකක්</td></tr>
+    <tr><td>LLM</td><td>Large language model, e.g. llama3, qwen2.5:3b</td><td class="si">විශාල භාෂා model එකක්</td></tr>
+    <tr><td>Ollama</td><td>Runs LLMs locally on the laptop</td><td class="si">LLM laptop එකේම run කරන මෘදුකාංගය</td></tr>
+    <tr><td>A2A</td><td>A standard for agents to exchange tasks and results over HTTP</td><td class="si">Agents අතර වැඩ යවන සම්මතය</td></tr>
+    <tr><td>Agent Card</td><td>An agent's public "business card" (skills, tools, address, cost)</td><td class="si">Agent ගේ visiting card එක</td></tr>
+    <tr><td>MCP</td><td>A standard for AI tools to act on systems; the executor team's layer</td><td class="si">AI tools පද්ධති මත ක්‍රියා කරන සම්මතය</td></tr>
+    <tr><td>Executor</td><td>Whoever actually runs the fix (out of scope)</td><td class="si">Fix එක ඇත්තටම කරන කෙනා</td></tr>
+    <tr><td>Intent</td><td>A platform-neutral action name, e.g. <code>stop_session</code></td><td class="si">ඕනෑම platform එකකට ගැළපෙන ක්‍රියාවක නම</td></tr>
+    <tr><td>RemediationPlan</td><td>The controller's output: the staged fix, risks, policy decision</td><td class="si">Controller එකේ ප්‍රතිදානය: repair plan එක</td></tr>
+    <tr><td>ExecutionReport</td><td>What the executor sends back: did each stage work?</td><td class="si">Fix එක වැඩ කළාද කියන වාර්තාව</td></tr>
+    <tr><td>Ground truth / answer key</td><td>The true cause, owner and fixes, known only to the lab</td><td class="si">ඇත්ත උත්තරය (lab එක විතරක් දන්නා)</td></tr>
+    <tr><td>Information barrier</td><td>The rule that the controller never sees the answer key</td><td class="si">Controller එකට උත්තරය නොපෙන්වන නීතිය</td></tr>
+    <tr><td>Synthetic data</td><td>Incidents made by the generator, not the real sandbox</td><td class="si">Computer එකෙන් හදපු පුහුණු දත්ත</td></tr>
+    <tr><td>Seed</td><td>Recipe number for randomness (same seed, same data)</td><td class="si">Random දත්ත හදන "recipe අංකය"</td></tr>
+    <tr><td>Train / val / test</td><td>Learn from / check while building / final exam (used once)</td><td class="si">ඉගෙනීමට / පරීක්ෂාවට / අවසාන විභාගයට</td></tr>
+    <tr><td>Classifier</td><td>A model that picks a category (here: the owner team)</td><td class="si">කාණ්ඩයක් තෝරන model එකක්</td></tr>
+    <tr><td>TF-IDF</td><td>Word scores: frequent here, rare elsewhere = important</td><td class="si">වචනවල වැදගත්කමට ලකුණු දීම</td></tr>
+    <tr><td>Logistic regression</td><td>Weighted points per clue, turned into probabilities</td><td class="si">Clues වලට බර දීලා සම්භාවිතා ගණනය කිරීම</td></tr>
+    <tr><td>Probability</td><td>A chance between 0 and 1 (0.96 = 96%)</td><td class="si">සම්භාවිතාව (ඉඩ)</td></tr>
+    <tr><td>Conformal prediction</td><td>A cut-off with a guaranteed hit rate (e.g. 95%)</td><td class="si">සහතික කළ නිවැරදි අනුපාතයක් දෙන cut-off ක්‍රමය</td></tr>
+    <tr><td>Coverage</td><td>How often the right owner was in the chosen team</td><td class="si">හරි team එක ඇතුළේ හිටපු ප්‍රතිශතය</td></tr>
+    <tr><td>Calibration</td><td>Measuring the model's errors on past incidents to set the cut-off</td><td class="si">Cut-off එක සකස් කිරීමට වැරදි මැනීම</td></tr>
+    <tr><td>Utility</td><td>The router's score for an agent: value × chances − cost</td><td class="si">Agent කෙනෙක් තෝරන ලකුණු</td></tr>
+    <tr><td>Expected loss</td><td>The average damage an option is expected to cause (lower is better)</td><td class="si">බලාපොරොත්තු වන හානිය</td></tr>
+    <tr><td>Staged plan</td><td>Try one fix; if still broken, try the next</td><td class="si">පියවරෙන් පියවර fix කරන plan එක</td></tr>
+    <tr><td>Escalation</td><td>Asking a stronger agent, or a human</td><td class="si">ඉහළ මට්ටමකට යොමු කිරීම</td></tr>
+    <tr><td>Cross-check</td><td>Other agents review a claim from their own evidence</td><td class="si">දෙවැනි මතයක් ගැනීම</td></tr>
+    <tr><td>Precedent</td><td>How often the same fix worked on similar past incidents</td><td class="si">කලින් සමාන අවස්ථා වල වැඩ කළ fix එක</td></tr>
+    <tr><td>Verified outcome</td><td>A result proven by the executor's report or an operator</td><td class="si">සනාථ වුණ ප්‍රතිඵලය</td></tr>
+    <tr><td>Trust / track record</td><td>Counts of an agent's verified right and wrong answers</td><td class="si">Agent ගේ සනාථ වුණ ප්‍රතිඵල වාර්තාව</td></tr>
+    <tr><td>Embedding / fingerprint</td><td>A list of numbers describing an incident, to find similar ones</td><td class="si">සමාන incidents හොයන්න ඉලක්කම් ලැයිස්තුවක්</td></tr>
+    <tr><td>PostgreSQL</td><td>A relational database (tables queried with SQL)</td><td class="si">Tables වලින් දත්ත ගබඩා කරන database එක</td></tr>
+    <tr><td>Docker / Compose</td><td>Runs each service in its own box; Compose starts them all together</td><td class="si">Services වෙන වෙනම "පෙට්ටි" වල run කිරීම</td></tr>
+    <tr><td>dbt</td><td>A tool that turns raw data into clean tables, with tests</td><td class="si">අමු දත්ත පිරිසිදු tables බවට හරවන tool එක</td></tr>
+    <tr><td>Toxiproxy</td><td>A switchboard that can slow or cut network lines on purpose</td><td class="si">Network එක හිතාමතා slow/cut කරන switchboard එක</td></tr>
+    <tr><td>Codespace</td><td>A cloud computer from GitHub, for the heavy sandbox</td><td class="si">GitHub එකේ cloud computer එකක්</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="330" viewBox="0 0 1120 330">
+<defs></defs>
+<rect x="0" y="0" width="1120" height="330" fill="#fff"/>
+<text x="24" y="34" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#1f2933" text-anchor="start">How the build went (November 2026)</text>
+<line x1="30" y1="70" x2="1094" y2="70" stroke="#cbd2d9" stroke-width="1.5"/>
+<circle cx="106.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="106.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">19 Nov</text>
+<circle cx="258.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="258.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">20 Nov</text>
+<circle cx="410.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="410.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">21 Nov</text>
+<circle cx="562.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="562.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">22 Nov</text>
+<circle cx="714.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="714.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">23 Nov</text>
+<circle cx="866.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="866.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">24 Nov</text>
+<circle cx="1018.0" cy="70" r="4" fill="#1f2933" stroke="none" stroke-width="0"/>
+<text x="1018.0" y="60" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="middle">27 Nov</text>
+<text x="938" y="74" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#52606d" text-anchor="middle">//</text>
+<rect x="36" y="88" width="140" height="40" rx="6" fill="#fcf2f6" stroke="#c27097" stroke-width="1.1"/>
+<rect x="36" y="88" width="5" height="40" rx="2" fill="#a8326a" stroke="none"/>
+<circle cx="54" cy="101" r="6.5" fill="#fbb315" stroke="none" stroke-width="0"/>
+<text x="54" y="104.6" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" fill="#1f2933" text-anchor="middle">!</text>
+<text x="66" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#a8326a" text-anchor="start">Phase 1 sandbox</text>
+<text x="49" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">code written, not run</text>
+<rect x="36" y="136" width="140" height="40" rx="6" fill="#fcf2f6" stroke="#c27097" stroke-width="1.1"/>
+<rect x="36" y="136" width="5" height="40" rx="2" fill="#a8326a" stroke="none"/>
+<circle cx="54" cy="149" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M50.8,149.2 L53.2,151.6 L57.4,146.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="66" y="153" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#a8326a" text-anchor="start">Synthetic data</text>
+<text x="49" y="169" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">generator: 420 incidents</text>
+<rect x="36" y="184" width="140" height="40" rx="6" fill="#eff5fd" stroke="#5f8fcd" stroke-width="1.1"/>
+<rect x="36" y="184" width="5" height="40" rx="2" fill="#1b5fb8" stroke="none"/>
+<circle cx="54" cy="197" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M50.8,197.2 L53.2,199.6 L57.4,194.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="66" y="201" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Blocks 1, 2a, 2b</text>
+<text x="49" y="217" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">intake + classifiers</text>
+<rect x="188" y="88" width="140" height="40" rx="6" fill="#eff5fd" stroke="#5f8fcd" stroke-width="1.1"/>
+<rect x="188" y="88" width="5" height="40" rx="2" fill="#1b5fb8" stroke="none"/>
+<circle cx="206" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M202.8,101.2 L205.2,103.6 L209.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="218" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Blocks 3 + 4</text>
+<text x="201" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">cards, registry, router</text>
+<rect x="188" y="136" width="140" height="40" rx="6" fill="#f4f1fd" stroke="#8c79de" stroke-width="1.1"/>
+<rect x="188" y="136" width="5" height="40" rx="2" fill="#5b3fd0" stroke="none"/>
+<circle cx="206" cy="149" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M202.8,149.2 L205.2,151.6 L209.4,146.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="218" y="153" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#5b3fd0" text-anchor="start">Block 5a</text>
+<text x="201" y="169" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">agents as A2A servers</text>
+<rect x="188" y="184" width="140" height="40" rx="6" fill="#eff5fd" stroke="#5f8fcd" stroke-width="1.1"/>
+<rect x="188" y="184" width="5" height="40" rx="2" fill="#1b5fb8" stroke="none"/>
+<circle cx="206" cy="197" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M202.8,197.2 L205.2,199.6 L209.4,194.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="218" y="201" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Blocks 5b + 5c</text>
+<text x="201" y="217" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">orchestrator, optimizer</text>
+<rect x="188" y="232" width="140" height="40" rx="6" fill="#f4f1fd" stroke="#8c79de" stroke-width="1.1"/>
+<rect x="188" y="232" width="5" height="40" rx="2" fill="#5b3fd0" stroke="none"/>
+<circle cx="206" cy="245" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M202.8,245.2 L205.2,247.6 L209.4,242.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="218" y="249" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#5b3fd0" text-anchor="start">First LLM runs</text>
+<text x="201" y="265" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">+ guardrails</text>
+<rect x="340" y="88" width="140" height="40" rx="6" fill="#f5f6f8" stroke="#8f97a2" stroke-width="1.1"/>
+<rect x="340" y="88" width="5" height="40" rx="2" fill="#5f6b7a" stroke="none"/>
+<circle cx="358" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M354.8,101.2 L357.2,103.6 L361.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="370" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#5f6b7a" text-anchor="start">Flow diagram</text>
+<text x="353" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">first version</text>
+<rect x="492" y="88" width="140" height="40" rx="6" fill="#f1f8f3" stroke="#62a272" stroke-width="1.1"/>
+<rect x="492" y="88" width="5" height="40" rx="2" fill="#1f7a35" stroke="none"/>
+<circle cx="510" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M506.8,101.2 L509.2,103.6 L513.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="522" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#1f7a35" text-anchor="start">GitHub push</text>
+<text x="505" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">first public commit</text>
+<rect x="492" y="136" width="140" height="40" rx="6" fill="#ecf7f6" stroke="#579e9b" stroke-width="1.1"/>
+<rect x="492" y="136" width="5" height="40" rx="2" fill="#0f7470" stroke="none"/>
+<circle cx="510" cy="149" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M506.8,149.2 L509.2,151.6 L513.4,146.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="522" y="153" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#0f7470" text-anchor="start">Blocks 6a + 6b</text>
+<text x="505" y="169" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">memory + trust</text>
+<rect x="644" y="88" width="140" height="40" rx="6" fill="#ecf7f6" stroke="#579e9b" stroke-width="1.1"/>
+<rect x="644" y="88" width="5" height="40" rx="2" fill="#0f7470" stroke="none"/>
+<circle cx="662" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M658.8,101.2 L661.2,103.6 L665.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="674" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#0f7470" text-anchor="start">Block 6c</text>
+<text x="657" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">history agent</text>
+<rect x="796" y="88" width="140" height="40" rx="6" fill="#ecf7f6" stroke="#579e9b" stroke-width="1.1"/>
+<rect x="796" y="88" width="5" height="40" rx="2" fill="#0f7470" stroke="none"/>
+<circle cx="814" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M810.8,101.2 L813.2,103.6 L817.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="826" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#0f7470" text-anchor="start">Block 6d</text>
+<text x="809" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">memory in PostgreSQL</text>
+<rect x="948" y="88" width="140" height="40" rx="6" fill="#f5f6f8" stroke="#8f97a2" stroke-width="1.1"/>
+<rect x="948" y="88" width="5" height="40" rx="2" fill="#5f6b7a" stroke="none"/>
+<circle cx="966" cy="101" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M962.8,101.2 L965.2,103.6 L969.4,98.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="978" y="105" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#5f6b7a" text-anchor="start">CV + this guide</text>
+<text x="961" y="121" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="start">documentation</text>
+<circle cx="40" cy="312" r="6.5" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M36.8,312.2 L39.2,314.6 L43.4,309.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="52" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">done</text>
+<circle cx="110" cy="312" r="6.5" fill="#fbb315" stroke="none" stroke-width="0"/>
+<text x="110" y="315.6" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" fill="#1f2933" text-anchor="middle">!</text>
+<text x="122" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">written but never run (needs Docker, meant for a Codespace)</text>
+<rect x="520" y="305" width="12" height="12" rx="3" fill="#a8326a" stroke="none"/>
+<text x="537" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">lab / data</text>
+<rect x="618" y="305" width="12" height="12" rx="3" fill="#1b5fb8" stroke="none"/>
+<text x="635" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">controller</text>
+<rect x="716" y="305" width="12" height="12" rx="3" fill="#5b3fd0" stroke="none"/>
+<text x="733" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">agents</text>
+<rect x="814" y="305" width="12" height="12" rx="3" fill="#0f7470" stroke="none"/>
+<text x="831" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">memory</text>
+<rect x="912" y="305" width="12" height="12" rx="3" fill="#1f7a35" stroke="none"/>
+<text x="929" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">repository</text>
+<rect x="1010" y="305" width="12" height="12" rx="3" fill="#5f6b7a" stroke="none"/>
+<text x="1027" y="316" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">docs</text>
+</svg>

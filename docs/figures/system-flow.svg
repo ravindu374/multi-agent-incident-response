@@ -1,299 +1,400 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1255" viewBox="0 0 1800 1255">
-<defs><marker id="ah" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#111"/></marker></defs>
+<defs><marker id="ah1f2933" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#1f2933"/></marker><marker id="aha8326a" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#a8326a"/></marker><marker id="ah1b5fb8" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#1b5fb8"/></marker><marker id="ah0f7470" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#0f7470"/></marker><marker id="ah5b3fd0" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#5b3fd0"/></marker><marker id="ah5f6b7a" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0.8 L10,5 L0,9.2 z" fill="#5f6b7a"/></marker></defs>
 <rect x="0" y="0" width="1800" height="1255" fill="#fff"/>
-<text x="30" y="38" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#111" text-anchor="start">a2a-oncall: how one incident flows through the project files</text>
-<rect x="30" y="58" width="1490" height="222" rx="8" fill="#fff" stroke="#777" stroke-width="1.2"/>
-<line x1="66" y1="58" x2="66" y2="280" stroke="#777" stroke-width="1"/>
-<text transform="translate(47,169.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#111">SANDBOX</text>
-<text transform="translate(61,169.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#444">sandbox/ · Docker</text>
-<rect x="30" y="326" width="1490" height="190" rx="8" fill="#fff" stroke="#777" stroke-width="1.2"/>
-<line x1="66" y1="326" x2="66" y2="516" stroke="#777" stroke-width="1"/>
-<text transform="translate(47,421.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#111">LAB</text>
-<text transform="translate(61,421.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#444">oncall/ · the exam board</text>
-<rect x="30" y="566" width="1490" height="310" rx="8" fill="#fff" stroke="#777" stroke-width="1.2"/>
-<line x1="66" y1="566" x2="66" y2="876" stroke="#777" stroke-width="1"/>
-<text transform="translate(47,721.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#111">CONTROLLER</text>
-<text transform="translate(61,721.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#444">controller/ · pipeline.py runs steps 5–9</text>
-<rect x="30" y="916" width="1490" height="276" rx="8" fill="#fff" stroke="#777" stroke-width="1.2"/>
-<line x1="66" y1="916" x2="66" y2="1192" stroke="#777" stroke-width="1"/>
-<text transform="translate(47,1054.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#111">AGENTS</text>
-<text transform="translate(61,1054.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#444">agents/ · reached over A2A</text>
-<text x="76" y="86" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#444" text-anchor="start" font-style="italic">The practice company: orders come in → get loaded → stored → cleaned → shown on a dashboard</text>
-<rect x="76" y="100" width="188" height="92" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="86" y="125" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Orders come in</text>
-<text x="86" y="146" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">orders_api/app.py</text>
-<text x="86" y="166" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">fake food-delivery orders</text>
-<rect x="322" y="100" width="188" height="92" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="332" y="125" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Load them</text>
-<text x="332" y="146" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">ingest/ingest.py</text>
-<text x="332" y="162" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">ingest/schema.py</text>
-<text x="332" y="182" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">pulls + checks new orders</text>
-<rect x="568" y="100" width="188" height="92" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="578" y="125" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Store them</text>
-<text x="578" y="146" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">warehouse/init.sql</text>
-<text x="578" y="166" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">Postgres database; also</text>
-<text x="578" y="182" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">backup-compress.sh (CPU hog)</text>
-<rect x="814" y="100" width="188" height="92" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="824" y="125" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Clean them</text>
-<text x="824" y="146" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">transform/runner.py</text>
-<text x="824" y="162" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">transform/dbt/</text>
-<text x="824" y="182" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">raw orders → revenue table</text>
-<rect x="1060" y="100" width="188" height="92" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1070" y="125" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Show them</text>
-<text x="1070" y="146" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">metrics_api/app.py</text>
-<text x="1070" y="166" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">revenue dashboard + login</text>
-<rect x="1306" y="100" width="188" height="42" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1316" y="118" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="start">Bad actors</text>
-<text x="1316" y="134" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="start">toolbox/*.py · S1 S2 D4 D5</text>
-<rect x="1306" y="150" width="188" height="42" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1316" y="168" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#111" text-anchor="start">Health numbers</text>
-<text x="1316" y="184" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="start">prometheus/ + exporter</text>
-<path d="M264,146 L322,146" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<path d="M510,146 L568,146" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<path d="M756,146 L814,146" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<path d="M1002,146 L1060,146" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<rect x="200" y="212" width="560" height="50" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="212" y="232" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">toxiproxy/toxiproxy.json</text>
-<text x="212" y="250" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">a switchboard on these two lines: the lab adds delay or cuts the line (network faults)</text>
-<line x1="293" y1="152" x2="293" y2="212" stroke="#555" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="539" y1="152" x2="539" y2="212" stroke="#555" stroke-width="1" stroke-dasharray="3 3"/>
-<rect x="814" y="212" width="434" height="50" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="826" y="232" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">runtime/defaults/*.json</text>
-<text x="826" y="250" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">live settings the services read; faults and fixes edit them</text>
-<rect x="76" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="96" cy="380" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="96" y="384.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">1</text>
-<text x="113" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Break it on purpose</text>
-<text x="86" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/faults.py</text>
-<text x="86" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/episodes.py</text>
-<text x="86" y="442" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">14 faults, each with its</text>
-<text x="86" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">true owner; fire drill:</text>
-<text x="86" y="474" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">break → spot → fix → undo</text>
-<rect x="322" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="342" cy="380" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="342" y="384.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">2</text>
-<text x="359" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Spot the problem</text>
-<text x="332" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/oracle.py</text>
-<text x="332" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/incidents.py</text>
-<text x="332" y="442" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">checks health against</text>
-<text x="332" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">targets, opens an incident</text>
-<rect x="568" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="578" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Practice incidents</text>
-<text x="578" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/synth/</text>
-<text x="578" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">→ data/synthetic/</text>
-<text x="578" y="438" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">samples/</text>
-<text x="578" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">realistic fake incidents;</text>
-<text x="578" y="474" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">no Docker needed</text>
-<rect x="814" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="824" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Train &amp; calibrate</text>
-<text x="824" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/train.py</text>
-<text x="824" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/route_eval.py</text>
-<text x="824" y="442" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">writes models/*.json,</text>
-<text x="824" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">used in steps 4 and 5</text>
-<rect x="1060" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1070" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Answer key (locked)</text>
-<text x="1070" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/lab.py</text>
-<text x="1070" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">ground_truth.jsonl</text>
-<text x="1070" y="442" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">true cause, owner, right fix;</text>
-<text x="1070" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">the controller never sees it</text>
-<rect x="1306" y="360" width="188" height="136" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1316" y="385" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Mark the result</text>
-<text x="1316" y="406" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/evaluate.py</text>
-<text x="1316" y="422" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/agent_eval.py</text>
-<text x="1316" y="438" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/team_eval.py</text>
-<text x="1316" y="458" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">compares answers with</text>
-<text x="1316" y="474" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">the answer key</text>
-<path d="M170,360 L170,282" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="178" y="312" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">inject a fault</text>
-<path d="M416,282 L416,360" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="424" y="312" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">health readings</text>
-<path d="M1060,428 L1002,428" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1031" y="421" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">labels</text>
-<path d="M1248,428 L1306,428" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1277" y="421" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">labels</text>
-<line x1="30" y1="541" x2="1520" y2="541" stroke="#111" stroke-width="2" stroke-dasharray="10 6"/>
-<rect x="815" y="523" width="430" height="36" rx="0" fill="#fff" stroke="#fff" stroke-width="0"/>
-<text x="1030" y="538" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#111" text-anchor="middle">INFORMATION BARRIER</text>
-<text x="1030" y="553" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#444" text-anchor="middle">the controller never sees the answer key (tests/test_controller_isolation.py)</text>
-<path d="M416,496 L416,592 L170,592 L170,620" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="182" y="610" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">IncidentReport (contracts.py): alerts, logs, evidence only</text>
-<path d="M662,496 L662,592 L422,592" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" stroke-dasharray="6 4"/>
-<text x="670" y="586" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">or: practice incidents (no Docker)</text>
-<rect x="76" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="96" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="96" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">3</text>
-<text x="113" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Read the incident</text>
-<text x="86" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">intake.py</text>
-<text x="86" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">cleans the logs, hides</text>
-<text x="86" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">changing numbers and IPs,</text>
-<text x="86" y="718" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">pulls out the key signals</text>
-<rect x="322" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="342" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="342" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">4</text>
-<text x="359" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Guess the department</text>
-<text x="332" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">classifier.py · learned.py</text>
-<text x="332" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">rules or a trained model:</text>
-<text x="332" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">chance it is network, data,</text>
-<text x="332" y="718" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">infra or security</text>
-<rect x="568" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="588" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="588" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">5</text>
-<text x="605" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Choose the team</text>
-<text x="578" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">conformal.py · router.py</text>
-<text x="578" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">team that should hold the</text>
-<text x="578" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">right owner 95% of the time;</text>
-<text x="578" y="718" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">main agent, helpers, backups</text>
-<rect x="814" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="834" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="834" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">6</text>
-<text x="851" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Ask the agents</text>
-<text x="824" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">orchestrator.py</text>
-<text x="824" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">asks agents in parallel,</text>
-<text x="824" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">follows 'not mine' pointers,</text>
-<text x="824" y="718" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">escalates, then cross-checks</text>
-<rect x="1060" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="1080" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="1080" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">8</text>
-<text x="1097" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Pick the best plan</text>
-<text x="1070" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">optimizer.py</text>
-<text x="1070" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">one staged plan with the</text>
-<text x="1070" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">lowest expected loss, or</text>
-<text x="1070" y="718" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">'call a human now'</text>
-<rect x="1306" y="620" width="188" height="130" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="1326" cy="640" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="1326" y="644.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" fill="#111" text-anchor="middle">10</text>
-<text x="1343" y="645" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Hand over the plan</text>
-<text x="1316" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">plan.py</text>
-<text x="1316" y="686" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">RemediationPlan goes out,</text>
-<text x="1316" y="702" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">ExecutionReport comes back</text>
-<path d="M264,685 L322,685" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="293.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">features</text>
-<path d="M510,685 L568,685" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="539.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">scores</text>
-<path d="M756,685 L814,685" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="785.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">team</text>
-<path d="M1002,685 L1060,685" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1031.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">answers</text>
-<path d="M1248,685 L1306,685" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1277.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">plan</text>
-<path d="M1110,620 L1110,600 L958,600 L958,620" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1034" y="594" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">not sure (&lt; 70%)? second look by a stronger agent</text>
-<path d="M1400,620 L1400,496" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" stroke-dasharray="6 4"/>
-<text x="1392" y="606" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="end" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">scored by the lab</text>
-<rect x="76" y="786" width="188" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="86" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">evidence.py</text>
-<text x="86" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">splits deeper evidence:</text>
-<text x="86" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">one slice per domain</text>
-<rect x="568" y="786" width="188" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="578" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">registry.py · cards.py</text>
-<text x="578" y="822" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">pool.py</text>
-<text x="578" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">who exists, who is up,</text>
-<text x="578" y="858" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">who may take the task</text>
-<rect x="814" y="786" width="188" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="824" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">proposal.py · wire.py</text>
-<text x="824" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">message forms, packed</text>
-<text x="824" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">for A2A</text>
-<rect x="1060" y="786" width="188" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="1070" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">policy.py</text>
-<text x="1070" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">the safety rules the</text>
-<text x="1070" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">policy agent applies</text>
-<rect x="1306" y="786" width="188" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="1316" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">docs/HANDOVER.md</text>
-<text x="1316" y="822" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">docs/contract/*.json</text>
-<text x="1316" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">the hand-over, written down</text>
-<path d="M662,786 L662,750" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<path d="M908,750 L908,786" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<path d="M1154,750 L1154,786" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<path d="M170,866 L170,950" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="178" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">evidence slice per domain</text>
-<path d="M908,866 L908,990" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="916" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tasks down; Proposal / Review back</text>
-<path d="M1154,866 L1154,990" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="1162" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">plan down; verdict back</text>
-<rect x="76" y="950" width="680" height="228" rx="8" fill="#fff" stroke="#111" stroke-width="1.4"/>
-<circle cx="96" cy="972" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="96" y="976.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">7</text>
-<text x="114" y="977" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#111" text-anchor="start">Expert agents investigate</text>
-<text x="330" y="977" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">agents/specialist.py</text>
-<rect x="92" y="992" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="152" y="1009.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">network-fast</text>
-<rect x="92" y="1026" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="152" y="1043.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">network-strong</text>
-<rect x="222" y="992" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="282" y="1009.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">data-fast</text>
-<rect x="222" y="1026" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="282" y="1043.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">data-strong</text>
-<rect x="352" y="992" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="412" y="1009.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">infra-fast</text>
-<rect x="352" y="1026" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="412" y="1043.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">infra-strong</text>
-<rect x="482" y="992" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="542" y="1009.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">security-fast</text>
-<rect x="482" y="1026" width="120" height="26" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="542" y="1043.5" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">security-strong</text>
-<rect x="614" y="992" width="126" height="60" rx="13" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="677" y="1026" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#111" text-anchor="middle">generalist</text>
-<text x="92" y="1072" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">fast = qwen2.5:3b · strong = llama3 · each has a business card in agents/cards/*.json</text>
-<rect x="92" y="1086" width="190" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="102" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">tools.py</text>
-<text x="102" y="1126" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">read-only evidence; only</text>
-<text x="102" y="1142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">the tools on its own card</text>
-<rect x="296" y="1086" width="240" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="306" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">reasoners/</text>
-<text x="306" y="1122" font-size="11.5"><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#111">rules.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#444">   no AI</tspan></text>
-<text x="306" y="1138" font-size="11.5"><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#111">ollama.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#444">  local LLM</tspan></text>
-<text x="306" y="1154" font-size="11.5"><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#111">careless.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#444">  test liar</tspan></text>
-<rect x="550" y="1086" width="190" height="80" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="560" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">controller/checks.py</text>
-<text x="560" y="1126" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">drops fixes that can't run</text>
-<text x="560" y="1142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">or aren't backed by evidence</text>
-<rect x="814" y="990" width="188" height="124" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="824" y="1015" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">A2A doorway</text>
-<text x="824" y="1036" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">server.py</text>
-<text x="824" y="1056" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">real A2A web server</text>
-<text x="824" y="1076" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">local.py</text>
-<text x="824" y="1096" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">same agents, no network</text>
-<path d="M756,1050 L814,1050" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<rect x="1060" y="990" width="188" height="124" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<circle cx="1080" cy="1010" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="1080" y="1014.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">9</text>
-<text x="1097" y="1015" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">Safety check</text>
-<text x="1070" y="1036" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">policy_agent.py</text>
-<text x="1070" y="1056" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">approve, needs a human,</text>
-<text x="1070" y="1072" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">or refuse; silence = refuse</text>
-<rect x="1580" y="58" width="200" height="818" rx="8" fill="#fff" stroke="#111" stroke-width="1.5" stroke-dasharray="7 5"/>
-<text x="1680" y="86" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#111" text-anchor="middle">EXECUTOR</text>
-<text x="1680" y="106" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#444" text-anchor="middle">another team</text>
-<text x="1680" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#444" text-anchor="middle">MCP / Microsoft Fabric</text>
-<text x="1680" y="140" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="middle" font-style="italic">out of scope</text>
-<rect x="1596" y="158" width="168" height="110" rx="6" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1606" y="183" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#111" text-anchor="start">In the lab</text>
-<text x="1606" y="204" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/intents.py</text>
-<text x="1606" y="220" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">oncall/actions.py</text>
-<text x="1606" y="240" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">11 intents →</text>
-<text x="1606" y="256" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">13 allowed fixes</text>
-<path d="M1596,214 L1522,214" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1558" y="207" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#333" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">apply fix</text>
-<path d="M1494,662 L1580,662" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<path d="M1580,716 L1494,716" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="1596" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">RemediationPlan in</text>
-<text x="1596" y="720" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#111" text-anchor="start">ExecutionReport back</text>
-<text x="1596" y="760" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">runs the plan stage by</text>
-<text x="1596" y="776" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">stage; 'escalate' means</text>
-<text x="1596" y="792" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#444" text-anchor="start">page a human</text>
-<path d="M76,1222 L116,1222" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="124" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">main flow</text>
-<path d="M220,1222 L260,1222" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" stroke-dasharray="6 4"/>
-<text x="268" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">practice data or scoring (lab only)</text>
-<path d="M500,1222 L540,1222" fill="none" stroke="#111" stroke-width="1.5" marker-end="url(#ah)" marker-start="url(#ah)"/>
-<text x="548" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">request and reply over A2A</text>
-<rect x="740" y="1212" width="34" height="20" rx="3" fill="#fff" stroke="#111" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text x="782" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">out of scope (another team)</text>
-<circle cx="991" cy="1222" r="11" fill="#fff" stroke="#111" stroke-width="1.5"/>
-<text x="991" y="1226.2" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#111" text-anchor="middle">1</text>
-<text x="1010" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">order of the steps</text>
-<rect x="1150" y="1212" width="34" height="20" rx="3" fill="#fff" stroke="#111" stroke-width="1.6"/>
-<text x="1192" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">a step</text>
-<rect x="1250" y="1212" width="34" height="20" rx="3" fill="#fff" stroke="#555" stroke-width="1"/>
-<text x="1292" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#444" text-anchor="start">a helper file</text>
+<text x="30" y="38" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#1f2933" text-anchor="start">a2a-oncall: how one incident flows through the project files</text>
+<rect x="30" y="58" width="1490" height="222" rx="10" fill="#f1f8f3" stroke="#84b690" stroke-width="1.2"/>
+<rect x="30" y="58" width="36" height="222" rx="10" fill="#1f7a35" stroke="none"/>
+<rect x="52" y="58" width="14" height="222" rx="0" fill="#1f7a35" stroke="none"/>
+<text transform="translate(46,169.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#fff">SANDBOX</text>
+<text transform="translate(60,169.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#d2e4d7">sandbox/ · Docker</text>
+<rect x="30" y="326" width="1490" height="190" rx="10" fill="#fcf2f6" stroke="#cf8ead" stroke-width="1.2"/>
+<rect x="30" y="326" width="36" height="190" rx="10" fill="#a8326a" stroke="none"/>
+<rect x="52" y="326" width="14" height="190" rx="0" fill="#a8326a" stroke="none"/>
+<text transform="translate(46,421.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#fff">LAB</text>
+<text transform="translate(60,421.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#eed6e1">oncall/ · the exam board</text>
+<rect x="30" y="566" width="1490" height="310" rx="10" fill="#eff5fd" stroke="#82a7d8" stroke-width="1.2"/>
+<rect x="30" y="566" width="36" height="310" rx="10" fill="#1b5fb8" stroke="none"/>
+<rect x="52" y="566" width="14" height="310" rx="0" fill="#1b5fb8" stroke="none"/>
+<text transform="translate(46,721.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#fff">CONTROLLER</text>
+<text transform="translate(60,721.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#d1dff1">controller/ · pipeline.py runs one incident</text>
+<rect x="30" y="916" width="1490" height="276" rx="10" fill="#f4f1fd" stroke="#a595e5" stroke-width="1.2"/>
+<rect x="30" y="916" width="36" height="276" rx="10" fill="#5b3fd0" stroke="none"/>
+<rect x="52" y="916" width="14" height="276" rx="0" fill="#5b3fd0" stroke="none"/>
+<text transform="translate(46,1054.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#fff">AGENTS</text>
+<text transform="translate(60,1054.0) rotate(-90)" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#ded9f6">agents/ · reached over A2A</text>
+<text x="76" y="86" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="400" fill="#52606d" text-anchor="start" font-style="italic">The practice company: orders come in → get loaded → stored → cleaned → shown on a dashboard</text>
+<rect x="76" y="100" width="188" height="92" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<rect x="76.8" y="100.8" width="186.4" height="29" rx="7.2" fill="#d3ecd9" stroke="none"/>
+<rect x="76.8" y="116" width="186.4" height="14" rx="0" fill="#d3ecd9" stroke="none"/>
+<rect x="76" y="100" width="188" height="92" rx="8" fill="none" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="86" y="120" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1f7a35" text-anchor="start">Orders come in</text>
+<text x="86" y="148" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">orders_api/app.py</text>
+<text x="86" y="168" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">fake food-delivery orders</text>
+<rect x="322" y="100" width="188" height="92" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<rect x="322.8" y="100.8" width="186.4" height="29" rx="7.2" fill="#d3ecd9" stroke="none"/>
+<rect x="322.8" y="116" width="186.4" height="14" rx="0" fill="#d3ecd9" stroke="none"/>
+<rect x="322" y="100" width="188" height="92" rx="8" fill="none" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="332" y="120" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1f7a35" text-anchor="start">Load them</text>
+<text x="332" y="148" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">ingest/ingest.py</text>
+<text x="332" y="164" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">ingest/schema.py</text>
+<text x="332" y="184" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">pulls + checks new orders</text>
+<rect x="568" y="100" width="188" height="92" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<rect x="568.8" y="100.8" width="186.4" height="29" rx="7.2" fill="#d3ecd9" stroke="none"/>
+<rect x="568.8" y="116" width="186.4" height="14" rx="0" fill="#d3ecd9" stroke="none"/>
+<rect x="568" y="100" width="188" height="92" rx="8" fill="none" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="578" y="120" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1f7a35" text-anchor="start">Store them</text>
+<text x="578" y="148" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">warehouse/init.sql</text>
+<text x="578" y="168" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">Postgres database; also</text>
+<text x="578" y="184" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">backup-compress.sh (CPU hog)</text>
+<rect x="814" y="100" width="188" height="92" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<rect x="814.8" y="100.8" width="186.4" height="29" rx="7.2" fill="#d3ecd9" stroke="none"/>
+<rect x="814.8" y="116" width="186.4" height="14" rx="0" fill="#d3ecd9" stroke="none"/>
+<rect x="814" y="100" width="188" height="92" rx="8" fill="none" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="824" y="120" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1f7a35" text-anchor="start">Clean them</text>
+<text x="824" y="148" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">transform/runner.py</text>
+<text x="824" y="164" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">transform/dbt/</text>
+<text x="824" y="184" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">raw orders → revenue table</text>
+<rect x="1060" y="100" width="188" height="92" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<rect x="1060.8" y="100.8" width="186.4" height="29" rx="7.2" fill="#d3ecd9" stroke="none"/>
+<rect x="1060.8" y="116" width="186.4" height="14" rx="0" fill="#d3ecd9" stroke="none"/>
+<rect x="1060" y="100" width="188" height="92" rx="8" fill="none" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="1070" y="120" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1f7a35" text-anchor="start">Show them</text>
+<text x="1070" y="148" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">metrics_api/app.py</text>
+<text x="1070" y="168" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">revenue dashboard + login</text>
+<rect x="1306" y="100" width="188" height="42" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="1316" y="118" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#1f7a35" text-anchor="start">Bad actors</text>
+<text x="1316" y="134" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="start">toolbox/*.py · S1 S2 D4 D5</text>
+<rect x="1306" y="150" width="188" height="42" rx="8" fill="#fff" stroke="#1f7a35" stroke-width="1.6"/>
+<text x="1316" y="168" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#1f7a35" text-anchor="start">Health numbers</text>
+<text x="1316" y="184" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="start">prometheus/ + exporter</text>
+<path d="M264,146 L322,146" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<path d="M510,146 L568,146" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<path d="M756,146 L814,146" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<path d="M1002,146 L1060,146" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<rect x="200" y="212" width="560" height="50" rx="6" fill="#fff" stroke="#6da97c" stroke-width="1.1"/>
+<text x="210" y="232" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">toxiproxy/toxiproxy.json</text>
+<text x="210" y="252" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">a switchboard on these two lines: the lab adds delay or cuts the line (network faults)</text>
+<line x1="293" y1="152" x2="293" y2="212" stroke="#257de0" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="539" y1="152" x2="539" y2="212" stroke="#257de0" stroke-width="1.2" stroke-dasharray="3 3"/>
+<rect x="814" y="212" width="434" height="50" rx="6" fill="#fff" stroke="#6da97c" stroke-width="1.1"/>
+<text x="824" y="232" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">runtime/defaults/*.json</text>
+<text x="824" y="252" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">live settings the services read; faults and fixes edit them</text>
+<rect x="76" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="76.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="76.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="76" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<circle cx="95" cy="375" r="10.5" fill="#a8326a" stroke="none" stroke-width="0"/>
+<text x="95" y="378.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<text x="111" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Break it on purpose</text>
+<text x="86" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/faults.py</text>
+<text x="86" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/episodes.py</text>
+<text x="86" y="444" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">14 faults, each with its</text>
+<text x="86" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">true owner; fire drill:</text>
+<text x="86" y="476" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">break → spot → fix → undo</text>
+<rect x="322" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="322.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="322.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="322" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<circle cx="341" cy="375" r="10.5" fill="#a8326a" stroke="none" stroke-width="0"/>
+<text x="341" y="378.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<text x="357" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Spot the problem</text>
+<text x="332" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/oracle.py</text>
+<text x="332" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/incidents.py</text>
+<text x="332" y="444" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">checks health against</text>
+<text x="332" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">targets, opens an incident</text>
+<rect x="568" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="568.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="568.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="568" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<text x="578" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Practice incidents</text>
+<text x="578" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/synth/</text>
+<text x="578" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">→ data/synthetic/</text>
+<text x="578" y="440" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">samples/</text>
+<text x="578" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">realistic fake incidents;</text>
+<text x="578" y="476" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">no Docker needed</text>
+<rect x="814" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="814.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="814.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="814" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<text x="824" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Train &amp; calibrate</text>
+<text x="824" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/train.py</text>
+<text x="824" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/route_eval.py</text>
+<text x="824" y="444" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">writes models/*.json,</text>
+<text x="824" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">used in steps 4 and 5</text>
+<rect x="1060" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="1060.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="1060.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="1060" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<text x="1070" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Answer key (locked)</text>
+<text x="1070" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/lab.py</text>
+<text x="1070" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">ground_truth.jsonl</text>
+<text x="1070" y="444" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">true cause, owner, right fix;</text>
+<text x="1070" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the controller never sees it</text>
+<rect x="1306" y="360" width="188" height="136" rx="8" fill="#fff" stroke="#a8326a" stroke-width="1.6"/>
+<rect x="1306.8" y="360.8" width="186.4" height="29" rx="7.2" fill="#f5d7e5" stroke="none"/>
+<rect x="1306.8" y="376" width="186.4" height="14" rx="0" fill="#f5d7e5" stroke="none"/>
+<rect x="1306" y="360" width="188" height="136" rx="8" fill="none" stroke="#a8326a" stroke-width="1.6"/>
+<text x="1316" y="380" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#a8326a" text-anchor="start">Mark the result</text>
+<text x="1316" y="408" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/evaluate.py</text>
+<text x="1316" y="424" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/agent_eval.py</text>
+<text x="1316" y="440" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/team_eval.py</text>
+<text x="1316" y="460" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">compares answers with</text>
+<text x="1316" y="476" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the answer key</text>
+<path d="M170,360 L170,282" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)"/>
+<text x="178" y="312" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#a8326a" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">inject a fault</text>
+<path d="M416,282 L416,360" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="424" y="312" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">health readings</text>
+<path d="M1060,428 L1002,428" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)"/>
+<text x="1031" y="421" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#a8326a" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">labels</text>
+<path d="M1248,428 L1306,428" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)"/>
+<text x="1277" y="421" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#a8326a" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">labels</text>
+<line x1="30" y1="541" x2="1520" y2="541" stroke="#c2372f" stroke-width="2.4" stroke-dasharray="11 6"/>
+<rect x="810" y="522" width="440" height="38" rx="8" fill="#fff" stroke="#c2372f" stroke-width="1.4"/>
+<text x="1030" y="538" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#c2372f" text-anchor="middle">INFORMATION BARRIER</text>
+<text x="1030" y="553" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#52606d" text-anchor="middle">the controller never sees the answer key (tests/test_controller_isolation.py)</text>
+<path d="M416,496 L416,592 L170,592 L170,620" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="182" y="610" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">IncidentReport (contracts.py): alerts, logs, evidence only</text>
+<path d="M662,496 L662,592 L422,592" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)" stroke-dasharray="6 4"/>
+<text x="670" y="586" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#a8326a" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">or: practice incidents (no Docker)</text>
+<rect x="76" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="76.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="76.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="76" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="95" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="95" y="638.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<text x="111" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Read the incident</text>
+<text x="86" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">intake.py</text>
+<text x="86" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">cleans the logs, hides</text>
+<text x="86" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">changing numbers and IPs,</text>
+<text x="86" y="720" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">pulls out the key signals</text>
+<rect x="322" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="322.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="322.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="322" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="341" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="341" y="638.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<text x="357" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Guess the department</text>
+<text x="332" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">classifier.py · learned.py</text>
+<text x="332" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">rules or a trained model:</text>
+<text x="332" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">chance it is network, data,</text>
+<text x="332" y="720" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">infra or security</text>
+<rect x="568" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="568.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="568.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="568" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="587" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="587" y="638.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+<text x="603" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Choose the team</text>
+<text x="578" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">conformal.py · router.py</text>
+<text x="578" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">team that should hold the</text>
+<text x="578" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">right owner 95% of the time;</text>
+<text x="578" y="720" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">main agent, helpers, backups</text>
+<text x="578" y="736" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">+ agents' track record (H1)</text>
+<rect x="814" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="814.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="814.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="814" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="833" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="833" y="638.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+<text x="849" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Ask the agents</text>
+<text x="824" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">orchestrator.py</text>
+<text x="824" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">asks agents in parallel,</text>
+<text x="824" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">follows 'not mine' pointers,</text>
+<text x="824" y="720" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">escalates, then cross-checks</text>
+<text x="824" y="736" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">+ shows past cases (H1)</text>
+<rect x="1060" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="1060.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="1060.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="1060" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="1079" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="1079" y="638.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">8</text>
+<text x="1095" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Pick the best plan</text>
+<text x="1070" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">optimizer.py</text>
+<text x="1070" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">one staged plan with the</text>
+<text x="1070" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">lowest expected loss, or</text>
+<text x="1070" y="720" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">'call a human now'</text>
+<text x="1070" y="736" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">+ counts precedent (H1)</text>
+<rect x="1306" y="620" width="188" height="130" rx="8" fill="#fff" stroke="#1b5fb8" stroke-width="1.6"/>
+<rect x="1306.8" y="620.8" width="186.4" height="29" rx="7.2" fill="#d1e2f8" stroke="none"/>
+<rect x="1306.8" y="636" width="186.4" height="14" rx="0" fill="#d1e2f8" stroke="none"/>
+<rect x="1306" y="620" width="188" height="130" rx="8" fill="none" stroke="#1b5fb8" stroke-width="1.6"/>
+<circle cx="1325" cy="635" r="10.5" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="1325" y="638.6" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">10</text>
+<text x="1341" y="640" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#1b5fb8" text-anchor="start">Hand over the plan</text>
+<text x="1316" y="668" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">plan.py</text>
+<text x="1316" y="688" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">RemediationPlan goes out,</text>
+<text x="1316" y="704" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">ExecutionReport comes back</text>
+<path d="M264,685 L322,685" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="293.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">features</text>
+<path d="M510,685 L568,685" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="539.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">scores</text>
+<path d="M756,685 L814,685" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="785.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">team</text>
+<path d="M1002,685 L1060,685" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="1031.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">answers</text>
+<path d="M1248,685 L1306,685" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="1277.0" y="678" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">plan</text>
+<path d="M1110,620 L1110,600 L958,600 L958,620" fill="none" stroke="#1b5fb8" stroke-width="1.6" marker-end="url(#ah1b5fb8)"/>
+<text x="1034" y="594" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#1b5fb8" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">not sure (&lt; 70%)? second look by a stronger agent</text>
+<path d="M1400,620 L1400,496" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)" stroke-dasharray="6 4"/>
+<text x="1392" y="606" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#a8326a" text-anchor="end" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">scored by the lab</text>
+<rect x="76" y="786" width="188" height="80" rx="6" fill="#fff" stroke="#6b97d1" stroke-width="1.1"/>
+<text x="86" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">evidence.py</text>
+<text x="86" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">splits deeper evidence:</text>
+<text x="86" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">one slice per domain</text>
+<rect x="568" y="786" width="188" height="80" rx="6" fill="#fff" stroke="#6b97d1" stroke-width="1.1"/>
+<text x="578" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">registry.py · cards.py</text>
+<text x="578" y="822" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">pool.py</text>
+<text x="578" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">who exists, who is up,</text>
+<text x="578" y="858" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">who may take the task</text>
+<rect x="814" y="786" width="188" height="80" rx="6" fill="#fff" stroke="#6b97d1" stroke-width="1.1"/>
+<text x="824" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">proposal.py · wire.py</text>
+<text x="824" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">message forms, packed</text>
+<text x="824" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">for A2A</text>
+<rect x="1060" y="786" width="188" height="80" rx="6" fill="#fff" stroke="#6b97d1" stroke-width="1.1"/>
+<text x="1070" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">policy.py</text>
+<text x="1070" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the safety rules the</text>
+<text x="1070" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">policy agent applies</text>
+<rect x="1306" y="786" width="188" height="80" rx="6" fill="#fff" stroke="#63a5a2" stroke-width="1.1"/>
+<text x="1316" y="806" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">history.py · memory.py</text>
+<text x="1316" y="826" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">talks to the history agent;</text>
+<text x="1316" y="842" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the Experience record</text>
+<path d="M1400,750 L1400,786" fill="none" stroke="#0f7470" stroke-width="1.6" marker-end="url(#ah0f7470)"/>
+<circle cx="1424" cy="768" r="10.5" fill="#0f7470" stroke="none" stroke-width="0"/>
+<text x="1424" y="771.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">H2</text>
+<path d="M662,786 L662,750" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<path d="M908,750 L908,786" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<path d="M1154,750 L1154,786" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<path d="M170,866 L170,950" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="178" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">evidence slice per domain</text>
+<path d="M908,866 L908,990" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<text x="916" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#5b3fd0" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">tasks down; Proposal / Review back</text>
+<path d="M1154,866 L1154,990" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<text x="1162" y="902" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#5b3fd0" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">plan down; verdict back</text>
+<path d="M1400,866 L1400,990" fill="none" stroke="#0f7470" stroke-width="1.6" marker-end="url(#ah0f7470)" marker-start="url(#ah0f7470)"/>
+<text x="1408" y="896" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#0f7470" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">H1 look up first</text>
+<text x="1408" y="910" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#0f7470" text-anchor="start" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">H2 remember</text>
+<rect x="76" y="950" width="680" height="228" rx="10" fill="#fff" stroke="#5b3fd0" stroke-width="1.6"/>
+<circle cx="96" cy="972" r="10.5" fill="#5b3fd0" stroke="none" stroke-width="0"/>
+<text x="96" y="975.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+<text x="114" y="977" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#5b3fd0" text-anchor="start">Expert agents investigate</text>
+<text x="330" y="977" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">agents/specialist.py</text>
+<rect x="92" y="992" width="120" height="26" rx="13.0" fill="#dceafa" stroke="#257de0" stroke-width="1.2"/>
+<text x="152.0" y="1008.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">network-fast</text>
+<rect x="92" y="1026" width="120" height="26" rx="13.0" fill="#dceafa" stroke="#257de0" stroke-width="1.2"/>
+<text x="152.0" y="1042.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">network-strong</text>
+<rect x="222" y="992" width="120" height="26" rx="13.0" fill="#fde8de" stroke="#f47230" stroke-width="1.2"/>
+<text x="282.0" y="1008.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">data-fast</text>
+<rect x="222" y="1026" width="120" height="26" rx="13.0" fill="#fde8de" stroke="#f47230" stroke-width="1.2"/>
+<text x="282.0" y="1042.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">data-strong</text>
+<rect x="352" y="992" width="120" height="26" rx="13.0" fill="#d6f4ee" stroke="#00b894" stroke-width="1.2"/>
+<text x="412.0" y="1008.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">infra-fast</text>
+<rect x="352" y="1026" width="120" height="26" rx="13.0" fill="#d6f4ee" stroke="#00b894" stroke-width="1.2"/>
+<text x="412.0" y="1042.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">infra-strong</text>
+<rect x="482" y="992" width="120" height="26" rx="13.0" fill="#fdf1d6" stroke="#f2a600" stroke-width="1.2"/>
+<text x="542.0" y="1008.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">security-fast</text>
+<rect x="482" y="1026" width="120" height="26" rx="13.0" fill="#fdf1d6" stroke="#f2a600" stroke-width="1.2"/>
+<text x="542.0" y="1042.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">security-strong</text>
+<rect x="614" y="992" width="126" height="60" rx="30.0" fill="#e5e0f7" stroke="#5b3fd0" stroke-width="1.2"/>
+<text x="677.0" y="1025.96" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11" font-weight="400" fill="#1f2933" text-anchor="middle">generalist</text>
+<text x="92" y="1072" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">fast = qwen2.5:3b · strong = llama3 · each has a business card in agents/cards/*.json</text>
+<rect x="92" y="1086" width="190" height="80" rx="6" fill="#fff" stroke="#9482e0" stroke-width="1.1"/>
+<text x="102" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">tools.py</text>
+<text x="102" y="1126" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">read-only evidence; only</text>
+<text x="102" y="1142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the tools on its own card</text>
+<rect x="296" y="1086" width="240" height="80" rx="6" fill="#fff" stroke="#9482e0" stroke-width="1.1"/>
+<text x="306" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">reasoners/</text>
+<text x="306" y="1122" font-size="11.5"><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#1f2933">rules.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#52606d"> no AI   </tspan><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#1f2933">ollama.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#52606d"> LLM</tspan></text>
+<text x="306" y="1138" font-size="11.5"><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#1f2933">careless.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#52606d"> · </tspan><tspan font-family="Consolas, Menlo, 'Courier New', monospace" fill="#1f2933">shy.py</tspan><tspan font-family="Segoe UI, Arial, Helvetica, sans-serif" fill="#52606d">  test agents</tspan></text>
+<text x="306" y="1158" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">over-claims / under-claims</text>
+<rect x="550" y="1086" width="190" height="80" rx="6" fill="#fff" stroke="#9482e0" stroke-width="1.1"/>
+<text x="560" y="1106" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">controller/checks.py</text>
+<text x="560" y="1126" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">drops fixes that can't run</text>
+<text x="560" y="1142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">or aren't backed by evidence</text>
+<rect x="814" y="990" width="188" height="124" rx="8" fill="#fff" stroke="#5b3fd0" stroke-width="1.6"/>
+<rect x="814.8" y="990.8" width="186.4" height="29" rx="7.2" fill="#ddd5fa" stroke="none"/>
+<rect x="814.8" y="1006" width="186.4" height="14" rx="0" fill="#ddd5fa" stroke="none"/>
+<rect x="814" y="990" width="188" height="124" rx="8" fill="none" stroke="#5b3fd0" stroke-width="1.6"/>
+<text x="824" y="1010" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#5b3fd0" text-anchor="start">A2A doorway</text>
+<text x="824" y="1038" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">server.py</text>
+<text x="824" y="1058" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">real A2A web server</text>
+<text x="824" y="1078" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">local.py</text>
+<text x="824" y="1098" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">same agents, no network</text>
+<path d="M756,1050 L814,1050" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<rect x="1060" y="990" width="188" height="124" rx="8" fill="#fff" stroke="#5b3fd0" stroke-width="1.6"/>
+<rect x="1060.8" y="990.8" width="186.4" height="29" rx="7.2" fill="#ddd5fa" stroke="none"/>
+<rect x="1060.8" y="1006" width="186.4" height="14" rx="0" fill="#ddd5fa" stroke="none"/>
+<rect x="1060" y="990" width="188" height="124" rx="8" fill="none" stroke="#5b3fd0" stroke-width="1.6"/>
+<circle cx="1079" cy="1005" r="10.5" fill="#5b3fd0" stroke="none" stroke-width="0"/>
+<text x="1079" y="1008.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">9</text>
+<text x="1095" y="1010" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#5b3fd0" text-anchor="start">Safety check</text>
+<text x="1070" y="1038" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">policy_agent.py</text>
+<text x="1070" y="1058" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">approve, needs a human's yes,</text>
+<text x="1070" y="1074" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">or refuse; silence = refuse</text>
+<rect x="1306" y="990" width="188" height="124" rx="8" fill="#fff" stroke="#0f7470" stroke-width="1.6"/>
+<rect x="1306.8" y="990.8" width="186.4" height="29" rx="7.2" fill="#c8eae6" stroke="none"/>
+<rect x="1306.8" y="1006" width="186.4" height="14" rx="0" fill="#c8eae6" stroke="none"/>
+<rect x="1306" y="990" width="188" height="124" rx="8" fill="none" stroke="#0f7470" stroke-width="1.6"/>
+<circle cx="1325" cy="1005" r="10.5" fill="#0f7470" stroke="none" stroke-width="0"/>
+<text x="1325" y="1008.96" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">H</text>
+<text x="1341" y="1010" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#0f7470" text-anchor="start">History agent</text>
+<text x="1316" y="1038" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">history_agent.py</text>
+<text x="1316" y="1054" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">trust.py · reliability.py</text>
+<text x="1316" y="1070" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">memory_pg.py</text>
+<text x="1316" y="1090" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">similar past incidents +</text>
+<text x="1316" y="1106" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">each agent's verified record</text>
+<rect x="1580" y="58" width="200" height="1134" rx="10" fill="#f5f6f8" stroke="#5f6b7a" stroke-width="1.5" stroke-dasharray="7 5"/>
+<text x="1680" y="86" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#5f6b7a" text-anchor="middle">EXECUTOR</text>
+<text x="1680" y="106" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#52606d" text-anchor="middle">another team</text>
+<text x="1680" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#52606d" text-anchor="middle">MCP / Microsoft Fabric</text>
+<text x="1680" y="140" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="middle" font-style="italic">out of scope</text>
+<rect x="1596" y="158" width="168" height="110" rx="8" fill="#fff" stroke="#5f6b7a" stroke-width="1.6"/>
+<rect x="1596.8" y="158.8" width="166.4" height="29" rx="7.2" fill="#e1e5ea" stroke="none"/>
+<rect x="1596.8" y="174" width="166.4" height="14" rx="0" fill="#e1e5ea" stroke="none"/>
+<rect x="1596" y="158" width="168" height="110" rx="8" fill="none" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="1606" y="178" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="13.5" font-weight="700" fill="#5f6b7a" text-anchor="start">In the lab</text>
+<text x="1606" y="206" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/intents.py</text>
+<text x="1606" y="222" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">oncall/actions.py</text>
+<text x="1606" y="242" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">11 intents →</text>
+<text x="1606" y="258" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">13 allowed fixes</text>
+<path d="M1596,214 L1522,214" fill="none" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ah5f6b7a)"/>
+<text x="1558" y="207" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="10.5" font-weight="400" fill="#3e4c59" text-anchor="middle" font-style="italic" stroke="#fff" stroke-width="4" stroke-linejoin="round" paint-order="stroke">apply fix</text>
+<path d="M1494,662 L1580,662" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<path d="M1580,716 L1494,716" fill="none" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ah5f6b7a)"/>
+<text x="1596" y="666" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">RemediationPlan in</text>
+<text x="1596" y="720" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">ExecutionReport back</text>
+<text x="1596" y="760" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">runs the plan stage by</text>
+<text x="1596" y="776" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">stage; 'escalate' means</text>
+<text x="1596" y="792" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">page a human</text>
+<rect x="1596" y="816" width="168" height="64" rx="6" fill="#fff" stroke="#979fa9" stroke-width="1.1"/>
+<text x="1606" y="836" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">docs/HANDOVER.md</text>
+<text x="1606" y="852" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">docs/contract/*.json</text>
+<text x="1606" y="872" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">the contract, written down</text>
+<path d="M76,1222 L116,1222" fill="none" stroke="#1f2933" stroke-width="1.6" marker-end="url(#ah1f2933)"/>
+<text x="124" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">main flow</text>
+<path d="M210,1222 L250,1222" fill="none" stroke="#a8326a" stroke-width="1.6" marker-end="url(#aha8326a)" stroke-dasharray="6 4"/>
+<text x="258" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">lab only (practice data, scoring)</text>
+<path d="M470,1222 L510,1222" fill="none" stroke="#5b3fd0" stroke-width="1.6" marker-end="url(#ah5b3fd0)" marker-start="url(#ah5b3fd0)"/>
+<text x="518" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">request and reply over A2A</text>
+<path d="M700,1222 L740,1222" fill="none" stroke="#0f7470" stroke-width="1.6" marker-end="url(#ah0f7470)"/>
+<text x="748" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">memory: look up (H1), remember (H2)</text>
+<rect x="966" y="1212" width="34" height="20" rx="4" fill="#f5f6f8" stroke="#5f6b7a" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="1008" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">out of scope</text>
+<line x1="1100" y1="1222" x2="1140" y2="1222" stroke="#c2372f" stroke-width="2.4" stroke-dasharray="8 5"/>
+<text x="1148" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">information barrier</text>
+<circle cx="1300" cy="1222" r="7" fill="#1f7a35" stroke="none" stroke-width="0"/>
+<text x="1300" y="1225.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle"></text>
+<text x="1312" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">sandbox</text>
+<circle cx="1396" cy="1222" r="7" fill="#a8326a" stroke="none" stroke-width="0"/>
+<text x="1396" y="1225.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle"></text>
+<text x="1408" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">lab</text>
+<circle cx="1492" cy="1222" r="7" fill="#1b5fb8" stroke="none" stroke-width="0"/>
+<text x="1492" y="1225.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle"></text>
+<text x="1504" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">controller</text>
+<circle cx="1588" cy="1222" r="7" fill="#5b3fd0" stroke="none" stroke-width="0"/>
+<text x="1588" y="1225.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle"></text>
+<text x="1600" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">agents</text>
+<circle cx="1684" cy="1222" r="7" fill="#0f7470" stroke="none" stroke-width="0"/>
+<text x="1684" y="1225.24" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle"></text>
+<text x="1696" y="1226" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">memory</text>
 </svg>

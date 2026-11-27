@@ -228,6 +228,28 @@ def experience_from(report: IncidentReport, d: Deliberation, plan: RemediationPl
         owner=owner)
 
 
+def relabel(e: Experience) -> Experience:
+    """The same experience with every label worked out again from its stored verified outcome: after a fix to
+    the matching rules (checks.same_fix), old memories are corrected without asking any agent again."""
+    owner = verified_owner(e, e.outcome)  # reads .proposals (domain, actions), as a Deliberation would give
+    proposals, labels, owned = [], {}, {}
+    for p in e.proposals:
+        label, why = label_proposal(p, e.outcome, owner)
+        labels[(p.agent_id, p.domain)] = label
+        owned[(p.agent_id, p.domain)] = None if owner is None else p.domain == owner
+        proposals.append(p.model_copy(update={"label": label, "label_why": why,
+                                              "domain_owned": owned[(p.agent_id, p.domain)]}))
+    reviews = []
+    for r in e.reviews:
+        label = labels.get((r.claim_agent, r.claim_domain))
+        right = None
+        if r.stance != "cannot_tell" and label in ("right", "wrong"):
+            right = (r.stance == "supports") == (label == "right")
+        reviews.append(r.model_copy(update={"right": right, "claim_label": label,
+                                            "claim_owned": owned.get((r.claim_agent, r.claim_domain))}))
+    return e.model_copy(update={"proposals": proposals, "reviews": reviews, "owner": owner})
+
+
 # -- similarity --------------------------------------------------------------------------------------
 
 class HashingEmbedder:

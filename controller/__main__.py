@@ -175,6 +175,18 @@ def memory(args) -> int:
               "  python -m oncall remember --data data/synthetic/dev100 --model models/logreg100.json "
               "--calibration models/conformal.json --out models/memory")
         return 1
+    if args.relabel:
+        from .memory import relabel
+
+        changed = 0
+        for e in list(store.experiences):
+            new = relabel(e)
+            if new.model_dump() != e.model_dump():
+                store.add(new)  # replaces the old record (in the database too)
+                changed += 1
+        where = store.save(args.store)
+        print(f"relabelled {len(store)} incidents with the current matching rules: {changed} changed; saved to {where}")
+        return 0
     if args.export_sql:
         from .memory_sql import to_sql
 
@@ -271,6 +283,8 @@ def main() -> int:
     p.add_argument("--incident", default=None, help="comma-separated incident ids to look up")
     p.add_argument("--k", type=int, default=3)
     p.add_argument("--past-only", action="store_true", help="only incidents opened before this one")
+    p.add_argument("--relabel", action="store_true",
+                   help="work every label out again from the stored verified outcomes (after a matching-rule fix)")
     p.add_argument("--export-sql", type=Path, default=None,
                    help="write the memory as SQL rows for the PostgreSQL tables (controller/memory_schema.sql)")
     args = parser.parse_args()

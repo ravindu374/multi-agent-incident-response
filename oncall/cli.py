@@ -267,7 +267,8 @@ def cmd_eval_team(lab: Lab, args) -> int:
                       escalate=not args.no_escalation, careless=args.careless,
                       second_look_below=args.second_look_below, must_propose=not args.may_abstain,
                       shy=args.shy, approval=not args.no_approval, memory=args.memory, trust=args.trust,
-                      past_cases=not args.no_past_cases, precedent=not args.no_precedent, show=args.show)
+                      past_cases=not args.no_past_cases, precedent=not args.no_precedent, show=args.show,
+                      progress=args.reasoner == "ollama")
     m = r["memory"]
     if m:
         print(f"history agent: {m['experiences']} past incidents in {m['path']}; agents' verified record "
@@ -371,7 +372,8 @@ def cmd_remember(lab: Lab, args) -> int:
     store, r = build_memory(args.data, split=args.split, model=args.model, calibration=args.calibration, store=store,
                             reasoner=args.reasoner, ollama_model=args.ollama_model, mode=args.feedback,
                             noise=args.noise, limit=args.limit, seed=args.seed, approval=not args.no_approval,
-                            careless=args.careless, shy=args.shy, trust=args.trust, skip_faults=args.skip_faults)
+                            careless=args.careless, shy=args.shy, trust=args.trust, skip_faults=args.skip_faults,
+                            progress=args.reasoner == "ollama")
     folder = store.save(args.out)
     print(f"remembered {r['incidents']} incidents ({r['split']}, oldest first); agents: {r['reasoner']}; "
           f"classifier {r['classifier']}; feedback {r['mode']}" + (f", {r['noise']:.0%} of operator answers wrong"

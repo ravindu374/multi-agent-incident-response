@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="350" viewBox="0 0 1120 350">
+<defs></defs>
+<rect x="0" y="0" width="1120" height="350" fill="#fff"/>
+<text x="24" y="34" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="17" font-weight="700" fill="#1f2933" text-anchor="start">Conformal prediction chooses the team: one team when the model is sure, more when it is not</text>
+<text x="24" y="54" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">Bar = the classifier's probability for each team. Black tick = that team's cut-off (Mondrian, α = 0.05). A team joins when its bar reaches its tick.</text>
+<text x="24" y="88" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="14" font-weight="700" fill="#1f2933" text-anchor="start">syn-7-00046</text>
+<text x="128" y="88" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">D1: source renamed a field (owner data)</text>
+<rect x="24" y="112" width="12" height="12" rx="3" fill="#257de0" stroke="none"/>
+<text x="42" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">network</text>
+<rect x="110" y="108" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M110,108 H112.6 A4,4 0 0 1 116.6,112 V124 A4,4 0 0 1 112.6,128 H110 Z" fill="#257de0"/>
+<text x="122.6" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.02</text>
+<line x1="410.3" y1="104" x2="410.3" y2="132" stroke="#1f2933" stroke-width="2.2"/>
+<text x="410.3" y="142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.91</text>
+<text x="454" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#9aa5b1" text-anchor="start">–  not called</text>
+<rect x="24" y="152" width="12" height="12" rx="3" fill="#f47230" stroke="none"/>
+<text x="42" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">data</text>
+<rect x="110" y="148" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M110,148 H422.8 A4,4 0 0 1 426.8,152 V164 A4,4 0 0 1 422.8,168 H110 Z" fill="#f47230"/>
+<text x="420.8" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="end">0.96</text>
+<line x1="228.8" y1="144" x2="228.8" y2="172" stroke="#1f2933" stroke-width="2.2"/>
+<text x="228.8" y="182" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.36</text>
+<circle cx="460" cy="158" r="7" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M456.8,158.2 L459.2,160.6 L463.4,155.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="472" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">on the team</text>
+<rect x="24" y="192" width="12" height="12" rx="3" fill="#00b894" stroke="none"/>
+<text x="42" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">infra</text>
+<rect x="110" y="188" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M110,188 H110.0 A3.3000000000000003,3.3000000000000003 0 0 1 113.3,191.3 V204.7 A3.3000000000000003,3.3000000000000003 0 0 1 110.0,208 H110 Z" fill="#00b894"/>
+<text x="119.3" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.01</text>
+<line x1="248.6" y1="184" x2="248.6" y2="212" stroke="#1f2933" stroke-width="2.2"/>
+<text x="248.6" y="222" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.42</text>
+<text x="454" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#9aa5b1" text-anchor="start">–  not called</text>
+<rect x="24" y="232" width="12" height="12" rx="3" fill="#f2a600" stroke="none"/>
+<text x="42" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">security</text>
+<rect x="110" y="228" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<text x="116.0" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.00</text>
+<line x1="258.5" y1="224" x2="258.5" y2="252" stroke="#1f2933" stroke-width="2.2"/>
+<text x="258.5" y="262" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.45*</text>
+<text x="454" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#9aa5b1" text-anchor="start">–  not called</text>
+<rect x="24" y="274" width="520" height="32" rx="8" fill="#e8f0f8" stroke="#1b64be" stroke-width="1.2"/>
+<text x="284" y="295" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#1f2933" text-anchor="middle">team = data · 1 agent team · sure</text>
+<text x="580" y="88" font-family="Consolas, Menlo, 'Courier New', monospace" font-size="14" font-weight="700" fill="#1f2933" text-anchor="start">syn-7-00004</text>
+<text x="684" y="88" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#52606d" text-anchor="start">I1: unknown process burns CPU (owner infra)</text>
+<rect x="580" y="112" width="12" height="12" rx="3" fill="#257de0" stroke="none"/>
+<text x="598" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">network</text>
+<rect x="666" y="108" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<text x="672.0" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.00</text>
+<line x1="966.3" y1="104" x2="966.3" y2="132" stroke="#1f2933" stroke-width="2.2"/>
+<text x="966.3" y="142" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.91</text>
+<text x="1010" y="123" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#9aa5b1" text-anchor="start">–  not called</text>
+<rect x="580" y="152" width="12" height="12" rx="3" fill="#f47230" stroke="none"/>
+<text x="598" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">data</text>
+<rect x="666" y="148" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M666,148 H810.5 A4,4 0 0 1 814.5,152 V164 A4,4 0 0 1 810.5,168 H666 Z" fill="#f47230"/>
+<text x="820.5" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.45</text>
+<line x1="784.8" y1="144" x2="784.8" y2="172" stroke="#1f2933" stroke-width="2.2"/>
+<text x="784.8" y="182" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.36</text>
+<circle cx="1016" cy="158" r="7" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M1012.8,158.2 L1015.2,160.6 L1019.4,155.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="1028" y="163" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">on the team</text>
+<rect x="580" y="192" width="12" height="12" rx="3" fill="#00b894" stroke="none"/>
+<text x="598" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">infra</text>
+<rect x="666" y="188" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M666,188 H833.6 A4,4 0 0 1 837.6,192 V204 A4,4 0 0 1 833.6,208 H666 Z" fill="#00b894"/>
+<text x="843.6" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.52</text>
+<line x1="804.6" y1="184" x2="804.6" y2="212" stroke="#1f2933" stroke-width="2.2"/>
+<text x="804.6" y="222" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.42</text>
+<circle cx="1016" cy="198" r="7" fill="#0aac23" stroke="none" stroke-width="0"/>
+<path d="M1012.8,198.2 L1015.2,200.6 L1019.4,195.4" fill="none" stroke="#fff" stroke-width="1.8"/>
+<text x="1028" y="203" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#1f2933" text-anchor="start">on the team</text>
+<rect x="580" y="232" width="12" height="12" rx="3" fill="#f2a600" stroke="none"/>
+<text x="598" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#1f2933" text-anchor="start">security</text>
+<rect x="666" y="228" width="330" height="20" rx="4" fill="#f2f4f7" stroke="none"/>
+<path d="M666,228 H668.6 A4,4 0 0 1 672.6,232 V244 A4,4 0 0 1 668.6,248 H666 Z" fill="#f2a600"/>
+<text x="678.6" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#1f2933" text-anchor="start">0.02</text>
+<line x1="814.5" y1="224" x2="814.5" y2="252" stroke="#1f2933" stroke-width="2.2"/>
+<text x="814.5" y="262" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="9.5" font-weight="400" fill="#52606d" text-anchor="middle">0.45*</text>
+<text x="1010" y="243" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11.5" font-weight="400" fill="#9aa5b1" text-anchor="start">–  not called</text>
+<rect x="580" y="274" width="520" height="32" rx="8" fill="#e8f0f8" stroke="#1b64be" stroke-width="1.2"/>
+<text x="840" y="295" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" fill="#1f2933" text-anchor="middle">team = infra + data · the true owner (infra) is on it</text>
+<text x="24" y="334" font-family="Segoe UI, Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#52606d" text-anchor="start">* security has too few calibration incidents (18 &lt; 19 needed at α = 0.05), so it uses the shared (pooled) cut-off. The top guess is always on the team.</text>
+</svg>

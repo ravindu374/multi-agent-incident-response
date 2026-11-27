@@ -182,6 +182,23 @@ far fewer agent calls, and adapt faster than static or LLM-only routers when age
   Checked on a throwaway PostgreSQL 18: 840 incidents remembered straight into it in ~9 s; read back
   exactly (round-trip tests); `eval-team` from the database and from the files gives identical numbers
   (loss 3.2902, cost 2.8786); the history agent served from it over A2A. Database tests need A2A_TEST_DB.
+- **First LLM run of the whole system (qwen2.5:3b fast, llama3 strong; dev100 val, the same 20 incidents).**
+  Without a memory: a correct fix proposed in 75% and the planner put it in stage 1 every time it existed;
+  reviews now informative (right fixes contradicted 8%, wrong ones 31%; the first llama3 run had 60% / 0%);
+  loss 5.37 vs 5.97 top answer, 8.35 always a human, oracle 4.27 (73% of the human-to-oracle gap closed);
+  agent cost 10.80, 16 escalations. Weak spot: in the 5 incidents with no correct fix the plan still acted
+  (3 wasted approvals, 2 wrong actions run), because the planning numbers trust LLM agents too much.
+  LLM memory: 40 train incidents in 27 min; verified records: data-fast claims right 56%, infra-fast 50%,
+  data-strong 83%, infra-strong 78%, security-strong 75%, network-strong 100% (planning guesses 70% / 88%),
+  network-fast's "not mine" guesses right 7 of 7 checked (the shy pattern, now trusted). With that memory:
+  cost 10.80 -> 7.10 (-34%), escalations 16 -> 8, loss 5.33 (oracle 4.40 this time, since other agents were
+  asked: 76% of the gap closed), 2 incidents with no correct fix escalated to a human instead of acted on,
+  wrong fixes contradicted 50%, right 0%. 20 incidents is small: the cost cut is clear, the quality change
+  is not. The label check found a second matching bug: `same_fix` accepted one overlapping kind of
+  identifier, so "reroute the warehouse path to secondary" matched "reroute the source path to secondary"
+  and 2 wrong fixes were labelled right; now every shared kind must overlap, `controller memory --relabel`
+  recomputes stored labels from the verified outcomes (LLM memory: 4 incidents changed, all 49 "right" labels
+  now truly right; rule memory: 0 changed, rule results unchanged).
 - **Consults go through the controller.** A specialist asks for a *capability*, never a named agent, so
   every delegation is visible to the router, budgeted and logged.
 - **Information barrier.** Agents never see `lab/`, Toxiproxy, orders-api `/admin`, or warehouse

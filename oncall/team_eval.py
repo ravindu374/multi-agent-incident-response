@@ -21,6 +21,8 @@ Agents run in-process (agents/local.py); over A2A the rounds are identical. Per 
 from __future__ import annotations
 
 import asyncio
+import sys
+import time
 from pathlib import Path
 
 from agents.local import LocalLink, local_agents
@@ -39,6 +41,14 @@ from controller.router import Router
 
 from .agent_eval import correct_fix
 from .evaluate import load_dataset
+
+
+def progress_line(i: int, n: int, incident_id: str, started: float, plan_kind: str) -> None:
+    """One line per finished incident on stderr, so a long LLM run does not look frozen."""
+    elapsed = time.monotonic() - started
+    left = elapsed / i * (n - i)
+    print(f"  [{i}/{n}] {incident_id}: {plan_kind}   {elapsed / 60:.1f} min so far, ~{left / 60:.1f} min left",
+          file=sys.stderr, flush=True)
 
 
 def realized_loss(stages: list[list[PlannedAction]] | None, truth: dict, seen: str, optimizer, priority: str,
@@ -127,7 +137,7 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
                   escalate: bool = True, careless: list[str] | None = None, second_look_below: float = 0.7,
                   must_propose: bool = True, shy: list[str] | None = None, approval: bool = True,
                   memory: Path | None = None, trust: str = "local", past_cases: bool = True,
-                  precedent: bool = True, show: bool = False) -> dict:
+                  precedent: bool = True, show: bool = False, progress: bool = False) -> dict:
     """memory: a saved experience memory (Block 6a), served by an in-process history agent (6c): agents
     trusted by their verified record (trust, 6b), similar past incidents shown to the experts (past_cases)
     and counted by the optimizer (precedent). Only read here, never written, so the incidents scored cannot
@@ -158,8 +168,11 @@ def evaluate_team(data_dir: Path, split: str | None = "val", model: Path | None 
     n = dict.fromkeys(keys, 0)
     loss = dict.fromkeys(["plan", "top_claim", "human", "oracle"], 0.0)
     cost, mistakes = 0.0, []
-    for report, truth in pairs:
+    started = time.monotonic()
+    for i, (report, truth) in enumerate(pairs, 1):
         res = asyncio.run(controller.handle(report))
+        if progress:
+            progress_line(i, len(pairs), report.incident_id, started, res.plan.kind)
         d, plan = res.deliberation, res.plan
         owner, priority = truth["owner"], d.routing.priority
         seen = evidence_text(evidence.bundles.get(report.incident_id), report)

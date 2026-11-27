@@ -75,12 +75,13 @@ def identifiers(action: PlannedAction) -> dict[str, list[str]]:
 
 
 def same_fix(a: list[PlannedAction], b: list[PlannedAction]) -> bool:
-    """Do two fix lists act on the same thing? Same intent, and an overlapping identifier of the same kind
-    (pid, ip, renamed field, ...), or no identifier at all and the same target (restart_component,
-    free_storage). Identifiers of different kinds cannot be compared: "session 556" and "the
-    reporting-worker sessions" may be different sessions, so they are not the same fix. (Until Block 6a
-    they counted as the same because both act on the warehouse: the optimizer merged a wrong guess into a
-    right claim, and a rule reviewer supported it.)"""
+    """Do two fix lists act on the same thing? Same intent, and EVERY kind of identifier both name overlaps
+    (pid, ip, renamed field, route AND endpoint, ...), or no identifier at all and the same target
+    (restart_component, free_storage). Identifiers of different kinds cannot be compared: "session 556" and
+    "the reporting-worker sessions" may be different sessions, so they are not the same fix. (Until Block 6a
+    they counted as the same because both act on the warehouse; until the first LLM memory, one overlapping
+    kind was enough, so "reroute the warehouse path to secondary" matched "reroute the source path to
+    secondary" through "secondary" alone, and the memory credited a wrong fix.)"""
     for x in a:
         for y in b:
             if x.intent != y.intent:
@@ -88,7 +89,7 @@ def same_fix(a: list[PlannedAction], b: list[PlannedAction]) -> bool:
             ix, iy = identifiers(x), identifiers(y)
             keys = (set(ix) & set(iy)) - {"target"}
             if keys:
-                if any(set(ix[k]) & set(iy[k]) for k in keys):
+                if all(set(ix[k]) & set(iy[k]) for k in keys):
                     return True
             elif len(ix) == len(iy) == 1 and x.target == y.target:  # neither names anything but the target
                 return True

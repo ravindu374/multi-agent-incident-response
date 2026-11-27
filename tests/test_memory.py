@@ -56,6 +56,14 @@ class SameFixTest(unittest.TestCase):
         self.assertTrue(same_fix([act("stop_session", pids=[1, 2])], [act("stop_session", pid=2)]))
         self.assertFalse(same_fix([act("stop_session", pids=[1, 2])], [act("stop_session", pid=3)]))
 
+    def test_every_kind_of_identifier_must_match(self):
+        # found by the first LLM memory: the endpoint matched, the route did not
+        wrong_path = act("reroute_connection", target="ingest", route="warehouse", endpoint="secondary")
+        right_path = act("reroute_connection", target="ingest", route="source", endpoint="secondary")
+        self.assertFalse(same_fix([wrong_path], [right_path]))
+        self.assertTrue(same_fix([right_path], [act("reroute_connection", target="ingest", route="source",
+                                                    endpoint="secondary")]))
+
     def test_without_identifiers_the_target_decides(self):
         self.assertTrue(same_fix([act("restart_component")], [act("restart_component")]))
         self.assertFalse(same_fix([act("restart_component")], [act("restart_component", target="ingest")]))
@@ -120,6 +128,15 @@ class LabelTest(unittest.TestCase):
         self.assertIsNone(e.owner)
         self.assertEqual(set(self.labels(e).values()), {"unknown", None})
         self.assertTrue(all(p.domain_owned is None for p in e.proposals))
+
+    def test_relabel_corrects_old_labels_from_the_stored_outcome(self):
+        from controller.memory import relabel
+
+        e = self.experience(Feedback(incident_id="i1", resolved=True, fixed_by=[self.right]))
+        self.assertEqual(relabel(e).model_dump(), e.model_dump())  # nothing to correct: unchanged
+        stale = e.model_copy(update={"proposals": [p.model_copy(update={"label": "right"}) for p in e.proposals]})
+        fixed = relabel(stale)  # as if an older, looser matching rule had credited every fix
+        self.assertEqual(self.labels(fixed), self.labels(e))
 
     def test_feedback_must_be_about_this_incident(self):
         with self.assertRaises(ValueError):
